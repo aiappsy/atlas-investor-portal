@@ -32,6 +32,9 @@ export default function StandaloneInvestorApp() {
   // Interactive Check Calculator State ($10k / $25k / $75k)
   const [selectedCheck, setSelectedCheck] = useState<10000 | 25000 | 75000>(25000);
 
+  // Real-World Example Trip Selector State ('city' | 'vacation' | 'annual')
+  const [exampleTrip, setExampleTrip] = useState<'city' | 'vacation' | 'annual'>('city');
+
   // 2-Step Gate State
   const [email, setEmail] = useState('');
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -189,6 +192,46 @@ export default function StandaloneInvestorApp() {
   const exitYr3 = selectedCheck * (79100000 / cap);
   const exitYr4 = selectedCheck * (537600000 / cap);
   const dividendYr3 = 13130000 * (selectedCheck / cap);
+
+  const tripScenarios = {
+    city: {
+      title: '4-Night City Trip (London, Paris, Rome, NYC)',
+      subtitle: 'Everyday 4-star city center hotel for a weekend or business trip',
+      nights: 4,
+      publicNightly: 240,
+      publicTotal: 960,
+      otaMarkup: 240,
+      wholesaleNightly: 160,
+      wholesaleTotal: 640,
+      savings: 320,
+      paybackNote: 'Recoups nearly half of annual membership on a single 4-day trip.'
+    },
+    vacation: {
+      title: '7-Night Family Vacation (Spain, Greece, Italy, Florida)',
+      subtitle: 'Standard 4-star or upscale holiday resort for 1 full week',
+      nights: 7,
+      publicNightly: 260,
+      publicTotal: 1820,
+      otaMarkup: 470,
+      wholesaleNightly: 175,
+      wholesaleTotal: 1225,
+      savings: 595,
+      paybackNote: 'Covers 75% to 100% of the annual membership on a single summer holiday.'
+    },
+    annual: {
+      title: 'Annual Member Total (Average 3 Common Trips / Year)',
+      subtitle: '1 family holiday (7 nights) + 2 city breaks (4 nights each = 15 nights total)',
+      nights: 15,
+      publicNightly: 250,
+      publicTotal: 3740,
+      otaMarkup: 950,
+      wholesaleNightly: 167,
+      wholesaleTotal: 2505,
+      savings: 1235,
+      paybackNote: 'Generates +$436 in net cash profit in member pocket after paying the $799 fee.'
+    }
+  };
+  const activeScenario = tripScenarios[exampleTrip];
 
   const documents = [
     {
@@ -522,11 +565,11 @@ export default function StandaloneInvestorApp() {
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
-                  The Private Members&apos; Travel Club Delivering <span className="text-amber-600">$1,500+</span> in Member Savings Per Stay at 0% Markup Wholesale.
+                  The Private Members&apos; Travel Club Delivering <span className="text-amber-600">30% to 50%</span> Direct Wholesale Savings on Everyday Hotel Stays.
                 </h1>
 
                 <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-3xl">
-                  ATLAS connects frequent luxury travelers directly to institutional B2B hotel wholesale rates behind a verified, password-gated membership. While public booking platforms add 25% to 40% in retail markups, our members save <strong>30% to 50% on every 5-star hotel stay</strong>—recouping their entire annual membership fee on their very first booking. We monetize purely through predictable <strong>96% gross margin subscription software ARR</strong> and high-ticket card payment interchange.
+                  ATLAS connects frequent travelers directly to institutional B2B hotel wholesale rates behind a verified, password-gated membership. While public booking platforms add 25% to 40% in retail markups, our members save <strong>30% to 50% on everyday 4-star and 5-star hotel stays</strong>—saving <strong>$300 to $600+ on a single trip</strong> and over <strong>$1,200+ per year</strong> at 0% markup. We monetize through predictable <strong>96% gross margin subscription software ARR</strong> and high-ticket card payment interchange.
                 </p>
               </div>
 
@@ -546,13 +589,13 @@ export default function StandaloneInvestorApp() {
 
                 <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
                   <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Avg. Member Savings</div>
-                  <div className="text-2xl font-black text-slate-900">$1,520 / stay</div>
-                  <div className="text-[11px] text-emerald-700 font-bold">30%–50% Below Retail</div>
+                  <div className="text-2xl font-black text-slate-900">$1,235 / yr</div>
+                  <div className="text-[11px] text-emerald-700 font-bold">30%–50% Direct Wholesale Savings</div>
                 </div>
 
                 <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
                   <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Member Payback</div>
-                  <div className="text-2xl font-black text-emerald-700">Day 1 (Trip #1)</div>
+                  <div className="text-2xl font-black text-emerald-700">Trip #1 – #2</div>
                   <div className="text-[11px] text-slate-500">38.4x LTV:CAC • 91% Retention</div>
                 </div>
               </div>
@@ -914,8 +957,35 @@ export default function StandaloneInvestorApp() {
               <div>
                 <h2 className="text-2xl font-black text-slate-900">The Wholesale Savings Engine: 0% Markup Wholesale</h2>
                 <p className="text-xs text-slate-500 mt-1">
-                  Why 5-star hotels release wholesale inventory at 30%–50% discounts, and how passing 100% of savings directly to members powers an unstoppable recurring revenue flywheel.
+                  Why hotels release wholesale inventory at 30%–50% discounts, and how common, everyday hotel stays save members hundreds of dollars per booking.
                 </p>
+              </div>
+
+              {/* Real-World Travel Scenario Selector */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs">
+                <div>
+                  <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">Select Common Hotel Scenario:</div>
+                  <div className="text-[11px] text-slate-500">Everyday 4-star & upscale hotels ($240–$260/night) vs. public retail travel sites.</div>
+                </div>
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                  {[
+                    { id: 'city', label: '🏙️ 4-Night City Break ($240/nt)' },
+                    { id: 'vacation', label: '🏖️ 7-Night Family Vacation ($260/nt)' },
+                    { id: 'annual', label: '✈️ Annual 3-Trip Total ($1,235 Saved)' }
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setExampleTrip(tab.id as any)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                        exampleTrip === tab.id 
+                          ? 'bg-slate-900 text-white shadow-xs' 
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Visual Side-by-Side Savings Breakdown */}
@@ -931,25 +1001,26 @@ export default function StandaloneInvestorApp() {
                       <strong>1. Built-in Retail Markups:</strong> Public online travel sites add massive 25% to 40% markups on top of hotel room rates to fund multi-billion-dollar Google search bidding wars.
                     </p>
                     <p>
-                      <strong>2. The Perishable Inventory Trap:</strong> 5-star luxury hotels average 32% unbooked rooms each night. Unsold rooms expire worthless at midnight, but hotels cannot discount publicly without destroying their published brand rack rates.
+                      <strong>2. The Perishable Inventory Trap:</strong> Hotels experience 30%+ average vacancy on any given night. Unsold rooms expire worthless at midnight, but hotels cannot discount publicly without debasing their published brand rack rates.
                     </p>
                     <p>
-                      <strong>3. Zero Traveler Return:</strong> Travelers pay inflated retail prices on every single vacation, leaving thousands of dollars on the table year after year with zero loyalty return.
+                      <strong>3. Zero Traveler Return:</strong> Travelers pay full retail prices on every single vacation, leaving hundreds of dollars on the table on every trip with zero loyalty return.
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-white border border-slate-200 font-mono text-[11px] text-slate-700 space-y-1.5">
-                    <div className="text-[10px] uppercase font-bold text-slate-400">Example: 5 Nights at 5-Star Luxury Resort</div>
-                    <div className="flex justify-between border-b border-slate-100 pb-1">
+                    <div className="text-[10px] uppercase font-bold text-slate-500">{activeScenario.title}</div>
+                    <div className="text-[10px] text-slate-400">{activeScenario.subtitle}</div>
+                    <div className="flex justify-between border-b border-slate-100 pt-1 pb-1">
                       <span>Public Retail Room Rate:</span>
-                      <span className="font-bold">$700 / night</span>
+                      <span className="font-bold">${activeScenario.publicNightly} / night</span>
                     </div>
                     <div className="flex justify-between border-b border-slate-100 pb-1">
-                      <span>Total Retail Stay (5 Nights):</span>
-                      <span className="font-bold">$3,500</span>
+                      <span>Total Retail Booking ({activeScenario.nights} Nights):</span>
+                      <span className="font-bold">${activeScenario.publicTotal.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between border-b border-slate-100 pb-1 text-rose-600 font-semibold">
-                      <span>Retail Markup & OTA Fees:</span>
-                      <span>+$875 included</span>
+                      <span>Retail Markup & Distribution Fees:</span>
+                      <span>+${activeScenario.otaMarkup} included</span>
                     </div>
                     <div className="flex justify-between pt-1 text-slate-900 font-black">
                       <span>Traveler Net Savings:</span>
@@ -966,36 +1037,37 @@ export default function StandaloneInvestorApp() {
                   <h3 className="font-black text-amber-950 text-base">Direct 0% Markup Wholesale Pass-Through</h3>
                   <div className="space-y-2.5">
                     <p>
-                      <strong>1. Raw B2B Liquidity:</strong> Hotels quietly release their surplus premium rooms into private B2B wholesale bedbanks at true net clearing rates—often 35% to 50% below public retail.
+                      <strong>1. Raw B2B Liquidity:</strong> Hotels quietly release their surplus unbooked rooms into private B2B wholesale bedbanks at true net clearing rates—often 30% to 45% below public retail.
                     </p>
                     <p>
                       <strong>2. 100% of Savings Passed Directly:</strong> ATLAS connects members directly to these institutional wholesale pools with <strong>0% retail markup</strong>. Every single dollar of wholesale discount stays in the member&apos;s pocket.
                     </p>
                     <p>
-                      <strong>3. Instant Day-1 Membership Payback:</strong> On a single 5-night stay, a member saves <strong>$1,400 in cold hard cash</strong>. The $799 annual membership is paid off immediately, leaving <strong>+$601 net cash profit</strong> in their pocket on Trip #1.
+                      <strong>3. Rapid Payback:</strong> In this common scenario, the member saves <strong>+${activeScenario.savings.toLocaleString()} in cash</strong>. {activeScenario.paybackNote}
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-white border border-amber-200 font-mono text-[11px] text-slate-900 space-y-1.5">
-                    <div className="text-[10px] uppercase font-bold text-amber-600">Same 5 Nights at Same 5-Star Luxury Resort</div>
-                    <div className="flex justify-between border-b border-slate-100 pb-1">
+                    <div className="text-[10px] uppercase font-bold text-amber-700">Same Stay via ATLAS Wholesale</div>
+                    <div className="text-[10px] text-slate-500">{activeScenario.subtitle}</div>
+                    <div className="flex justify-between border-b border-slate-100 pt-1 pb-1">
                       <span>ATLAS Wholesale Net Rate:</span>
-                      <span className="font-bold text-emerald-700">$420 / night</span>
+                      <span className="font-bold text-emerald-700">${activeScenario.wholesaleNightly} / night</span>
                     </div>
                     <div className="flex justify-between border-b border-slate-100 pb-1">
                       <span>Total Member Booking Cost:</span>
-                      <span className="font-bold">$2,100</span>
+                      <span className="font-bold">${activeScenario.wholesaleTotal.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between border-b border-slate-100 pb-1 text-emerald-700 font-bold">
                       <span>Direct Cash Saved on Stay:</span>
-                      <span>+$1,400 Cash Back</span>
+                      <span>+${activeScenario.savings.toLocaleString()} Cash Back</span>
                     </div>
                     <div className="flex justify-between border-b border-slate-100 pb-1 text-slate-600">
-                      <span>ATLAS Annual Membership:</span>
+                      <span>ATLAS Annual Club Membership:</span>
                       <span>-$799 / yr</span>
                     </div>
                     <div className="flex justify-between pt-1 text-emerald-700 font-black text-xs">
-                      <span>Net Cash Profit on Trip #1:</span>
-                      <span>+$601 IN MEMBER&apos;S POCKET</span>
+                      <span>Member ROI:</span>
+                      <span>{activeScenario.paybackNote}</span>
                     </div>
                   </div>
                 </div>
@@ -1005,10 +1077,10 @@ export default function StandaloneInvestorApp() {
               <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white space-y-3">
                 <div className="font-bold text-amber-400 text-sm flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Why This Drives Unstoppable Investor Returns</span>
+                  <span>Why Common Pricing Drives Unstoppable Retention</span>
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  When a product puts <strong>$600 to $1,000+ in pure net cash profit</strong> into a member&apos;s pocket on their very first use, churn becomes economically irrational. Members stay for years (<strong>91% annual retention</strong>), take an average of 3.2 trips per year, and enthusiastically refer their high-net-worth friends—driving blended CAC down to just <strong>$110</strong> against a <strong>$4,200+ Lifetime Value (38.4x LTV:CAC)</strong>. ATLAS captures 96% gross margin software subscription ARR and 1.85% payment interchange on high-ticket card volume, with zero inventory liabilities or balance sheet risk.
+                  You don&apos;t need $1,000/night luxury suites to make the unit economics work. When a member saves <strong>$320 on a simple 4-day city break</strong> and <strong>$595 on their family summer holiday</strong>, they have pocketed over <strong>$1,200 in net annual cash savings</strong> on ordinary, common hotel stays. The $799 membership fee is easily recouped, churn drops to <strong>9%</strong> (91% annual retention), and word-of-mouth keeps blended customer acquisition costs at just <strong>$110</strong>. ATLAS captures high-margin recurring software ARR with zero inventory liabilities.
                 </p>
               </div>
             </div>
