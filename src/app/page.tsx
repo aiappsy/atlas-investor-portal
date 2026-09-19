@@ -191,8 +191,8 @@ export default function StandaloneInvestorApp() {
   const equityPct = ((selectedCheck / cap) * 100).toFixed(2);
   const seedValLow = selectedCheck * (15000000 / cap);
   const seedValHigh = selectedCheck * (20000000 / cap);
-  const exitYr3 = selectedCheck * (79100000 / cap);
-  const exitYr4 = selectedCheck * (537600000 / cap);
+  const exitYr3 = selectedCheck * (60000000 / cap);
+  const exitYr4 = selectedCheck * (175000000 / cap);
   const dividendYr3 = 13130000 * (selectedCheck / cap);
 
   const tripScenarios = {
@@ -568,7 +568,7 @@ export default function StandaloneInvestorApp() {
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
-                  The Private Members&apos; Travel Club Delivering <span className="text-amber-600">30% to 50%</span> Direct Wholesale Savings on Everyday Hotel Stays.
+                  Invest in the Next-Gen Travel App Delivering <span className="text-amber-600">30% to 50%</span> Direct Wholesale Savings on Everyday Hotel Stays.
                 </h1>
 
                 <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-3xl">
@@ -795,15 +795,15 @@ export default function StandaloneInvestorApp() {
                   </div>
 
                   <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
-                    <div className="text-[10px] uppercase font-bold text-slate-500">Base Case M&A (Yr 3 @ $79M)</div>
+                    <div className="text-[10px] uppercase font-bold text-slate-500">Mid-Market M&A (Yr 3 @ $60M)</div>
                     <div className="text-2xl font-black text-emerald-700">${(exitYr3 / 1000000).toFixed(2)}M</div>
-                    <div className="text-[10px] text-emerald-700 font-bold">~45.2x Cash Return</div>
+                    <div className="text-[10px] text-emerald-700 font-bold">~34.3x Cash Return</div>
                   </div>
 
                   <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
-                    <div className="text-[10px] uppercase font-bold text-slate-500">Growth Case M&A (Yr 4 @ $538M)</div>
+                    <div className="text-[10px] uppercase font-bold text-slate-500">Scale Buyout (Yr 4–5 @ $175M)</div>
                     <div className="text-2xl font-black text-purple-700">${(exitYr4 / 1000000).toFixed(2)}M</div>
-                    <div className="text-[10px] text-purple-700 font-bold">~307x Cash Return</div>
+                    <div className="text-[10px] text-purple-700 font-bold">~100x Cash Return</div>
                   </div>
                 </div>
 
@@ -1504,44 +1504,80 @@ export default function StandaloneInvestorApp() {
           {activeTab === 'exits' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">Precedent Transactions & Strategic Buyer Universe</h2>
-                <p className="text-xs text-slate-500 mt-1">Why premium card issuers, neo-banks, and global OTAs pay aggressive premiums for closed-loop member volume.</p>
+                <h2 className="text-2xl font-black text-slate-900">Realistic M&A Valuation Milestones & Exit Horizons</h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  How active subscriber scale drives predictable enterprise valuation at standard 5x–7x ARR multiples, delivering concrete cash returns to early SAFE investors.
+                </p>
               </div>
 
-              {/* Precedent Transactions Table */}
+              {/* 3 Grounded Valuation Horizons */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-2 shadow-2xs">
-                  <div className="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full w-fit">
-                    Card Issuer Precedent
+                {/* Horizon 1 */}
+                <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-3 shadow-2xs flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 font-bold text-[10px] uppercase">
+                      Horizon 1 (Month 18–24)
+                    </div>
+                    <h3 className="font-black text-slate-900 text-base">Early Tuck-In Acquisition</h3>
+                    <div className="text-2xl font-black text-blue-700">$10M – $14M</div>
+                    <div className="text-[11px] font-semibold text-slate-500">Scale: 2,000 Members • $1.8M ARR (6x Multiple)</div>
+                    <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
+                      <strong>Likely Acquirers:</strong> Boutique travel clubs, luxury concierge groups (e.g. Ten Lifestyle Group, Inspirato, Voyage Privé) acquiring our 0% markup wholesale software rails.
+                    </p>
                   </div>
-                  <h3 className="font-bold text-slate-900 text-base">Capital One / Velocity Black</h3>
-                  <div className="text-2xl font-black text-emerald-700">$297M Buyout</div>
-                  <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                    Acquired to capture high-net-worth card spend and conversational travel concierge booking yield without paying OTA markups.
-                  </p>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 space-y-1">
+                    <div className="font-bold text-blue-700">Angel Payout on $25k Check:</div>
+                    <div>Return: $143k – $200k (5.7x – 8.0x)</div>
+                  </div>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-2 shadow-2xs">
-                  <div className="text-[10px] uppercase font-bold text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full w-fit">
-                    Bank Mega-Deal
+                {/* Horizon 2 */}
+                <div className="p-6 rounded-3xl bg-white border-2 border-amber-500/40 space-y-3 shadow-2xs flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold text-[10px] uppercase">
+                      Horizon 2 (Year 3) • Recommended
+                    </div>
+                    <h3 className="font-black text-slate-900 text-base">Mid-Market Strategic Buyout</h3>
+                    <div className="text-2xl font-black text-amber-600">$45M – $75M</div>
+                    <div className="text-[11px] font-semibold text-slate-500">Scale: 10,000 Members • $9.5M ARR (6x–7x Multiple)</div>
+                    <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
+                      <strong>Likely Acquirers:</strong> European travel platforms, corporate travel management networks, or challenger banks seeking affluent, high-retention recurring subscribers.
+                    </p>
                   </div>
-                  <h3 className="font-bold text-slate-900 text-base">JPMorgan Chase / Frosch</h3>
-                  <div className="text-2xl font-black text-slate-900">Strategic Asset Deal</div>
-                  <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                    Acquired full-service luxury travel agency handling $1.5B+ in travel spend to lock in Sapphire Reserve cardholder travel margins.
-                  </p>
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs font-mono text-slate-900 space-y-1">
+                    <div className="font-bold text-amber-700">Angel Payout on $25k Check:</div>
+                    <div>Return: $643k – $1.07M (25x – 43x)</div>
+                  </div>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-2 shadow-2xs">
-                  <div className="text-[10px] uppercase font-bold text-purple-800 bg-purple-50 px-2.5 py-0.5 rounded-full w-fit">
-                    FinTech Travel Super-App
+                {/* Horizon 3 */}
+                <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-3 shadow-2xs flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-bold text-[10px] uppercase">
+                      Horizon 3 (Year 4–5) • Full Scale
+                    </div>
+                    <h3 className="font-black text-slate-900 text-base">Major Strategic / PE Buyout</h3>
+                    <div className="text-2xl font-black text-emerald-700">$150M – $250M</div>
+                    <div className="text-[11px] font-semibold text-slate-500">Scale: 35,000+ Members • $35M+ ARR (8x–12x EBITDA)</div>
+                    <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
+                      <strong>Likely Acquirers:</strong> Global travel conglomerates or private equity dividend recapitalizations acquiring high-EBITDA, negative working capital cash generators.
+                    </p>
                   </div>
-                  <h3 className="font-bold text-slate-900 text-base">Revolut Stays / Hopper B2B</h3>
-                  <div className="text-2xl font-black text-slate-900">$5.0B+ FinTech Scale</div>
-                  <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                    Neo-banks use travel cashback and direct wholesale bedbank integrations to drive 40% higher annual account deposits.
-                  </p>
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-mono text-slate-900 space-y-1">
+                    <div className="font-bold text-emerald-700">Angel Payout on $25k Check:</div>
+                    <div>Return: $2.14M – $3.57M (85x – 142x)</div>
+                  </div>
                 </div>
+              </div>
+
+              {/* Explanatory Box */}
+              <div className="p-6 rounded-3xl bg-slate-900 text-white space-y-2">
+                <div className="font-bold text-amber-400 text-xs uppercase tracking-wider">
+                  The M&amp;A Multiple Reality: Why Buyers Pay 5x–7x ARR
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Unlike traditional low-margin retail travel agencies that sell for 1x–2x gross profit, ATLAS is a pure software and subscription club. Strategic acquirers value ATLAS like vertical SaaS: <strong>96% software gross margins</strong>, <strong>91% subscriber retention</strong>, and <strong>zero perishable inventory liabilities</strong>. Every member acquired is an annuity that generates high-margin subscription cash flow year after year.
+                </p>
               </div>
             </div>
           )}
