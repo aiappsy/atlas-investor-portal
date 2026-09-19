@@ -30,7 +30,7 @@ export default function StandaloneInvestorApp() {
   const [activeTab, setActiveTab] = useState<'teaser' | 'returns' | 'trust' | 'arbitrage' | 'economics' | 'budget' | 'dataroom' | 'exits' | 'legal'>('teaser');
 
   // Interactive Check Calculator State ($10k / $25k / $75k)
-  const [selectedCheck, setSelectedCheck] = useState<10000 | 25000 | 75000>(25000);
+  const [selectedCheck, setSelectedCheck] = useState<5000 | 10000 | 25000 | 75000>(25000);
 
   // Real-World Example Trip Selector State ('city' | 'vacation' | 'annual')
   const [exampleTrip, setExampleTrip] = useState<'city' | 'vacation' | 'annual'>('city');
@@ -270,7 +270,7 @@ export default function StandaloneInvestorApp() {
       file: '/docs/investors/ATLAS_SAFE_Term_Sheet_LLC.pdf',
       desc: 'Simple Agreement for Future Equity (LLC Edition) with optional Delaware C-Corp conversion mechanics and Section 1202 QSBS tax eligibility.',
       highlights: [
-        'Target Financing: $75,000 USD (Min $50,000 | Max $100,000).',
+        'Target Financing: $75,000 USD (Min Check: $5,000 | Target: $25,000 | Round Cap: $100,000).',
         'Valuation Cap: $1,750,000 USD with 20% standard conversion discount.',
         'Conversion: Automatically converts into Preferred Units at $1M+ qualified round.',
         'Corporate Conversion Flexibility: Optional C-Corp conversion to accommodate venture funds and Section 1202 QSBS.'
@@ -564,7 +564,7 @@ export default function StandaloneInvestorApp() {
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200/80">
                   <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Confidential Angel Brief • $75,000 Pre-Seed Round • $1.75M Post-Money Cap</span>
+                  <span>Confidential Angel Brief • $75,000 Pre-Seed Round • $1.75M Post-Money Cap • $5,000 Min Check</span>
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
@@ -579,9 +579,9 @@ export default function StandaloneInvestorApp() {
               {/* Deal Card Metrics */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Target Capital</div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Round & Min Check</div>
                   <div className="text-2xl font-black text-slate-900">$75,000</div>
-                  <div className="text-[11px] text-amber-600 font-bold">YC Post-Money SAFE</div>
+                  <div className="text-[11px] text-amber-600 font-bold">$5,000 Min Check (YC SAFE)</div>
                 </div>
 
                 <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
@@ -646,7 +646,7 @@ export default function StandaloneInvestorApp() {
                       </li>
                       <li className="flex items-start gap-2">
                         <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span><strong>45x–307x M&A Cash Payout:</strong> Strategic buyout scenarios ($79M–$538M) return $1.1M to $7.6M on a standard $25k angel check.</span>
+                        <span><strong>34x–100x M&A Cash Payout:</strong> Strategic buyout scenarios ($60M–$175M) return $171k–$500k on a $5k min check ($857k–$2.5M on a $25k check).</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
@@ -757,11 +757,12 @@ export default function StandaloneInvestorApp() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
                     <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">Select Investment Check Size:</div>
-                    <div className="text-[11px] text-slate-500">Valuation Cap: $1,750,000 USD (YC Post-Money SAFE)</div>
+                    <div className="text-[11px] text-slate-500">Valuation Cap: $1,750,000 USD (YC Post-Money SAFE) • Min. Check: $5,000</div>
                   </div>
                   <div className="flex items-center gap-2">
                     {[
-                      { amt: 10000, label: '$10,000 (Min Ticket)' },
+                      { amt: 5000, label: '$5,000 (Min Ticket)' },
+                      { amt: 10000, label: '$10,000' },
                       { amt: 25000, label: '$25,000 (Recommended)' },
                       { amt: 75000, label: '$75,000 (Full Round)' }
                     ].map((btn) => (
@@ -796,13 +797,13 @@ export default function StandaloneInvestorApp() {
 
                   <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
                     <div className="text-[10px] uppercase font-bold text-slate-500">Mid-Market M&A (Yr 3 @ $60M)</div>
-                    <div className="text-2xl font-black text-emerald-700">${(exitYr3 / 1000000).toFixed(2)}M</div>
+                    <div className="text-2xl font-black text-emerald-700">{exitYr3 >= 1000000 ? `$${(exitYr3 / 1000000).toFixed(2)}M` : `$${Math.round(exitYr3 / 1000)}k`}</div>
                     <div className="text-[10px] text-emerald-700 font-bold">~34.3x Cash Return</div>
                   </div>
 
                   <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
                     <div className="text-[10px] uppercase font-bold text-slate-500">Scale Buyout (Yr 4–5 @ $175M)</div>
-                    <div className="text-2xl font-black text-purple-700">${(exitYr4 / 1000000).toFixed(2)}M</div>
+                    <div className="text-2xl font-black text-purple-700">{exitYr4 >= 1000000 ? `$${(exitYr4 / 1000000).toFixed(2)}M` : `$${Math.round(exitYr4 / 1000)}k`}</div>
                     <div className="text-[10px] text-purple-700 font-bold">~100x Cash Return</div>
                   </div>
                 </div>
@@ -1526,8 +1527,9 @@ export default function StandaloneInvestorApp() {
                     </p>
                   </div>
                   <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 space-y-1">
-                    <div className="font-bold text-blue-700">Angel Payout on $25k Check:</div>
-                    <div>Return: $143k – $200k (5.7x – 8.0x)</div>
+                    <div className="font-bold text-blue-700">Angel Cash Payout (5.7x – 8.0x):</div>
+                    <div>• On $5,000 Min Check: $29k – $40k</div>
+                    <div>• On $25,000 Check: $143k – $200k</div>
                   </div>
                 </div>
 
@@ -1545,8 +1547,9 @@ export default function StandaloneInvestorApp() {
                     </p>
                   </div>
                   <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs font-mono text-slate-900 space-y-1">
-                    <div className="font-bold text-amber-700">Angel Payout on $25k Check:</div>
-                    <div>Return: $643k – $1.07M (25x – 43x)</div>
+                    <div className="font-bold text-amber-700">Angel Cash Payout (25x – 43x):</div>
+                    <div>• On $5,000 Min Check: $129k – $214k</div>
+                    <div>• On $25,000 Check: $643k – $1.07M</div>
                   </div>
                 </div>
 
@@ -1564,8 +1567,9 @@ export default function StandaloneInvestorApp() {
                     </p>
                   </div>
                   <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-mono text-slate-900 space-y-1">
-                    <div className="font-bold text-emerald-700">Angel Payout on $25k Check:</div>
-                    <div>Return: $2.14M – $3.57M (85x – 142x)</div>
+                    <div className="font-bold text-emerald-700">Angel Cash Payout (85x – 142x):</div>
+                    <div>• On $5,000 Min Check: $429k – $714k</div>
+                    <div>• On $25,000 Check: $2.14M – $3.57M</div>
                   </div>
                 </div>
               </div>
