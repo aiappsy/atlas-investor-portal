@@ -108,7 +108,7 @@ export default function ElectronicSignaturesPage() {
             </p>
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-1">
               <div className="font-bold text-slate-900">ATLAS Travel Club LLC — Legal & Compliance Office</div>
-              <div>Email: <a href="mailto:legal@atlas-travel-club.com" className="text-amber-600 underline">legal@atlas-travel-club.com</a></div>
+              <div>Email: <a href="mailto:legal@atlastravelclub.com" className="text-amber-600 underline">legal@atlastravelclub.com</a></div>
               <div>Subject: E-SIGN Paper Copy / Withdrawal Request</div>
               <div className="text-slate-500 text-[11px] pt-1">
                 Paper copies will be provided without charge for your first set of executed agreements.

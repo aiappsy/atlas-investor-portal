@@ -82,7 +82,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <div>Questions regarding these Terms? Contact <strong className="text-slate-800">legal@atlas-travel-club.com</strong></div>
+            <div>Questions regarding these Terms? Contact <strong className="text-slate-800">legal@atlastravelclub.com</strong></div>
             <div className="flex items-center gap-4">
               <Link href="/privacy" className="text-amber-700 font-bold hover:underline">
                 Privacy Policy →

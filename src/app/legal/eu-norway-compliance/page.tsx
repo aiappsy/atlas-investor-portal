@@ -166,7 +166,7 @@ export default function EuNorwayCompliancePage() {
                 <strong>Data Minimization & Lawful Basis:</strong> Personal data (name, email, passport details for CRS bookings) is collected solely on the lawful basis of contractual necessity (Article 6(1)(b) GDPR) and legitimate interest (Article 6(1)(f) GDPR) for rate parity authentication.
               </li>
               <li>
-                <strong>Data Subject Rights:</strong> Members and prospective investors retain all statutory rights under Chapter III GDPR—including the right of access, rectification, erasure ("Right to be Forgotten"), restriction, and data portability. Inquiries may be directed to <a href="mailto:dpo@atlas-travel-club.com" className="text-amber-600 underline font-medium">dpo@atlas-travel-club.com</a>.
+                <strong>Data Subject Rights:</strong> Members and prospective investors retain all statutory rights under Chapter III GDPR—including the right of access, rectification, erasure ("Right to be Forgotten"), restriction, and data portability. Inquiries may be directed to <a href="mailto:dpo@atlastravelclub.com" className="text-amber-600 underline font-medium">dpo@atlastravelclub.com</a>.
               </li>
               <li>
                 <strong>Google Cloud Security & Cross-Border Transfers:</strong> All cloud data is encrypted in transit and at rest within Google Cloud Platform European data centers (e.g., <code>europe-west1</code> / Belgium or <code>europe-north1</code> / Finland) under standard contractual clauses (SCCs) complying with the Schrems II judgment.

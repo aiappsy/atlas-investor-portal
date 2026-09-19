@@ -81,7 +81,7 @@ export default function StandaloneInvestorApp() {
 
   // Step 1A: Instant 1-Click Fast-Pass Verification
   const handleInstantVerify = async (emailToVerify?: string) => {
-    const targetEmail = (emailToVerify || email || 'investor@atlas-travel-club.com').trim();
+    const targetEmail = (emailToVerify || email || 'investor@atlastravelclub.com').trim();
     if (!targetEmail || !targetEmail.includes('@')) {
       setVerifyError('Please enter a valid email address.');
       return;
@@ -565,7 +565,7 @@ export default function StandaloneInvestorApp() {
             )}
 
             <a
-              href="mailto:executive@atlas-travel-club.com?subject=ATLAS%20SAFE%20Investment%20Inquiry"
+              href="mailto:executive@atlastravelclub.com?subject=ATLAS%20SAFE%20Investment%20Inquiry"
               className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
             >
               <span>Contact Lead</span>
@@ -1191,7 +1191,7 @@ export default function StandaloneInvestorApp() {
                   <div className="text-xs text-amber-800">We offer direct 1-on-1 calls with founder Pål Juritzen and our legal counsel.</div>
                 </div>
                 <a
-                  href="mailto:executive@atlas-travel-club.com?subject=ATLAS%20Investor%20Governance%20Call"
+                  href="mailto:executive@atlastravelclub.com?subject=ATLAS%20Investor%20Governance%20Call"
                   className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shrink-0 shadow-xs"
                 >
                   Schedule Founder Diligence

@@ -74,7 +74,7 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <div>For privacy inquiries, contact <strong className="text-slate-800">privacy@atlas-travel-club.com</strong></div>
+            <div>For privacy inquiries, contact <strong className="text-slate-800">privacy@atlastravelclub.com</strong></div>
             <div className="flex items-center gap-4">
               <Link href="/terms" className="text-amber-700 font-bold hover:underline">
                 Terms of Service →
