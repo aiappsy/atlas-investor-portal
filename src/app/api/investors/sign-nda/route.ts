@@ -40,13 +40,17 @@ function saveSignatures(records: SignatureRecord[]) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { fullName, email, firmName, eSignConsent } = await req.json();
+    const body = await req.json();
+    const fullName = body.fullName;
+    const email = body.email;
+    const firmName = body.firmName;
+    const consent = body.eSignConsent ?? body.agreedTerms;
 
     if (!fullName || !email) {
       return NextResponse.json({ error: 'Full name and email are required' }, { status: 400 });
     }
 
-    if (!eSignConsent) {
+    if (!consent) {
       return NextResponse.json({ error: 'Electronic signature consent is required under 15 U.S.C. § 7001' }, { status: 400 });
     }
 
@@ -94,6 +98,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       signature: signatureRecord,
+      record: signatureRecord,
       message: 'Mutual Non-Disclosure Agreement successfully executed and recorded.',
     });
   } catch (err: any) {

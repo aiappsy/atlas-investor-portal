@@ -148,14 +148,16 @@ export default function StandaloneInvestorApp() {
           fullName: fullName.trim(),
           email: email.trim(),
           firmName: firmName.trim(),
-          agreedTerms: true
+          agreedTerms: true,
+          eSignConsent: true
         })
       });
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setSignedData(data.record);
-        localStorage.setItem('atlas_investor_session_v2', JSON.stringify(data.record));
+        const rec = data.signature || data.record;
+        setSignedData(rec);
+        localStorage.setItem('atlas_investor_session_v2', JSON.stringify(rec));
         setShowNdaModal(false);
       } else {
         alert(data.error || 'Failed to execute digital NDA.');

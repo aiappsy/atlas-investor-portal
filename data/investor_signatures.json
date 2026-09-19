@@ -1,5 +1,18 @@
 [
   {
+    "id": "sig_8bcd0e4e3f5487dc",
+    "fullName": "Pal Juritzen",
+    "email": "pal@juritzen.com",
+    "firmName": "Hard Rock Capital",
+    "signatureHash": "sha256:55d17c94eaf0aed41fca89cb924b66de483efaaa5baaff81a4178bd21218fd18",
+    "ipAddress": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT; Windows NT 10.0; nb-NO) WindowsPowerShell/5.1.26100.9444",
+    "signedAt": "2026-09-19T05:27:26.119Z",
+    "eSignConsent": true,
+    "jurisdiction": "Delaware / Wyoming LLC",
+    "status": "active"
+  },
+  {
     "id": "sig_8f7ba5b1bcf0bf91",
     "fullName": "Jane Doe, Managing Partner",
     "email": "investor.test@venturefund.com",
