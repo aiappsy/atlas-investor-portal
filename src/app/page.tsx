@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
-  ShieldCheck, Lock, Download, FileText, CheckCircle2, 
+  Clock, Calendar, ShieldCheck, Lock, Download, FileText, CheckCircle2, 
   TrendingUp, DollarSign, Building2, Eye, ExternalLink, 
   RefreshCw, AlertCircle, Layers, Users, Award, 
   ChevronRight, X, Mail, KeyRound, ArrowRight, Menu, 
@@ -672,7 +672,7 @@ export default function StandaloneInvestorApp() {
                       </li>
                       <li className="flex items-start gap-2">
                         <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span><strong>Working Production Code:</strong> Live Google Cloud Run infrastructure, automated price-drop rebooking algorithms, and bedbank integrations already built.</span>
+                        <span><strong>Working Production Code:</strong> Live operational booking platform, automated price-drop rebooking algorithms, and direct wholesale supplier inventory connections already built.</span>
                       </li>
                     </ul>
                   </div>
@@ -709,6 +709,181 @@ export default function StandaloneInvestorApp() {
                     <p>
                       A member saving $1,400 on a 5-night stay covers their annual membership on their very first booking with $600+ in pure net profit. Churn is economically irrational when leaving the club means forfeiting thousands in annual savings.
                     </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* WHERE WE ARE TODAY: DEVELOPMENT PHASES & TIMESCALE */}
+              <div className="p-6 sm:p-8 rounded-3xl border-2 border-slate-200 bg-white space-y-6 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 font-bold text-[11px] uppercase tracking-wider">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                      Current Milestone: Phase 2 Active
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
+                      Where We Are Today: Phases of Development &amp; Rollout Timescale
+                    </h2>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Our commercialization trajectory from wholesale supplier connectivity to private pilot testing and continental scale.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="px-3.5 py-2 rounded-xl bg-slate-900 text-white text-xs font-mono font-bold flex items-center gap-2 shadow-xs">
+                      <Clock className="w-4 h-4 text-amber-400" />
+                      <span>Timescale: Month 4 (You Are Here)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Overall Timescale Progress Bar */}
+                <div className="space-y-2 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/70">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-bold text-slate-700">
+                    <span className="text-emerald-700">✓ Phase 1: Foundation (Months 1–3)</span>
+                    <span className="text-amber-800 font-black">● Phase 2: Pilot &amp; Maturation (Month 4 • Current)</span>
+                    <span className="text-slate-500">○ Phase 3: Beta (Months 5–6)</span>
+                    <span className="text-slate-400">○ Phase 4: 1,000 Members (Months 7–12)</span>
+                  </div>
+                  <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden flex">
+                    <div className="h-full bg-emerald-500" style={{ width: '25%' }} title="Phase 1: 100% Completed" />
+                    <div className="h-full bg-amber-500 animate-pulse" style={{ width: '15%' }} title="Phase 2: In Progress (You Are Here)" />
+                    <div className="h-full bg-slate-200" style={{ width: '60%' }} />
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] text-slate-500 pt-0.5">
+                    <span>Wholesale Inventory &amp; Legal Entity Setup</span>
+                    <span className="font-bold text-amber-800">Platform Built • $75,000 SAFE Open</span>
+                    <span>100 Founding Members &amp; Concierge</span>
+                    <span>$1.03M ARR • Series Seed Target</span>
+                  </div>
+                </div>
+
+                {/* 4 Phase Cards Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Phase 1 */}
+                  <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md">
+                          Phase 1 • Months 1–3
+                        </span>
+                        <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Delivered
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-slate-900 text-sm">Wholesale Connectivity &amp; Foundation</h3>
+                      <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                          <span>Direct supplier access established across 650,000+ global hotels.</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                          <span>Proprietary zero-markup price discovery engine finalized.</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                          <span>Manager-Managed LLC corporate governance registered.</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-[10px] font-semibold text-slate-500 pt-2 border-t border-slate-200/60">
+                      Outcome: Zero inventory liability model validated.
+                    </div>
+                  </div>
+
+                  {/* Phase 2 (CURRENT) */}
+                  <div className="p-5 rounded-2xl bg-amber-50/40 border-2 border-amber-500/60 shadow-xs flex flex-col justify-between space-y-3 relative">
+                    <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-amber-500 text-white font-black text-[9px] uppercase tracking-wider shadow-xs">
+                      You Are Here
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-amber-900 bg-amber-200/70 px-2 py-0.5 rounded-md">
+                          Phase 2 • Month 4 (Present)
+                        </span>
+                        <span className="text-amber-700 text-xs font-bold flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" /> Active
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-slate-900 text-sm">Platform Maturation &amp; Closed Pilot</h3>
+                      <ul className="text-[11px] text-slate-700 space-y-1.5 pt-1">
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                          <span>Complete member search, booking, and checkout experience operational.</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                          <span>Real-world price audits completed, proving 30%–50% actual savings.</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-amber-700 font-bold shrink-0">●</span>
+                          <span>$75,000 SAFE round open ($5k min ticket) for pre-launch buffer.</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-[10px] font-semibold text-amber-900 pt-2 border-t border-amber-200/70">
+                      Outcome: Platform operational &amp; diligence unlocked.
+                    </div>
+                  </div>
+
+                  {/* Phase 3 */}
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-blue-800 bg-blue-100/80 px-2 py-0.5 rounded-md">
+                          Phase 3 • Months 5–6
+                        </span>
+                        <span className="text-slate-400 text-xs font-semibold">Upcoming</span>
+                      </div>
+                      <h3 className="font-bold text-slate-900 text-sm">Controlled Beta &amp; 100 Members</h3>
+                      <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-slate-400 font-bold shrink-0">○</span>
+                          <span>Invite-only onboarding of first 100 private founding members.</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-slate-400 font-bold shrink-0">○</span>
+                          <span>Live hotel bookings executed with dedicated VIP concierge support.</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-slate-400 font-bold shrink-0">○</span>
+                          <span>Activation of member referral mechanics and savings testimonials.</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-[10px] font-semibold text-slate-500 pt-2 border-t border-slate-200/60">
+                      Target: 100 members • High NPS &amp; viral retention.
+                    </div>
+                  </div>
+
+                  {/* Phase 4 */}
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-purple-800 bg-purple-100/80 px-2 py-0.5 rounded-md">
+                          Phase 4 • Months 7–12
+                        </span>
+                        <span className="text-slate-400 text-xs font-semibold">Expansion</span>
+                      </div>
+                      <h3 className="font-bold text-slate-900 text-sm">Scale to 1,000 Members ($1M ARR)</h3>
+                      <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-slate-400 font-bold shrink-0">○</span>
+                          <span>Commercial rollout across key European and US business hubs.</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-slate-400 font-bold shrink-0">○</span>
+                          <span>Scale to 1,000 paying members ($1.03M ARR, cash-flow breakeven).</span>
+                        </li>
+                        <li className="flex items-start gap-1.5">
+                          <span className="text-slate-400 font-bold shrink-0">○</span>
+                          <span>Series Seed institutional financing ($15M–$20M valuation).</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-[10px] font-semibold text-purple-900 pt-2 border-t border-slate-200/60">
+                      Target: $1.03M ARR • 10x–12x paper markup.
+                    </div>
                   </div>
                 </div>
               </div>
@@ -903,9 +1078,9 @@ export default function StandaloneInvestorApp() {
                   },
                   {
                     num: '3',
-                    title: 'Live Production Software (Not Pitch Deck Vaporware)',
-                    desc: 'Unlike founders raising on mockups or ideas, ATLAS is a functioning, tested Next.js production platform running live on Google Cloud Run. Edge bot protection & member authentication, Cloud SQL PostgreSQL v16 architecture, Gemini 2.0 AI concierge functions, and B2B bedbank schemas are already built and operating.',
-                    badge: 'De-risked Technology',
+                    title: 'Live Operational Platform (Not Pitch Deck Vaporware)',
+                    desc: 'Unlike early-stage founders raising on conceptual wireframes or mockups, ATLAS is an operational, fully deployed digital platform. Secure member authentication, automated zero-markup hotel price discovery across global wholesale inventories, instant reservation processing, and automated rate-drop audit engines are already developed, tested, and running live today.',
+                    badge: 'De-risked Product',
                     color: 'text-purple-700 bg-purple-50 border-purple-200'
                   },
                   {
@@ -1224,7 +1399,7 @@ export default function StandaloneInvestorApp() {
                   <div className="text-3xl font-black text-slate-900">$18,000</div>
                   <div className="text-xs text-slate-500 font-semibold">24.0% of total raise</div>
                   <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                    Senior Next.js & backend contractor sprints for synchronous bedbank reconciliation, card rails integration, and automated rebooking engines.
+                    Contract platform engineering sprints for synchronous wholesale supplier reconciliation, card payment processing, and automated reservation management engines.
                   </p>
                 </div>
 
@@ -1233,8 +1408,91 @@ export default function StandaloneInvestorApp() {
                   <div className="text-3xl font-black text-slate-900">$32,000</div>
                   <div className="text-xs text-slate-500 font-semibold">42.7% of total raise</div>
                   <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                    High-converting direct outreach ($15k), Google Cloud infrastructure & Secret Manager ($5k), legal compliance & LLC filings ($6k), and working capital reserve ($6k).
+                    High-converting direct executive outreach ($15k), high-availability cloud hosting & data security ($5k), corporate legal compliance & travel regulatory filings ($6k), and working capital reserve ($6k).
                   </p>
+                </div>
+              </div>
+
+              {/* DETAILED 10-MONTH TIMESCALE & MILESTONE EXECUTION SCHEDULE */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 space-y-6 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                  <div>
+                    <h3 className="text-lg font-black text-slate-900">Commercial Rollout Timescale &amp; Milestones</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      How the $75,000 SAFE proceeds systematically unlock each milestone from current pilot testing to cash-flow breakeven.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-xs">
+                      Current: Month 4
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-slate-900 text-white font-bold text-xs">
+                      Runway: 10 Months
+                    </span>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] bg-slate-50/80">
+                        <th className="p-3.5 pl-4">Phase</th>
+                        <th className="p-3.5">Timescale</th>
+                        <th className="p-3.5">Status</th>
+                        <th className="p-3.5">Core Operational Focus</th>
+                        <th className="p-3.5 pr-4">Target Deliverables &amp; Milestones</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-slate-700">
+                      <tr className="bg-slate-50/40">
+                        <td className="p-3.5 pl-4 font-bold text-slate-900">Phase 1: Foundation</td>
+                        <td className="p-3.5 font-mono text-slate-600">Months 1–3</td>
+                        <td className="p-3.5">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold text-[10px]">
+                            <CheckCircle2 className="w-3 h-3" /> Completed
+                          </span>
+                        </td>
+                        <td className="p-3.5">Wholesale Supplier Rails &amp; Entity Setup</td>
+                        <td className="p-3.5 pr-4 text-slate-600">650k+ hotel wholesale catalog integrated, 0% markup pricing engine verified, LLC formed.</td>
+                      </tr>
+                      <tr className="bg-amber-50/50 border-y-2 border-amber-500/40">
+                        <td className="p-3.5 pl-4 font-black text-amber-950 flex items-center gap-2">
+                          <span>Phase 2: Platform Maturation</span>
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-black uppercase">You Are Here</span>
+                        </td>
+                        <td className="p-3.5 font-mono font-bold text-amber-900">Month 4 (Present)</td>
+                        <td className="p-3.5">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-bold text-[10px]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping" /> Active
+                          </span>
+                        </td>
+                        <td className="p-3.5 font-semibold text-amber-950">Closed Pilot Testing &amp; SAFE Round</td>
+                        <td className="p-3.5 pr-4 text-amber-950">Interactive booking flow finalized, rate audits completed (30%–50% savings confirmed), $75k SAFE closing.</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3.5 pl-4 font-bold text-slate-900">Phase 3: Controlled Beta</td>
+                        <td className="p-3.5 font-mono text-slate-600">Months 5–6</td>
+                        <td className="p-3.5">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-[10px]">
+                            Upcoming
+                          </span>
+                        </td>
+                        <td className="p-3.5">First 100 Founding Members &amp; Concierge</td>
+                        <td className="p-3.5 pr-4 text-slate-600">Private invite onboarding, live bookings fulfilled, concierge check-in desk, referral program launch.</td>
+                      </tr>
+                      <tr>
+                        <td className="p-3.5 pl-4 font-bold text-slate-900">Phase 4: Commercial Scale</td>
+                        <td className="p-3.5 font-mono text-slate-600">Months 7–12</td>
+                        <td className="p-3.5">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 font-bold text-[10px]">
+                            Expansion
+                          </span>
+                        </td>
+                        <td className="p-3.5">1,000 Paying Members &amp; $1.03M ARR</td>
+                        <td className="p-3.5 pr-4 text-slate-600">Broad executive rollout, corporate partnerships, operational breakeven, Series Seed preparation ($15M–$20M).</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
