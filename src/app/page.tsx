@@ -9,7 +9,8 @@ import {
   ChevronRight, X, Mail, KeyRound, ArrowRight, Menu, 
   ChevronLeft, Check, Copy, Briefcase, LockKeyhole,
   CheckCircle, FileCheck, HelpCircle, Shield, ArrowUpRight,
-  PanelLeftClose, PanelLeftOpen, Zap, Compass, Sparkles, Scale
+  PanelLeftClose, PanelLeftOpen, Zap, Compass, Sparkles, Scale,
+  HandCoins, Landmark, HeartHandshake, Gift, BadgePercent, Calculator
 } from 'lucide-react';
 
 interface SignatureRecord {
@@ -26,7 +27,10 @@ export default function StandaloneInvestorApp() {
   // Sidebar Collapsible State
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'teaser' | 'arbitrage' | 'economics' | 'budget' | 'dataroom' | 'exits' | 'legal'>('teaser');
+  const [activeTab, setActiveTab] = useState<'teaser' | 'returns' | 'trust' | 'arbitrage' | 'economics' | 'budget' | 'dataroom' | 'exits' | 'legal'>('teaser');
+
+  // Interactive Check Calculator State ($10k / $25k / $75k)
+  const [selectedCheck, setSelectedCheck] = useState<10000 | 25000 | 75000>(25000);
 
   // 2-Step Gate State
   const [email, setEmail] = useState('');
@@ -117,7 +121,6 @@ export default function StandaloneInvestorApp() {
       if (res.ok && data.verified) {
         setIsEmailVerified(true);
         setDemoCodeHint(null);
-        // Automatically prompt NDA execution
         setShowNdaModal(true);
       } else {
         setVerifyError(data.error || 'Invalid or expired verification code.');
@@ -190,13 +193,22 @@ export default function StandaloneInvestorApp() {
     }
   };
 
+  // Check Calculator Calculations based on $1.75M Cap
+  const cap = 1750000;
+  const equityPct = ((selectedCheck / cap) * 100).toFixed(2);
+  const seedValLow = selectedCheck * (15000000 / cap);
+  const seedValHigh = selectedCheck * (20000000 / cap);
+  const exitYr3 = selectedCheck * (79100000 / cap);
+  const exitYr4 = selectedCheck * (537600000 / cap);
+  const dividendYr3 = 13130000 * (selectedCheck / cap);
+
   const documents = [
     {
       id: 'deck',
       title: '10-Slide Institutional Presentation',
       category: 'Strategic Pitch Deck',
       file: '/docs/investors/ATLAS_Investor_Pitch_Deck.pdf',
-      desc: 'Disintermediating the $1.4T booking duopoly, capturing 96% SaaS gross margins & 1.85% interchange, and the $75k SAFE angel opportunity.',
+      desc: 'Disintermediating the $1.4T booking duopoly, capturing 96% SaaS gross margins & 1.85% interchange, trust architecture, and the $75k SAFE angel opportunity.',
       highlights: [
         'Closed-Loop Clearinghouse: 100% wholesale net savings passed at 0% markup under Sherman Act § 1 & EU DMA safe harbors.',
         'High-Yield Segments: Affluent Families (45%), Executives & SMB Founders (30%), Remote Execs (15%), VIPs (10%).',
@@ -209,7 +221,7 @@ export default function StandaloneInvestorApp() {
       title: 'Confidential Offering Prospectus (PPM)',
       category: 'Private Placement Memorandum',
       file: '/docs/investors/ATLAS_Confidential_Prospectus.pdf',
-      desc: '10-section institutional memorandum, 5-year pro-forma income statement, zero-deposit balance sheet architecture, and legal safe harbor brief.',
+      desc: '10-section institutional memorandum, 5-year pro-forma income statement, zero-deposit balance sheet architecture, investor trust safeguards, and legal safe harbor brief.',
       highlights: [
         'Entity: ATLAS Travel Club LLC (Manager-Managed LLC — Delaware / Wyoming).',
         '5-Year Model: Year 1: $1.03M ARR -> Year 3: $22.6M ARR -> Year 5: $143.7M ARR ($102M EBITDA).',
@@ -308,6 +320,8 @@ export default function StandaloneInvestorApp() {
           <nav className="space-y-1">
             {[
               { id: 'teaser', label: 'Executive Thesis', icon: Award },
+              { id: 'returns', label: "What's In It For You", icon: HandCoins, highlight: true },
+              { id: 'trust', label: 'Trust & Governance', icon: ShieldCheck, highlight: true },
               { id: 'arbitrage', label: 'Structural Arbitrage', icon: Layers },
               { id: 'economics', label: 'Unit Economics', icon: TrendingUp },
               { id: 'budget', label: '$75k Capital Plan', icon: DollarSign },
@@ -329,11 +343,19 @@ export default function StandaloneInvestorApp() {
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all text-left cursor-pointer group ${
                     isActive 
                       ? 'bg-slate-900 text-white shadow-xs' 
-                      : 'text-slate-600 hover:bg-slate-200/50 hover:text-slate-900'
+                      : item.highlight 
+                        ? 'text-amber-950 bg-amber-50/60 hover:bg-amber-100/80 border border-amber-200/50' 
+                        : 'text-slate-600 hover:bg-slate-200/50 hover:text-slate-900'
                   }`}
                   title={sidebarCollapsed ? item.label : undefined}
                 >
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-700'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${
+                    isActive 
+                      ? 'text-amber-400' 
+                      : item.highlight 
+                        ? 'text-amber-600' 
+                        : 'text-slate-400 group-hover:text-slate-700'
+                  }`} />
                   {!sidebarCollapsed && (
                     <span className="truncate flex-1">{item.label}</span>
                   )}
@@ -437,6 +459,8 @@ export default function StandaloneInvestorApp() {
           <div className="md:hidden border-b border-slate-200 bg-slate-50 p-4 space-y-2">
             {[
               { id: 'teaser', label: 'Executive Thesis' },
+              { id: 'returns', label: "What's In It For You" },
+              { id: 'trust', label: 'Trust & Governance' },
               { id: 'arbitrage', label: 'Structural Arbitrage' },
               { id: 'economics', label: 'Unit Economics' },
               { id: 'budget', label: '$75k Capital Plan' },
@@ -510,6 +534,82 @@ export default function StandaloneInvestorApp() {
                 </div>
               </div>
 
+              {/* CORE HIGHLIGHT BOX: TRUST & WHAT'S IN IT FOR YOU */}
+              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/40 bg-linear-to-br from-amber-50/60 via-white to-slate-50 space-y-6 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-4">
+                  <div>
+                    <span className="text-[10px] uppercase font-black tracking-widest text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                      The Investor Covenant
+                    </span>
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-1.5">
+                      Trust & What&apos;s In It For You (At a Glance)
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setActiveTab('returns')}
+                      className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1.5"
+                    >
+                      <HandCoins className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Full Return Model</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('trust')}
+                      className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1.5"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Trust Framework</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600 leading-relaxed">
+                  {/* Pillar 1: What's In It For You */}
+                  <div className="space-y-3 bg-white p-5 rounded-2xl border border-amber-200/70 shadow-2xs">
+                    <div className="flex items-center gap-2 font-black text-slate-900 text-sm">
+                      <HandCoins className="w-4 h-4 text-amber-600" />
+                      <span>1. What&apos;s In It For You (Your Real Return)</span>
+                    </div>
+                    <ul className="space-y-2 text-[11px]">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>10x–15x Seed Markup Target:</strong> Reach 1,000 members ($1M+ ARR) in 12–15 months to price Series Seed at $15M–$20M valuation.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>45x–307x M&A Cash Payout:</strong> Strategic buyout scenarios ($79M–$538M) return $1.1M to $7.6M on a standard $25k angel check.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>Immediate Lifestyle ROI:</strong> Lifetime Sovereign VIP Club membership ($1,799/yr waived forever) saving $1,500+ on every personal vacation.</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Pillar 2: Why You Can Trust Us */}
+                  <div className="space-y-3 bg-white p-5 rounded-2xl border border-emerald-200/70 shadow-2xs">
+                    <div className="flex items-center gap-2 font-black text-slate-900 text-sm">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <span>2. Why You Can Trust Us (Capital Preservation)</span>
+                    </div>
+                    <ul className="space-y-2 text-[11px]">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>$0 Inventory Liabilities:</strong> Negative working capital cycle means we never prepay room blocks or lease villas. Your check cannot be burned on room vacancies.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>Founder Frugality & Alignment:</strong> Founder draws a modest $2,500/mo stipend. C-Corp conversion flexibility preserves Section 1202 QSBS ($10M tax-free capital gains).</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>Working Production Code:</strong> Live Google Cloud Run infrastructure, automated price-drop rebooking algorithms, and bedbank integrations already built.</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
               {/* The High-Asymmetry Investment Thesis */}
               <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 bg-slate-50/70 space-y-6">
                 <div>
@@ -567,7 +667,236 @@ export default function StandaloneInvestorApp() {
             </div>
           )}
 
-          {/* TAB 2: WHOLESALE ARBITRAGE THESIS */}
+          {/* TAB 2: WHAT'S IN IT FOR YOU (INTERACTIVE RETURN CALCULATOR) */}
+          {activeTab === 'returns' && (
+            <div className="space-y-8 animate-fadeIn">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
+                  <HandCoins className="w-3.5 h-3.5 text-amber-600" />
+                  <span>The Investor Economics • What&apos;s In It For You</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
+                  Quantifying Your Return: Equity, Multiples & Cash Yield
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  How a pre-seed angel investment in ATLAS converts into asymmetrical capital appreciation, cash dividends, and lifestyle ROI.
+                </p>
+              </div>
+
+              {/* Interactive Check Size Selector */}
+              <div className="p-6 rounded-3xl border border-slate-200 bg-slate-50/80 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">Select Investment Check Size:</div>
+                    <div className="text-[11px] text-slate-500">Valuation Cap: $1,750,000 USD (YC Post-Money SAFE)</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {[
+                      { amt: 10000, label: '$10,000 (Min Ticket)' },
+                      { amt: 25000, label: '$25,000 (Recommended)' },
+                      { amt: 75000, label: '$75,000 (Full Round)' }
+                    ].map((btn) => (
+                      <button
+                        key={btn.amt}
+                        onClick={() => setSelectedCheck(btn.amt as any)}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          selectedCheck === btn.amt 
+                            ? 'bg-slate-900 text-white shadow-xs' 
+                            : 'bg-white hover:bg-slate-200/70 text-slate-700 border border-slate-200'
+                        }`}
+                      >
+                        {btn.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Dynamic Return Cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
+                    <div className="text-[10px] uppercase font-bold text-slate-500">Implied Equity Cap</div>
+                    <div className="text-2xl font-black text-slate-900">~{equityPct}%</div>
+                    <div className="text-[10px] text-slate-500">Pre-dilution ownership</div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
+                    <div className="text-[10px] uppercase font-bold text-slate-500">Seed Round Markup (12–15 Mos)</div>
+                    <div className="text-2xl font-black text-amber-600">${Math.round(seedValLow / 1000)}k–${Math.round(seedValHigh / 1000)}k</div>
+                    <div className="text-[10px] text-emerald-700 font-bold">8.6x – 11.4x Paper Markup</div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
+                    <div className="text-[10px] uppercase font-bold text-slate-500">Base Case M&A (Yr 3 @ $79M)</div>
+                    <div className="text-2xl font-black text-emerald-700">${(exitYr3 / 1000000).toFixed(2)}M</div>
+                    <div className="text-[10px] text-emerald-700 font-bold">~45.2x Cash Return</div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
+                    <div className="text-[10px] uppercase font-bold text-slate-500">Growth Case M&A (Yr 4 @ $538M)</div>
+                    <div className="text-2xl font-black text-purple-700">${(exitYr4 / 1000000).toFixed(2)}M</div>
+                    <div className="text-[10px] text-purple-700 font-bold">~307x Cash Return</div>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <span className="font-bold">Alternative Cash Dividend Yield (Schedule K-1):</span> If retained as a high-EBITDA private cash cow, Year 3 projected EBITDA of $13.1M yields ~<strong>${Math.round(dividendYr3 / 1000)}k / year in passive cash distributions</strong> on your ${selectedCheck.toLocaleString()} check ({Math.round((dividendYr3 / selectedCheck) * 100)}% annual cash yield).
+                  </div>
+                </div>
+              </div>
+
+              {/* 3 Exit Scenarios Detailed */}
+              <div className="space-y-4">
+                <h3 className="font-black text-slate-900 text-base">The 3 Distinct Paths to Liquidity</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-600 leading-relaxed">
+                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-2xs">
+                    <div className="font-black text-slate-900 text-sm flex items-center gap-1.5">
+                      <TrendingUp className="w-4 h-4 text-blue-600" />
+                      <span>Path A: Venture Institutional Seed</span>
+                    </div>
+                    <p>
+                      At 1,000 active paying members ($1.0M+ ARR), ATLAS raises an institutional Series Seed at a <strong>$15M–$20M valuation</strong>. Angel investors in this SAFE convert into preferred shares with an immediate <strong>10x–12x paper gain</strong>, with secondary liquidity options at Series A.
+                    </p>
+                  </div>
+
+                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-2xs">
+                    <div className="font-black text-slate-900 text-sm flex items-center gap-1.5">
+                      <Building2 className="w-4 h-4 text-amber-600" />
+                      <span>Path B: Strategic FinTech/Card M&A</span>
+                    </div>
+                    <p>
+                      Banks and card issuers (Amex, Capital One, Chase, Revolut) pay top dollar for high-spend consumer travel volume. Capital One paid <strong>$297M for Velocity Black</strong> to capture card spend. An acquisition at $79M–$538M returns <strong>45x to 307x cash on invested capital</strong>.
+                    </p>
+                  </div>
+
+                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-2xs">
+                    <div className="font-black text-slate-900 text-sm flex items-center gap-1.5">
+                      <Landmark className="w-4 h-4 text-emerald-600" />
+                      <span>Path C: Permanent Private Cash Cow</span>
+                    </div>
+                    <p>
+                      Because our model requires zero debt and negative working capital, ATLAS can remain a high-margin private entity distributing <strong>60%+ of annual EBITDA directly to SAFE holders</strong> via Schedule K-1 partnership dividends, paying back your principal multiple times every year.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Investor VIP Perks */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white space-y-4">
+                <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                  <Gift className="w-4 h-4" />
+                  <span>Immediate Lifestyle ROI: Angel Investor Perks Package</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
+                  Beyond financial returns, all participating angel investors receive immediate high-utility travel benefits:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-1">
+                    <div className="font-bold text-amber-300">Lifetime Sovereign VIP</div>
+                    <div className="text-slate-300 text-[11px]">The $1,799/yr membership fee is waived permanently for life. Access 0% markup wholesale rates anytime.</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-1">
+                    <div className="font-bold text-amber-300">Founder Direct Concierge</div>
+                    <div className="text-slate-300 text-[11px]">Direct WhatsApp channel with the founder for personal, corporate, and family 5-star travel arrangements.</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-1">
+                    <div className="font-bold text-amber-300">Global 5G Data eSIM</div>
+                    <div className="text-slate-300 text-[11px]">Complimentary international roaming eSIM data packages in 140+ countries on all your trips.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: TRUST & GOVERNANCE (WHY YOUR CAPITAL IS SAFE) */}
+          {activeTab === 'trust' && (
+            <div className="space-y-8 animate-fadeIn">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 text-xs font-bold border border-emerald-200">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Capital Preservation & Governance</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
+                  The 5 Pillars of Investor Trust
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  How we protect your capital, guarantee fiduciary transparency, and de-risk early-stage execution.
+                </p>
+              </div>
+
+              {/* 5 Pillars Grid */}
+              <div className="space-y-4">
+                {[
+                  {
+                    num: '1',
+                    title: 'Zero Balance Sheet Liability ($0 In Trapped Deposits)',
+                    desc: 'Traditional travel agencies and vacation clubs fail because they commit to expensive hotel master leases or deposit $50k–$100k in non-refundable airline IATA guarantees. ATLAS operates a negative working capital cycle: members pay upfront via credit card; we settle with the wholesale bedbank synchronously upon booking or post-checkout. Your capital is never risked on perishable hotel room commitments.',
+                    badge: 'Principal Protection',
+                    color: 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                  },
+                  {
+                    num: '2',
+                    title: 'Founder Frugality & Uncompromised Alignment',
+                    desc: 'Founder Pål Juritzen is dedicating 100% full-time commitment and taking a modest, strictly capped stipend of only $2,500/month for 10 months. There are zero inflated executive salaries, zero corporate luxury leases, and zero frivolous spending. The YC Post-Money SAFE gives investors seniority in liquidation ahead of common units.',
+                    badge: 'Fiduciary Alignment',
+                    color: 'text-blue-700 bg-blue-50 border-blue-200'
+                  },
+                  {
+                    num: '3',
+                    title: 'Live Production Software (Not Pitch Deck Vaporware)',
+                    desc: 'Unlike founders raising on mockups or ideas, ATLAS is a functioning, tested Next.js production platform running live on Google Cloud Run. Edge rate-parity bot protection, Cloud SQL PostgreSQL v16 architecture, Gemini 2.0 AI concierge functions, and B2B bedbank schemas are already built and operating.',
+                    badge: 'De-risked Technology',
+                    color: 'text-purple-700 bg-purple-50 border-purple-200'
+                  },
+                  {
+                    num: '4',
+                    title: 'Monthly Transparent KPI Reporting & Schedule K-1 Tax Packs',
+                    desc: 'Every participating investor receives a monthly dashboard on the 1st of every month detailing ARR, active member count, blended CAC, gross margin, cash burn, and remaining runway. Full annual Schedule K-1 tax packages are provided during the LLC phase, with optional Section 1202 QSBS tax-free capital gain treatment upon corporate conversion.',
+                    badge: 'Governance & Auditing',
+                    color: 'text-amber-800 bg-amber-50 border-amber-200'
+                  },
+                  {
+                    num: '5',
+                    title: 'Delaware / Wyoming Legal Entity & Regulatory Fortification',
+                    desc: 'Organized under Delaware and Wyoming Manager-Managed Limited Liability Company statutes. Fully compliant with SEC Rule 506(c) Regulation D, the federal E-SIGN Act (15 U.S.C. § 7001), California CST #2154890, Florida ST, and the EU Digital Markets Act / Norwegian Travel Guarantee Fund (RGF).',
+                    badge: 'Regulatory Compliance',
+                    color: 'text-slate-800 bg-slate-100 border-slate-200'
+                  }
+                ].map((pillar) => (
+                  <div key={pillar.num} className="p-6 rounded-3xl border border-slate-200 bg-white shadow-2xs space-y-2.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm shrink-0">
+                          {pillar.num}
+                        </div>
+                        <h3 className="font-bold text-slate-900 text-sm sm:text-base">{pillar.title}</h3>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-md border shrink-0 ${pillar.color}`}>
+                        {pillar.badge}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed pl-11">{pillar.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Direct Founder Access Guarantee */}
+              <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+                <div className="space-y-1">
+                  <div className="font-bold text-slate-900 text-sm">Have Specific Diligence or Governance Questions?</div>
+                  <div className="text-slate-500">Schedule a 20-minute 1-on-1 diligence session directly with Founder Pål Juritzen.</div>
+                </div>
+                <a
+                  href="mailto:executive@atlas-travel-club.com?subject=Diligence%20Call%20Request%20-%20P%C3%A5l%20Juritzen"
+                  className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold transition-all shrink-0 text-center"
+                >
+                  Schedule Founder Diligence
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: WHOLESALE ARBITRAGE THESIS */}
           {activeTab === 'arbitrage' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
@@ -637,7 +966,7 @@ export default function StandaloneInvestorApp() {
             </div>
           )}
 
-          {/* TAB 3: UNIT ECONOMICS & MODEL */}
+          {/* TAB 5: UNIT ECONOMICS & MODEL */}
           {activeTab === 'economics' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
@@ -759,7 +1088,7 @@ export default function StandaloneInvestorApp() {
             </div>
           )}
 
-          {/* TAB 4: USE OF PROCEEDS ($75k BUDGET) */}
+          {/* TAB 6: USE OF PROCEEDS ($75k BUDGET) */}
           {activeTab === 'budget' && (
             <div className="space-y-6 animate-fadeIn">
               <div>
@@ -810,7 +1139,7 @@ export default function StandaloneInvestorApp() {
             </div>
           )}
 
-          {/* TAB 5: CONFIDENTIAL DATA ROOM (MANDATORY 2-STEP GATE) */}
+          {/* TAB 7: CONFIDENTIAL DATA ROOM (MANDATORY 2-STEP GATE) */}
           {activeTab === 'dataroom' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
@@ -1021,7 +1350,7 @@ export default function StandaloneInvestorApp() {
             </div>
           )}
 
-          {/* TAB 6: M&A EXITS & MULTIPLES */}
+          {/* TAB 8: M&A EXITS & MULTIPLES */}
           {activeTab === 'exits' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
@@ -1078,7 +1407,7 @@ export default function StandaloneInvestorApp() {
             </div>
           )}
 
-          {/* TAB 7: LEGAL & STATUTORY DISCLOSURES */}
+          {/* TAB 9: LEGAL & STATUTORY DISCLOSURES */}
           {activeTab === 'legal' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
