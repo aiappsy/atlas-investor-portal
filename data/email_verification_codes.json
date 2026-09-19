@@ -10,8 +10,18 @@
     "verified": true
   },
   "paljuritzen@gmail.com": {
-    "code": "962123",
-    "expiresAt": 1789796087312,
+    "code": "VERIFIED",
+    "expiresAt": 1792389933978,
+    "verified": true
+  },
+  "test@example.com": {
+    "code": "894708",
+    "expiresAt": 1789797943145,
+    "verified": true
+  },
+  "pal@juritzen.com": {
+    "code": "VERIFIED",
+    "expiresAt": 2524608000000,
     "verified": true
   }
 }

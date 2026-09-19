@@ -1,5 +1,18 @@
 [
   {
+    "id": "sig_547d642df6a33a6c",
+    "fullName": "Pal Juritzen",
+    "email": "paljuritzen@gmail.com",
+    "firmName": "Atlas Venture",
+    "signatureHash": "sha256:5018cb91c32610a8f7da3f7bfa522789b6d26aad5d1830ba25b498c8dd231dee",
+    "ipAddress": "::1",
+    "userAgent": "Python-urllib/3.12",
+    "signedAt": "2026-09-19T06:05:34.099Z",
+    "eSignConsent": true,
+    "jurisdiction": "Delaware / Wyoming LLC",
+    "status": "active"
+  },
+  {
     "id": "sig_8bcd0e4e3f5487dc",
     "fullName": "Pal Juritzen",
     "email": "pal@juritzen.com",
