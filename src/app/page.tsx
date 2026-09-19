@@ -713,6 +713,26 @@ export default function StandaloneInvestorApp() {
                 </div>
               </div>
 
+              {/* THE PRICE PARITY MOAT CALLOUT */}
+              <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                    <Scale className="w-4 h-4 text-amber-600" />
+                    <span>The &ldquo;Price Parity&rdquo; Moat: Why Public Booking Sites Can Never Match Our Rates</span>
+                  </div>
+                  <p className="text-xs text-slate-600 max-w-2xl">
+                    Online Travel Agencies legally force hotels to sign &ldquo;Price Parity&rdquo; clauses forbidding public discounts. Because ATLAS is a paid, password-gated club, we are <strong>100% legally exempt</strong> under the US Sherman Act and EU Digital Markets Act—allowing hotels to quietly clear unsold rooms at 30%–50% off without breaching public contracts.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActiveTab('arbitrage')}
+                  className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>Explore The Savings Engine</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
+                </button>
+              </div>
+
               {/* WHERE WE ARE TODAY: DEVELOPMENT PHASES & TIMESCALE */}
               <div className="p-6 sm:p-8 rounded-3xl border-2 border-slate-200 bg-white space-y-6 shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
@@ -1261,6 +1281,108 @@ export default function StandaloneInvestorApp() {
                 <p className="text-xs text-slate-300 leading-relaxed">
                   You don&apos;t need $1,000/night luxury suites to make the unit economics work. When a member saves <strong>$320 on a simple 4-day city break</strong> and <strong>$595 on their family summer holiday</strong>, they have pocketed over <strong>$1,200 in net annual cash savings</strong> on ordinary, common hotel stays. The $799 membership fee is easily recouped, churn drops to <strong>9%</strong> (91% annual retention), and word-of-mouth keeps blended customer acquisition costs at just <strong>$110</strong>. ATLAS captures high-margin recurring software ARR with zero inventory liabilities.
                 </p>
+              </div>
+
+              {/* WHAT IS PRICE PARITY? THE LEGAL & ECONOMIC MOAT */}
+              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/30 bg-gradient-to-br from-amber-50/40 via-white to-slate-50 space-y-6 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-[11px] uppercase tracking-wider">
+                      <Scale className="w-3.5 h-3.5 text-amber-700" />
+                      Antitrust &amp; Regulatory Moat
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
+                      What is &ldquo;Price Parity&rdquo; &amp; Why Does It Protect Our Business Model?
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      The restrictive industry contracts that keep public hotel rates artificially high—and the statutory &ldquo;closed-loop&rdquo; safe harbor that allows ATLAS to legally deliver 30% to 50% wholesale discounts.
+                    </p>
+                  </div>
+                  <Link
+                    href="/legal/rate-parity-compliance"
+                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shrink-0 transition-all flex items-center gap-1.5 shadow-2xs"
+                  >
+                    <span>Read Full Legal Memo</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-amber-400" />
+                  </Link>
+                </div>
+
+                {/* 3-Column Breakdown */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-600 leading-relaxed">
+                  {/* Column 1: The Trap */}
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                    <div className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center text-rose-700 font-black text-sm">
+                      1
+                    </div>
+                    <div className="font-bold text-slate-900 text-sm">The Public &ldquo;Price Parity&rdquo; Trap</div>
+                    <p>
+                      When a hotel lists on public platforms (Booking.com, Expedia), it is contractually forced to sign a <strong>Rate Parity Agreement</strong>. This clause strictly forbids the hotel from publicly advertising a lower room rate anywhere on the open web—even on the hotel&apos;s own homepage or on Google.
+                    </p>
+                    <p className="text-[11px] text-rose-700 font-semibold pt-1 border-t border-slate-100">
+                      If a hotel discounts publicly, OTAs penalize them by dropping their search ranking or removing them entirely.
+                    </p>
+                  </div>
+
+                  {/* Column 2: The Loophole */}
+                  <div className="p-5 rounded-2xl bg-white border border-amber-200/80 space-y-2.5 shadow-2xs">
+                    <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-800 font-black text-sm">
+                      2
+                    </div>
+                    <div className="font-bold text-slate-900 text-sm">The &ldquo;Closed-Loop&rdquo; Legal Safe Harbor</div>
+                    <p>
+                      Rate Parity clauses apply <strong>strictly to public, open-web search listings</strong>. They legally <strong>do not apply</strong> to private, password-gated membership clubs. Under the <strong>US Sherman Act (15 U.S.C. § 1)</strong>, the <strong>EU Digital Markets Act (Regulation 2022/1925)</strong>, and the <strong>French Loi Macron</strong>, hotels have the absolute legal right to quietly clear surplus rooms through authenticated buyer clubs.
+                    </p>
+                    <p className="text-[11px] text-emerald-700 font-semibold pt-1 border-t border-slate-100">
+                      Hotels eagerly supply ATLAS at true 30%–50% wholesale discounts because our rates are hidden behind a paid member login.
+                    </p>
+                  </div>
+
+                  {/* Column 3: The Moat */}
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 font-black text-sm">
+                      3
+                    </div>
+                    <div className="font-bold text-slate-900 text-sm">Why Public Giants Cannot Copy Us</div>
+                    <p>
+                      Booking.com and Expedia generate over $20B+ annually by extracting a <strong>20% to 30% commission</strong> on every transaction. They <em>cannot</em> switch to a 0% markup wholesale subscription model without cannibalizing their core business and breaching their own public hotel supplier contracts.
+                    </p>
+                    <p className="text-[11px] text-slate-800 font-semibold pt-1 border-t border-slate-100">
+                      This classic &ldquo;Innovator&apos;s Dilemma&rdquo; gives ATLAS an unassailable structural moat that public retail platforms cannot touch.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Direct Visual Contrast Comparison Box */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 text-white space-y-3">
+                  <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                    <Scale className="w-4 h-4 text-amber-400" />
+                    <span>Public Retail Web vs. ATLAS Closed-Loop Safe Harbor</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div className="p-3.5 rounded-xl bg-slate-800/90 border border-rose-500/30 space-y-1.5">
+                      <div className="font-bold text-rose-400 flex items-center gap-1.5">
+                        <X className="w-4 h-4" /> Public OTAs (Booking.com, Expedia, Google)
+                      </div>
+                      <div className="text-slate-300 text-[11px] space-y-1">
+                        <div>• Bound by public Rate Parity contracts</div>
+                        <div>• Forced 20% to 35% commission markup added to room rate</div>
+                        <div>• Billions spent bidding on Google Search keywords ($7B+/yr)</div>
+                        <div>• Traveler pays full retail price with $0 recurring savings</div>
+                      </div>
+                    </div>
+                    <div className="p-3.5 rounded-xl bg-slate-800/90 border border-emerald-500/30 space-y-1.5">
+                      <div className="font-bold text-emerald-400 flex items-center gap-1.5">
+                        <Check className="w-4 h-4" /> ATLAS Private Members&apos; Club
+                      </div>
+                      <div className="text-slate-300 text-[11px] space-y-1">
+                        <div>• 100% legally exempt from Rate Parity (Closed-Loop Safe Harbor)</div>
+                        <div>• 0% retail markup: raw wholesale net rate passed to member</div>
+                        <div>• Password-gated behind paid membership verification</div>
+                        <div>• Member saves $300–$600+ per stay, paying $0 middleman toll</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
