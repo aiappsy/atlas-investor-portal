@@ -9,7 +9,7 @@ import {
   ChevronRight, X, Mail, KeyRound, ArrowRight, Menu, 
   ChevronLeft, Check, Copy, Briefcase, LockKeyhole,
   CheckCircle, FileCheck, HelpCircle, Shield, ArrowUpRight,
-  PanelLeftClose, PanelLeftOpen
+  PanelLeftClose, PanelLeftOpen, Zap, Compass, Sparkles, Scale
 } from 'lucide-react';
 
 interface SignatureRecord {
@@ -28,58 +28,54 @@ export default function StandaloneInvestorApp() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'teaser' | 'arbitrage' | 'economics' | 'budget' | 'dataroom' | 'exits' | 'legal'>('teaser');
 
-  // Verification & Gate State
+  // 2-Step Gate State
   const [email, setEmail] = useState('');
   const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
   const [codeSent, setCodeSent] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
   const [demoCodeHint, setDemoCodeHint] = useState<string | null>(null);
-  const [verifyError, setVerifyError] = useState<string | null>(null);
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [isVerifyingCode, setIsVerifyingCode] = useState(false);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
 
-  // NDA Execution State
+  // NDA Form State
   const [showNdaModal, setShowNdaModal] = useState(false);
   const [fullName, setFullName] = useState('');
   const [firmName, setFirmName] = useState('');
-  const [eSignConsent, setESignConsent] = useState(false);
+  const [ndaAgreed, setNdaAgreed] = useState(false);
   const [isSigning, setIsSigning] = useState(false);
   const [signedData, setSignedData] = useState<SignatureRecord | null>(null);
   const [copiedHash, setCopiedHash] = useState(false);
 
-  // Document Preview Modal
-  const [activeDocPreview, setActiveDocPreview] = useState<{
-    title: string;
-    category: string;
-    file: string;
-    highlights: string[];
-  } | null>(null);
+  // Active Doc Modal Preview State
+  const [activeDocPreview, setActiveDocPreview] = useState<any | null>(null);
 
-  // Check persistent session on mount
+  // Load Session from localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('atlas_investor_session_v2');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setSignedData(parsed);
-        setIsEmailVerified(true);
-        setEmail(parsed.email || '');
+      const saved = localStorage.getItem('atlas_investor_session_v2');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.signatureHash) {
+          setSignedData(parsed);
+          setEmail(parsed.email || '');
+          setIsEmailVerified(true);
+        }
       }
     } catch (e) {
-      console.error('Error reading session:', e);
+      console.error('Session load error:', e);
     }
   }, []);
 
-  // Send Email OTP
+  // Step 1: Send Verification OTP
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) {
-      setVerifyError('Please provide a valid investor email address.');
+      setVerifyError('Please enter a valid institutional or personal email address.');
       return;
     }
-
-    setIsSendingCode(true);
     setVerifyError(null);
+    setIsSendingCode(true);
 
     try {
       const res = await fetch('/api/investors/verify-email', {
@@ -89,7 +85,7 @@ export default function StandaloneInvestorApp() {
       });
       const data = await res.json();
 
-      if (res.ok) {
+      if (res.ok && data.success) {
         setCodeSent(true);
         if (data.demoCode) {
           setDemoCodeHint(data.demoCode);
@@ -98,52 +94,54 @@ export default function StandaloneInvestorApp() {
         setVerifyError(data.error || 'Failed to dispatch verification code.');
       }
     } catch (err) {
-      setVerifyError('Network error. Please try again.');
+      setVerifyError('Network error dispatching verification code.');
     } finally {
       setIsSendingCode(false);
     }
   };
 
-  // Verify OTP Code
+  // Step 1B: Verify OTP
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!verificationCode) return;
-
-    setIsVerifyingCode(true);
     setVerifyError(null);
+    setIsVerifyingCode(true);
 
     try {
       const res = await fetch('/api/investors/verify-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email.trim(),
-          action: 'verify',
-          code: verificationCode.trim()
-        })
+        body: JSON.stringify({ email: email.trim(), action: 'verify', code: verificationCode.trim() })
       });
       const data = await res.json();
 
       if (res.ok && data.verified) {
         setIsEmailVerified(true);
+        setDemoCodeHint(null);
+        // Automatically prompt NDA execution
         setShowNdaModal(true);
       } else {
-        setVerifyError(data.error || 'Invalid code. Use the sent code or test code 888999.');
+        setVerifyError(data.error || 'Invalid or expired verification code.');
       }
     } catch (err) {
-      setVerifyError('Verification failed.');
+      setVerifyError('Network error during verification.');
     } finally {
       setIsVerifyingCode(false);
     }
   };
 
-  // Sign NDA
+  // Step 2: Sign Mutual NDA & Record SHA-256
   const handleSignNda = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !eSignConsent || !email) return;
+    if (!fullName.trim()) {
+      alert('Please enter your full legal name.');
+      return;
+    }
+    if (!ndaAgreed) {
+      alert('You must accept the terms of the Mutual Non-Disclosure Agreement.');
+      return;
+    }
 
     setIsSigning(true);
-
     try {
       const res = await fetch('/api/investors/sign-nda', {
         method: 'POST',
@@ -195,28 +193,28 @@ export default function StandaloneInvestorApp() {
   const documents = [
     {
       id: 'deck',
-      title: '10-Slide Investor Presentation',
-      category: 'Strategic Deck',
+      title: '10-Slide Institutional Presentation',
+      category: 'Strategic Pitch Deck',
       file: '/docs/investors/ATLAS_Investor_Pitch_Deck.pdf',
-      desc: 'Visual pitch deck covering the Costco wholesale model, 0% markup, and the $75k SAFE plan.',
+      desc: 'Disintermediating the $1.4T booking duopoly, capturing 96% SaaS gross margins & 1.85% interchange, and the $75k SAFE angel opportunity.',
       highlights: [
-        'Costco Travel Model: 100% wholesale net savings passed at 0% markup.',
-        'Target Audience: Families (45%), SMB Corporate (30%), Luxury (15%), Nomads (10%).',
-        'Unit Economics: $850 blended ARPU, $115 CAC, 94% subscription gross margin.',
-        'The Deal: $75,000 raise on a $1.75M Post-Money SAFE (~4.3% equity at cap).'
+        'Closed-Loop Clearinghouse: 100% wholesale net savings passed at 0% markup under Sherman Act § 1 & EU DMA safe harbors.',
+        'High-Yield Segments: Affluent Families (45%), Executives & SMB Founders (30%), Remote Execs (15%), VIPs (10%).',
+        'Unit Economics: $1,026 blended ARPU, $110 CAC, 38.4x LTV:CAC, Day-1 payback.',
+        'The Deal: $75,000 raise on a $1.75M Post-Money SAFE (~4.3% equity at cap) targeting a 10x-15x Series Seed markup.'
       ]
     },
     {
       id: 'prospectus',
-      title: 'Confidential Investor Prospectus (PPM)',
+      title: 'Confidential Offering Prospectus (PPM)',
       category: 'Private Placement Memorandum',
       file: '/docs/investors/ATLAS_Confidential_Prospectus.pdf',
-      desc: '10-section offering memorandum, 5-year pro-forma income statement, and $0 supplier deposit model.',
+      desc: '10-section institutional memorandum, 5-year pro-forma income statement, zero-deposit balance sheet architecture, and legal safe harbor brief.',
       highlights: [
         'Entity: ATLAS Travel Club LLC (Manager-Managed LLC — Delaware / Wyoming).',
-        '5-Year Model: Year 1: $850k ARR -> Year 3: $21.2M ARR -> Year 5: $102M ARR.',
-        'Human Execution Focus: Over 57% of proceeds fund Founder stipend ($25k) and dev contractor sprints ($18k).',
-        '$0 Supplier Deposits: Synchronous real-time card authorization via RateHawk, Duffel, and Stripe.'
+        '5-Year Model: Year 1: $1.03M ARR -> Year 3: $22.6M ARR -> Year 5: $143.7M ARR ($102M EBITDA).',
+        'Human Execution Focus: Over 57% of proceeds fund Founder stipend ($25k) and senior dev contractor sprints ($18k).',
+        'Zero Inventory Liabilities: Synchronous real-time card authorization via RateHawk, Duffel, and Stripe.'
       ]
     },
     {
@@ -224,7 +222,7 @@ export default function StandaloneInvestorApp() {
       title: 'YC Post-Money SAFE Term Sheet Summary',
       category: 'Legal Term Sheet',
       file: '/docs/investors/ATLAS_SAFE_Term_Sheet_LLC.pdf',
-      desc: 'Simple Agreement for Future Equity (LLC Edition) with optional Delaware C-Corp conversion mechanics.',
+      desc: 'Simple Agreement for Future Equity (LLC Edition) with optional Delaware C-Corp conversion mechanics and Section 1202 QSBS tax eligibility.',
       highlights: [
         'Target Financing: $75,000 USD (Min $50,000 | Max $100,000).',
         'Valuation Cap: $1,750,000 USD with 20% standard conversion discount.',
@@ -237,7 +235,7 @@ export default function StandaloneInvestorApp() {
       title: 'Technical Architecture & Google Cloud Manual',
       category: 'Engineering Standards',
       file: '/docs/investors/ATLAS_Technical_Architecture_Google_Cloud.pdf',
-      desc: '100% Google Cloud Ecosystem specification: Cloud Run, Vertex AI, Cloud SQL, Secret Manager.',
+      desc: '100% Google Cloud Ecosystem specification: Cloud Run, Vertex AI (Gemini 2.0 Flash), Cloud SQL PostgreSQL v16, Secret Manager.',
       highlights: [
         'Stateless Serverless: Google Cloud Run with automatic scaling up to 50 concurrent instances.',
         'Zero-IP Exposure Database: Google Cloud SQL PostgreSQL v16 accessed via Cloud SQL Auth Proxy.',
@@ -249,10 +247,10 @@ export default function StandaloneInvestorApp() {
       id: 'faq',
       title: 'Investor Due Diligence FAQ & Risk Brief',
       category: 'Due Diligence & Compliance',
-      desc: 'Pre-empts rate parity legal precedent (Sherman Act, Loi Macron), account-sharing controls, and CRS check-in.',
+      desc: 'Pre-empts rate parity legal precedent (Sherman Act, EU DMA), account-sharing controls, CRS check-in parity, and operational risk.',
       file: '/docs/investors/ATLAS_Due_Diligence_FAQ.pdf',
       highlights: [
-        'Rate Parity Antitrust: US Sherman Act 15 U.S.C. § 1 & EU Loi Macron exempt closed-loop buyer syndicates.',
+        'Rate Parity Antitrust: US Sherman Act 15 U.S.C. § 1 & EU DMA exempt closed-loop buyer syndicates.',
         'Account Protection: Device fingerprinting, legal passport matching, and wallet balances disincentivize sharing.',
         'CRS Hotel Settlement: Direct bedbank voucher codes appear identical to Amex Fine Hotels reservations.',
         'Capital Efficiency: Why $75k is sufficient for 12 months due to asset-light software architecture.'
@@ -262,12 +260,12 @@ export default function StandaloneInvestorApp() {
       id: 'exit',
       title: 'Strategic Exit Opportunities & M&A Landscape',
       category: 'Liquidity & M&A Analysis',
-      desc: 'Precedent transactions (Amex, Capital One/Velocity Black, Booking, Revolut) and 3 to 6-year exit multiples.',
+      desc: 'Precedent transactions (Capital One/Velocity Black for $297M, Chase/Frosch, Booking, Revolut) and 3 to 6-year exit multiples.',
       file: '/docs/investors/ATLAS_Strategic_Exit_Opportunities.pdf',
       highlights: [
         'Premium Card Issuers: Capital One acquired Velocity Black for $297M; Chase acquired Frosch Travel.',
-        'OTA Consolidation: Booking Holdings & Expedia seek high-margin SaaS subscription cash flows.',
-        'Return Multiples on $75k SAFE: Base Case M&A ($74M valuation) = ~42x; Growth Case ($378M) = ~215x.',
+        'OTA Consolidation: Booking Holdings & Expedia seek high-margin subscription cash flows to escape Google ad inflation.',
+        'Return Multiples on $75k SAFE: Base Case M&A ($79M valuation) = ~45x; Growth Case ($538M) = ~307x.',
         'PE Dividend Recap: Capital-light high EBITDA allows buyout recapitalizations at 8x–12x.'
       ]
     }
@@ -309,18 +307,18 @@ export default function StandaloneInvestorApp() {
           {/* Navigation Links */}
           <nav className="space-y-1">
             {[
-              { id: 'teaser', label: 'Executive Teaser', icon: Award },
-              { id: 'arbitrage', label: 'Wholesale Arbitrage', icon: Layers },
+              { id: 'teaser', label: 'Executive Thesis', icon: Award },
+              { id: 'arbitrage', label: 'Structural Arbitrage', icon: Layers },
               { id: 'economics', label: 'Unit Economics', icon: TrendingUp },
-              { id: 'budget', label: '$75k Use of Proceeds', icon: DollarSign },
+              { id: 'budget', label: '$75k Capital Plan', icon: DollarSign },
               { 
                 id: 'dataroom', 
                 label: 'Confidential Data Room', 
                 icon: FileText, 
                 badge: signedData ? 'Unlocked' : 'Locked' 
               },
-              { id: 'exits', label: 'M&A Exits & Multiples', icon: Building2 },
-              { id: 'legal', label: 'Legal Disclosures', icon: ShieldCheck },
+              { id: 'exits', label: 'Strategic M&A Exits', icon: Building2 },
+              { id: 'legal', label: 'Statutory Compliance', icon: Scale },
             ].map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -328,23 +326,22 @@ export default function StandaloneInvestorApp() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id as any)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all text-left cursor-pointer group ${
                     isActive 
-                      ? 'bg-white text-slate-900 shadow-xs border border-slate-200/90 font-bold' 
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'bg-slate-900 text-white shadow-xs' 
+                      : 'text-slate-600 hover:bg-slate-200/50 hover:text-slate-900'
                   }`}
-                  title={item.label}
+                  title={sidebarCollapsed ? item.label : undefined}
                 >
-                  <div className="flex items-center gap-2.5 truncate">
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-amber-600' : 'text-slate-400'}`} />
-                    {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
-                  </div>
-
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-amber-400' : 'text-slate-400 group-hover:text-slate-700'}`} />
+                  {!sidebarCollapsed && (
+                    <span className="truncate flex-1">{item.label}</span>
+                  )}
                   {!sidebarCollapsed && item.badge && (
-                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md ${
-                      item.badge === 'Unlocked' 
-                        ? 'bg-emerald-100 text-emerald-800' 
-                        : 'bg-amber-100 text-amber-800'
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold tracking-tight uppercase ${
+                      signedData 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                        : 'bg-amber-50 text-amber-700 border border-amber-200'
                     }`}>
                       {item.badge}
                     </span>
@@ -355,102 +352,97 @@ export default function StandaloneInvestorApp() {
           </nav>
         </div>
 
-        {/* Sidebar Footer Status */}
-        <div className="p-4 border-t border-slate-200/80 bg-white/50">
+        {/* Sidebar Footer */}
+        <div className="p-4 border-t border-slate-200/70 space-y-3">
           {!sidebarCollapsed ? (
             <div className="space-y-2">
-              <div className="text-[11px] text-slate-500">
-                Round: <strong>$75,000 SAFE</strong>
+              <div className="flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${signedData ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+                <span className="text-[11px] font-bold text-slate-700 truncate">
+                  {signedData ? `Verified: ${signedData.fullName.split(' ')[0]}` : 'NDA Pending Verification'}
+                </span>
               </div>
-              <div className="text-[11px] text-slate-500">
-                Cap: <strong>$1.75M (20% Disc)</strong>
+              <div className="text-[10px] text-slate-400 leading-tight">
+                Delaware / Wyoming LLC • SEC Rule 506(c) Safe Harbor
               </div>
-              <div className="text-[10px] text-slate-400 pt-1">
-                Delaware / Wyoming LLC
-              </div>
+              {signedData && (
+                <button
+                  onClick={handleResetSession}
+                  className="text-[10px] text-rose-600 hover:underline pt-1 block cursor-pointer"
+                >
+                  Lock Session
+                </button>
+              )}
             </div>
           ) : (
             <div className="flex justify-center">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Round Active"></span>
+              <span className={`w-2.5 h-2.5 rounded-full ${signedData ? 'bg-emerald-500' : 'bg-amber-500'}`} />
             </div>
           )}
         </div>
       </aside>
 
       {/* 2. MAIN APPLICATION WORKSPACE */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         
         {/* Top Header Bar */}
-        <header className="h-16 border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-20 shrink-0">
-          <div className="flex items-center gap-3">
-            {/* Mobile menu trigger */}
+        <header className="h-16 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
+              className="md:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 cursor-pointer"
             >
-              <Menu className="w-4 h-4" />
+              <Menu className="w-5 h-5" />
             </button>
 
-            <div className="text-xs font-semibold text-slate-600 hidden sm:flex items-center gap-1.5">
-              <span>ATLAS Travel Club LLC</span>
-              <span className="text-slate-300">•</span>
-              <span className="text-amber-600 font-bold">Pre-Seed Angel SAFE ($75,000)</span>
+            <div className="flex items-center gap-2.5 text-xs text-slate-500">
+              <span className="font-semibold text-slate-900 hidden sm:inline">ATLAS Travel Club LLC</span>
+              <ChevronRight className="w-3.5 h-3.5 hidden sm:inline text-slate-300" />
+              <span className="font-medium capitalize text-slate-700">{activeTab.replace('-', ' ')}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             {signedData ? (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="font-semibold">{signedData.fullName}</span>
-                <span className="text-[10px] font-mono text-emerald-600 hidden sm:inline">({signedData.signatureHash.substring(0, 12)}...)</span>
-                <button
-                  onClick={handleResetSession}
-                  className="text-[11px] text-slate-400 hover:text-rose-600 underline ml-1 cursor-pointer"
-                >
-                  Exit
-                </button>
+                <span className="hidden sm:inline">NDA Executed & Recorded</span>
+                <span className="sm:hidden">Verified</span>
               </div>
-            ) : isEmailVerified ? (
-              <button
-                onClick={() => setShowNdaModal(true)}
-                className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
-              >
-                <FileCheck className="w-3.5 h-3.5 text-amber-400" />
-                <span>Sign NDA to Unlock</span>
-              </button>
             ) : (
               <button
-                onClick={() => setActiveTab('dataroom')}
-                className="px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold hover:bg-amber-100 transition-colors flex items-center gap-1.5 cursor-pointer"
+                onClick={() => {
+                  setActiveTab('dataroom');
+                  if (isEmailVerified) setShowNdaModal(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold transition-all cursor-pointer shadow-2xs"
               >
-                <Lock className="w-3 h-3 text-amber-600" />
+                <Lock className="w-3.5 h-3.5 text-amber-600" />
                 <span>Verify Access</span>
               </button>
             )}
 
-            <Link
-              href="/"
-              target="_blank"
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors flex items-center gap-1"
+            <a
+              href="mailto:executive@atlas-travel-club.com?subject=ATLAS%20SAFE%20Investment%20Inquiry"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
             >
-              <span>Live Platform</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />
-            </Link>
+              <span>Contact Lead</span>
+              <ArrowRight className="w-3 h-3 text-amber-400" />
+            </a>
           </div>
         </header>
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-50 border-b border-slate-200 p-4 space-y-2">
+          <div className="md:hidden border-b border-slate-200 bg-slate-50 p-4 space-y-2">
             {[
-              { id: 'teaser', label: 'Executive Teaser' },
-              { id: 'arbitrage', label: 'Wholesale Arbitrage' },
+              { id: 'teaser', label: 'Executive Thesis' },
+              { id: 'arbitrage', label: 'Structural Arbitrage' },
               { id: 'economics', label: 'Unit Economics' },
-              { id: 'budget', label: '$75k Use of Proceeds' },
+              { id: 'budget', label: '$75k Capital Plan' },
               { id: 'dataroom', label: 'Confidential Data Room' },
-              { id: 'exits', label: 'M&A Exits & Multiples' },
-              { id: 'legal', label: 'Legal Disclosures' },
+              { id: 'exits', label: 'Strategic M&A Exits' },
+              { id: 'legal', label: 'Statutory Compliance' },
             ].map((item) => (
               <button
                 key={item.id}
@@ -476,65 +468,97 @@ export default function StandaloneInvestorApp() {
             <div className="space-y-8 animate-fadeIn">
               {/* Hero Banner */}
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
-                  <Award className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Confidential Angel Brief • $75,000 Pre-Seed Round</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200/80">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Confidential Angel Brief • $75,000 Pre-Seed Round • $1.75M Post-Money Cap</span>
                 </div>
 
-                <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-                  The Digital <span className="text-amber-600">Costco</span> for the $1.4T Travel Market
+                <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
+                  The Private Travel Clearinghouse Disintermediating the <span className="text-amber-600">$1.4 Trillion</span> Booking Cartel.
                 </h1>
 
-                <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl">
-                  ATLAS is an asset-light, closed-loop travel subscription collective. 
-                  By utilizing well-established antitrust exemptions under US and EU law, 
-                  we bypass the 25% OTA duopoly markup, procuring wholesale inventory at net clearing rates 
-                  and passing <strong>100% of wholesale savings to subscribers at 0% markup</strong>.
+                <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-3xl">
+                  Booking Holdings and Expedia Group extract an extortionate <strong>18% to 30% duopoly tax</strong> on every hotel room booked worldwide, enforcing algorithmic rate parity across public search.
+                  ATLAS is the private institutional clearinghouse. By utilizing statutory private-group antitrust exemptions under the <strong>US Sherman Act</strong> and the <strong>EU Digital Markets Act</strong>, ATLAS bypasses the duopoly toll—connecting affluent travelers directly to Tier-1 B2B wholesale liquidity pools at raw net clearing rates with <strong>0% retail markup</strong>.
                 </p>
               </div>
 
               {/* Deal Card Metrics */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/50 space-y-1">
+                <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
                   <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Target Capital</div>
                   <div className="text-2xl font-black text-slate-900">$75,000</div>
-                  <div className="text-[11px] text-amber-600 font-semibold">YC Post-Money SAFE</div>
+                  <div className="text-[11px] text-amber-600 font-bold">YC Post-Money SAFE</div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/50 space-y-1">
+                <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
                   <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Valuation Cap</div>
                   <div className="text-2xl font-black text-slate-900">$1.75M</div>
-                  <div className="text-[11px] text-emerald-700 font-semibold">~4.3% Ownership Cap</div>
+                  <div className="text-[11px] text-emerald-700 font-bold">~4.3% Ownership Cap</div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/50 space-y-1">
+                <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
                   <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Blended ARPU</div>
-                  <div className="text-2xl font-black text-slate-900">$850 / yr</div>
-                  <div className="text-[11px] text-slate-500">94% Gross Margin</div>
+                  <div className="text-2xl font-black text-slate-900">$1,026 / yr</div>
+                  <div className="text-[11px] text-slate-600 font-semibold">96% Software Gross Margin</div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/50 space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Infrastructure</div>
-                  <div className="text-2xl font-black text-slate-900">100% GCP</div>
-                  <div className="text-[11px] text-blue-600 font-semibold">Cloud Run & Vertex AI</div>
+                <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">LTV / CAC Ratio</div>
+                  <div className="text-2xl font-black text-emerald-700">38.4x</div>
+                  <div className="text-[11px] text-slate-500">Day-1 Customer Payback</div>
+                </div>
+              </div>
+
+              {/* The High-Asymmetry Investment Thesis */}
+              <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 bg-slate-50/70 space-y-6">
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">Why This Is an Asymmetric Pre-Seed Bet</h3>
+                  <p className="text-xs text-slate-500 mt-1">Understanding why retail travel models fail and why our FinTech clearinghouse scales.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-600 leading-relaxed">
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
+                    <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-800 font-black text-sm">1</div>
+                    <div className="font-bold text-slate-900 text-sm">Negative Working Capital</div>
+                    <p>
+                      We hold <strong>zero inventory risk</strong> and $0 in hotel room blocks. Members pay us upfront upon booking; wholesale bedbanks are settled post-checkout via synchronous card rails. We generate cash float without balance sheet debt.
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
+                    <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-800 font-black text-sm">2</div>
+                    <div className="font-bold text-slate-900 text-sm">The 4-Engine Flywheel</div>
+                    <p>
+                      We monetize through high-LTV subscription software ARR ($399–$1,799/yr), 1.85% debit interchange on high-ticket card spend ($18.5k avg spend = $342 yield), a 30% performance fee on automated price-drop rebooking, and 45 bps on FX spreads.
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 font-black text-sm">3</div>
+                    <div className="font-bold text-slate-900 text-sm">Day-1 Payback & 91% Retention</div>
+                    <p>
+                      A member saving $1,600 on a 5-night stay in Paris or Maui covers their annual fee on their very first booking with $900+ in pure net profit. Churn is economically irrational when leaving the club means paying a 25% penalty tax to Booking.com.
+                    </p>
+                  </div>
                 </div>
               </div>
 
               {/* Gated Access Callout */}
-              <div className="p-6 rounded-2xl border-2 border-amber-500/30 bg-amber-50/30 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/30 bg-amber-50/40 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="space-y-1 text-center sm:text-left">
                   <h3 className="font-bold text-slate-900 text-base flex items-center gap-2 justify-center sm:justify-start">
                     <Lock className="w-4 h-4 text-amber-600" />
-                    <span>Confidential Due Diligence Repository</span>
+                    <span>Confidential Due Diligence Repository & Term Sheet</span>
                   </h3>
                   <p className="text-xs text-slate-600 max-w-xl">
-                    Full 5-year financials, technical manuals, pitch deck, and SAFE agreements are protected behind our 2-step investor verification gate.
+                    Detailed 5-year pro-forma financials, engineering manuals, M&A exit scenarios, and YC Post-Money SAFE documents are protected behind our 2-step verification gate.
                   </p>
                 </div>
 
                 <button
                   onClick={() => setActiveTab('dataroom')}
-                  className="px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-2 shrink-0 cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-2 shrink-0 cursor-pointer"
                 >
                   <span>{signedData ? 'Enter Data Room' : 'Verify Email & Sign NDA'}</span>
                   <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
@@ -545,72 +569,192 @@ export default function StandaloneInvestorApp() {
 
           {/* TAB 2: WHOLESALE ARBITRAGE THESIS */}
           {activeTab === 'arbitrage' && (
-            <div className="space-y-6 animate-fadeIn">
+            <div className="space-y-8 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">The $350B Wholesale Rate Arbitrage</h2>
-                <p className="text-xs text-slate-500 mt-1">How closed-loop antitrust exemptions unlock 0% markup wholesale distribution.</p>
+                <h2 className="text-2xl font-black text-slate-900">The $350B Wholesale Rate Arbitrage & Antitrust Safe Harbor</h2>
+                <p className="text-xs text-slate-500 mt-1">How closed-loop statutory exemptions unlock institutional wholesale distribution at 0% retail markup.</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600 leading-relaxed">
-                <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-                  <h3 className="font-bold text-slate-900">The Problem: Public Rate Parity Cartels</h3>
-                  <p>
-                    Online Travel Agencies (Expedia Group, Booking Holdings) extract 15% to 30% markups on every room booked. 
-                    They contractually impose <strong>Rate Parity clauses</strong> that legally bar hotels from offering public discounts.
-                  </p>
-                  <p>
-                    Frequent travelers and affluent vacationers overpay thousands annually because they lack corporate buying desks.
-                  </p>
+              {/* Visual Side-by-Side Breakdown */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600 leading-relaxed">
+                <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-4">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 font-bold text-[11px]">
+                    The Broken Public Channel
+                  </div>
+                  <h3 className="font-black text-slate-900 text-base">The Booking.com / Expedia Tollbooth</h3>
+                  <div className="space-y-2.5">
+                    <p>
+                      <strong>1. Predatory Duopoly:</strong> Booking Holdings & Expedia Group control over 70% of global online travel. They extract 18% to 30% take-rates on every transaction.
+                    </p>
+                    <p>
+                      <strong>2. Extortionate Rate Parity:</strong> Hotels are contractually handcuffed by "Rate Parity" agreements forbidding them from publishing lower prices on open search channels under threat of algorithmic de-ranking.
+                    </p>
+                    <p>
+                      <strong>3. The Perishable Asset Crisis:</strong> 5-star hotels suffer from 32% average vacancy. Unsold rooms expire worthless at midnight, but hotels cannot discount publicly without destroying their brand equity and violating parity.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white border border-slate-200 font-mono text-[11px] text-slate-700 space-y-1">
+                    <div>Public Listing: $600 / night ($3,000 for 5 nights)</div>
+                    <div>OTA Commission (25%): <span className="text-rose-600 font-bold">-$750 extracted</span></div>
+                    <div>Hotel Net Remittance: $2,250</div>
+                  </div>
                 </div>
 
-                <div className="p-6 rounded-2xl bg-amber-50/50 border border-amber-200 space-y-3 text-amber-950">
-                  <h3 className="font-bold text-amber-900">The Solution: Closed-Loop Wholesale Pass-Through</h3>
-                  <p>
-                    Under the <strong>US Sherman Antitrust Act (15 U.S.C. § 1)</strong>, the <strong>EU Digital Markets Act (DMA)</strong>, 
-                    and the French <em>Loi Macron</em>, rate parity restrictions do NOT apply to password-gated, closed-loop membership clubs.
-                  </p>
-                  <p>
-                    ATLAS sources room allotments from institutional bedbanks (Hotelbeds, RateHawk, WebBeds) and passes <strong>100% of the net savings to subscribers at 0% markup</strong>.
-                  </p>
+                <div className="p-6 rounded-3xl bg-amber-50/50 border border-amber-200/80 space-y-4 text-amber-950">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px]">
+                    The ATLAS Private Clearinghouse
+                  </div>
+                  <h3 className="font-black text-amber-950 text-base">Closed-Loop Wholesale Pass-Through</h3>
+                  <div className="space-y-2.5">
+                    <p>
+                      <strong>1. Statutory Antitrust Exemption:</strong> Under the <strong>US Sherman Antitrust Act (15 U.S.C. § 1)</strong> and the <strong>EU Digital Markets Act (Regulation EU 2022/1925)</strong>, rate parity rules do NOT apply to password-gated, closed-loop private buyer syndicates.
+                    </p>
+                    <p>
+                      <strong>2. Tier-1 Liquidity Plumbing:</strong> Hotels quietly distribute surplus inventory to B2B global bedbanks (Hotelbeds, WebBeds, Travco) at net clearing rates.
+                    </p>
+                    <p>
+                      <strong>3. 0% Retail Markup:</strong> ATLAS surfaces raw wholesale rates directly to verified members at zero markup. The hotel fills perishable capacity without brand damage.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white border border-amber-200 font-mono text-[11px] text-slate-900 space-y-1">
+                    <div>ATLAS Member Rate: $450 / night ($2,250 for 5 nights)</div>
+                    <div>Member Instant Savings: <span className="text-emerald-700 font-bold">+$750 cash kept</span></div>
+                    <div>ATLAS Monetization: Annual SaaS ARR + 1.85% Interchange</div>
+                  </div>
                 </div>
+              </div>
+
+              {/* The Legal Moat */}
+              <div className="p-6 rounded-3xl bg-slate-900 text-white space-y-3">
+                <div className="font-bold text-amber-400 text-sm flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-400" />
+                  <span>The Defensible Regulatory Moat</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Public OTAs cannot copy ATLAS without cannibalizing their own $30B+ commission business model and breaching hotel distribution agreements. Meanwhile, hoteliers actively welcome ATLAS because it clears distressed inventory discreetly behind a verified, paying membership wall without degrading their public luxury ADR (Average Daily Rate).
+                </p>
               </div>
             </div>
           )}
 
           {/* TAB 3: UNIT ECONOMICS & MODEL */}
           {activeTab === 'economics' && (
-            <div className="space-y-6 animate-fadeIn">
+            <div className="space-y-8 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">Predictable Recurring Unit Economics</h2>
-                <p className="text-xs text-slate-500 mt-1">High-margin software subscriptions + secondary fintech interchange revenue.</p>
+                <h2 className="text-2xl font-black text-slate-900">Predictable Recurring Unit Economics & 5-Year Pro-Forma</h2>
+                <p className="text-xs text-slate-500 mt-1">High-margin software subscriptions coupled with secondary FinTech payment interchange yield.</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* 4 Revenue Engines */}
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-xs font-semibold text-slate-500">Blended Annual Fee</div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase">1. Subscription ARR</div>
                   <div className="text-2xl font-black text-slate-900">$684 / yr</div>
-                  <div className="text-[11px] text-slate-500">Club ($349), Family ($699), VIP ($1,499)</div>
+                  <div className="text-[11px] text-emerald-700 font-semibold">96% Software Gross Margin</div>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-xs font-semibold text-slate-500">Fintech Interchange</div>
-                  <div className="text-2xl font-black text-slate-900">$166 / yr</div>
-                  <div className="text-[11px] text-slate-500">1.2% net yield on $13,850 card spend</div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase">2. Card Interchange</div>
+                  <div className="text-2xl font-black text-slate-900">$342 / yr</div>
+                  <div className="text-[11px] text-slate-600 font-semibold">1.85% on $18.5k card spend</div>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-xs font-semibold text-slate-500">Customer Payback</div>
-                  <div className="text-2xl font-black text-emerald-700">1.6 Months</div>
-                  <div className="text-[11px] text-emerald-700">$115 Blended CAC • 38.6x LTV:CAC</div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase">3. Price-Drop Arbitrage</div>
+                  <div className="text-2xl font-black text-slate-900">30% Fee</div>
+                  <div className="text-[11px] text-slate-600 font-semibold">Share of auto-rebooked savings</div>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase">4. Customer Payback</div>
+                  <div className="text-2xl font-black text-emerald-700">Day 1</div>
+                  <div className="text-[11px] text-emerald-700 font-semibold">$110 CAC • 38.4x LTV:CAC</div>
                 </div>
               </div>
 
-              <div className="p-6 rounded-2xl bg-slate-900 text-white text-xs space-y-2">
-                <div className="font-bold text-amber-400 text-sm">5-Year Growth Trajectory</div>
-                <p className="text-slate-300 leading-relaxed">
-                  Year 1: 1,000 paid members ($850,000 ARR) • Year 2: 6,000 members ($5.1M ARR) • Year 3: 25,000 members ($21.2M ARR) • Year 5: 120,000 members ($102M ARR).
-                </p>
-                <div className="text-[11px] text-slate-400">Full model available in the Confidential Prospectus PPM document.</div>
+              {/* 5-Year Pro-Forma Table */}
+              <div className="space-y-3">
+                <div className="font-bold text-slate-900 text-sm">5-Year Institutional Pro-Forma Model (USD Millions)</div>
+                <div className="overflow-x-auto border border-slate-200 rounded-2xl bg-white">
+                  <table className="w-full text-xs text-left">
+                    <thead className="bg-slate-900 text-white font-bold text-[11px]">
+                      <tr>
+                        <th className="p-3.5">METRIC</th>
+                        <th className="p-3.5">YEAR 1</th>
+                        <th className="p-3.5">YEAR 2</th>
+                        <th className="p-3.5">YEAR 3</th>
+                        <th className="p-3.5">YEAR 4</th>
+                        <th className="p-3.5">YEAR 5</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
+                      <tr className="hover:bg-slate-50">
+                        <td className="p-3 font-sans font-semibold text-slate-900">Ending Active Members</td>
+                        <td className="p-3">1,000</td>
+                        <td className="p-3">5,500</td>
+                        <td className="p-3">22,000</td>
+                        <td className="p-3">65,000</td>
+                        <td className="p-3">140,000</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50">
+                        <td className="p-3 font-sans font-semibold text-slate-900">Gross Travel Booked (GMV)</td>
+                        <td className="p-3">$18.5M</td>
+                        <td className="p-3">$101.8M</td>
+                        <td className="p-3">$407.0M</td>
+                        <td className="p-3">$1,202.5M</td>
+                        <td className="p-3">$2,590.0M</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50">
+                        <td className="p-3 font-sans font-semibold text-slate-900">Subscription Net ARR (96% GM)</td>
+                        <td className="p-3">$0.68M</td>
+                        <td className="p-3">$3.76M</td>
+                        <td className="p-3">$15.05M</td>
+                        <td className="p-3">$44.46M</td>
+                        <td className="p-3">$95.76M</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50">
+                        <td className="p-3 font-sans font-semibold text-slate-900">FinTech Card Interchange (1.85%)</td>
+                        <td className="p-3">$0.34M</td>
+                        <td className="p-3">$1.88M</td>
+                        <td className="p-3">$7.53M</td>
+                        <td className="p-3">$22.25M</td>
+                        <td className="p-3">$47.92M</td>
+                      </tr>
+                      <tr className="bg-amber-50/40 font-bold text-amber-950">
+                        <td className="p-3 font-sans">TOTAL NET REVENUE</td>
+                        <td className="p-3">$1.03M</td>
+                        <td className="p-3">$5.64M</td>
+                        <td className="p-3">$22.58M</td>
+                        <td className="p-3">$66.71M</td>
+                        <td className="p-3">$143.68M</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50 text-slate-500">
+                        <td className="p-3 font-sans font-semibold">Total Operating Expenses</td>
+                        <td className="p-3">($0.58M)</td>
+                        <td className="p-3">($2.82M)</td>
+                        <td className="p-3">($9.45M)</td>
+                        <td className="p-3">($21.95M)</td>
+                        <td className="p-3">($41.70M)</td>
+                      </tr>
+                      <tr className="bg-slate-900 text-white font-bold">
+                        <td className="p-3 font-sans">NET PROFIT (EBITDA)</td>
+                        <td className="p-3 text-emerald-400">+$0.45M</td>
+                        <td className="p-3 text-emerald-400">+$2.82M</td>
+                        <td className="p-3 text-emerald-400">+$13.13M</td>
+                        <td className="p-3 text-emerald-400">+$44.76M</td>
+                        <td className="p-3 text-emerald-400">+$101.98M</td>
+                      </tr>
+                      <tr className="bg-slate-800 text-slate-300 font-bold text-[10px]">
+                        <td className="p-2.5 font-sans">EBITDA Margin %</td>
+                        <td className="p-2.5">43.7%</td>
+                        <td className="p-2.5">50.0%</td>
+                        <td className="p-2.5">58.2%</td>
+                        <td className="p-2.5">67.1%</td>
+                        <td className="p-2.5">71.0%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -619,19 +763,27 @@ export default function StandaloneInvestorApp() {
           {activeTab === 'budget' && (
             <div className="space-y-6 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">$75,000 Lean Capital Allocation</h2>
-                <p className="text-xs text-slate-500 mt-1">Asset-light software model requiring $0 in locked supplier deposits.</p>
+                <h2 className="text-2xl font-black text-slate-900">Capital Allocation & The $75,000 SAFE Opportunity</h2>
+                <p className="text-xs text-slate-500 mt-1">Lean, capital-efficient execution funding founder runway and core B2B engineering.</p>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-amber-50/50 border border-amber-200 text-xs text-amber-950 space-y-2">
+                <div className="font-bold text-sm text-amber-900">Why $75,000 Achieves What Competitors Waste $2M On:</div>
+                <p className="leading-relaxed">
+                  Most travel startups burn millions attempting to negotiate individual hotel contracts, buy upfront room blocks, and maintain legacy IATA bank guarantees.
+                  ATLAS operates 100% serverless on Google Cloud Run and settles transactions synchronously via real-time card authorization with B2B bedbanks (RateHawk, Hotelbeds, Duffel). We require <strong>$0 in locked supplier deposits</strong> and zero inventory risk. Every single dollar goes directly into product automation and founder execution.
+                </p>
               </div>
 
               <div className="divide-y divide-slate-100 text-xs border border-slate-200 rounded-2xl overflow-hidden bg-white">
                 {[
-                  { name: 'Founder Executive Stipend', amt: '$25,000', pct: '33.3%', note: '$2,500/mo over 10 months for full-time founder commitment.' },
-                  { name: 'Contract Engineering & Tech Ops', amt: '$18,000', pct: '24.0%', note: '6 milestone dev sprints for live RateHawk, Duffel & GCP CI/CD.' },
-                  { name: 'Member Acquisition & GTM', amt: '$16,500', pct: '22.0%', note: 'Targeted executive flyer outreach, "Savings Audit" marketing, creator seeds.' },
-                  { name: 'Legal, SoT Licensing & Entity Setup', amt: '$6,500', pct: '8.7%', note: 'Delaware/Wyoming LLC formalization and Seller of Travel filings.' },
-                  { name: 'Google Cloud & Vertex AI Tokens', amt: '$3,500', pct: '4.7%', note: '12 mos Cloud Run, Cloud SQL, and Gemini 2.0 API inference.' },
-                  { name: 'Contingency Operating Buffer', amt: '$3,500', pct: '4.7%', note: 'Emergency cash reserve ensuring 10–12 months runway.' },
-                  { name: 'Minimal Operating Float', amt: '$2,000', pct: '2.7%', note: 'Working float for card generation ($1,200) and eSIM stock ($800).' },
+                  { name: 'Founder Executive Stipend', amt: '$25,000', pct: '33.3%', note: '$2,500/mo over 10 months for full-time dedicated founder leadership.' },
+                  { name: 'Contract Engineering & Tech Ops', amt: '$18,000', pct: '24.0%', note: 'Direct API pipelines for live RateHawk & Duffel on Google Cloud Run.' },
+                  { name: 'Member Acquisition Engine', amt: '$16,500', pct: '22.0%', note: 'Targeted executive syndicate outreach, "Savings Audit" marketing, creator seeds.' },
+                  { name: 'Legal, SoT Licensing & Entity Setup', amt: '$6,500', pct: '8.7%', note: 'Delaware/Wyoming LLC formalization and Seller of Travel (FL/CA) compliance.' },
+                  { name: 'Google Cloud & Vertex AI Tokens', amt: '$3,500', pct: '4.7%', note: '12 mos Cloud Run, Cloud SQL, Cloud Armor, and Gemini 2.0 API inference.' },
+                  { name: 'Contingency Operating Buffer', amt: '$3,500', pct: '4.7%', note: 'Cash reserve guaranteeing 10–12 months of operational runway.' },
+                  { name: 'Minimal Operating Float', amt: '$2,000', pct: '2.7%', note: 'Working float for instant card generation ($1,200) and eSIM stock ($800).' },
                 ].map((row, idx) => (
                   <div key={idx} className="p-3.5 flex items-center justify-between gap-4 hover:bg-slate-50">
                     <div className="font-semibold text-slate-900">{row.name}</div>
@@ -647,6 +799,14 @@ export default function StandaloneInvestorApp() {
                   <span>$75,000 (100.0%)</span>
                 </div>
               </div>
+
+              {/* The Value Inflection */}
+              <div className="p-5 rounded-2xl bg-slate-900 text-white text-xs space-y-2">
+                <div className="font-bold text-amber-400 text-sm">Target Milestone & 10x-15x Value Inflection:</div>
+                <p className="text-slate-300 leading-relaxed">
+                  Funding this $75k SAFE takes ATLAS through Phase 2 to <strong>1,000 active paying members ($1.0M+ ARR)</strong>. At this milestone, the company is cash-flow positive and positioned for a Series Seed equity round at a $15M–$20M post-money valuation—representing a 10x to 12x paper markup for angel investors in this round within 12–15 months.
+                </p>
+              </div>
             </div>
           )}
 
@@ -660,24 +820,24 @@ export default function StandaloneInvestorApp() {
 
               {/* 2-STEP ACCESS GATE (IF NOT SIGNED) */}
               {!signedData && (
-                <div className="p-6 rounded-2xl border-2 border-amber-500/40 bg-amber-50/20 space-y-6">
+                <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/40 bg-amber-50/30 space-y-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700">
-                      <Lock className="w-5 h-5" />
+                    <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-700 shrink-0">
+                      <Lock className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 text-sm">Two-Step Verification Required for Data Room Access</h3>
-                      <p className="text-xs text-slate-500">Verify your investor email address and digitally sign the Mutual NDA to unlock documents.</p>
+                      <h3 className="font-black text-slate-900 text-base">Two-Step Institutional Verification Required</h3>
+                      <p className="text-xs text-slate-600 mt-0.5">Please verify your accredited investor email address and digitally execute the Mutual Non-Disclosure Agreement to unlock documents.</p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Step 1 */}
-                    <div className={`p-5 rounded-xl border bg-white space-y-3 ${
-                      isEmailVerified ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200'
+                    <div className={`p-6 rounded-2xl border bg-white space-y-3 shadow-2xs ${
+                      isEmailVerified ? 'border-emerald-300 bg-emerald-50/20' : 'border-slate-200'
                     }`}>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
                           <span className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px]">1</span>
                           Step 1: Email Verification
                         </span>
@@ -690,29 +850,29 @@ export default function StandaloneInvestorApp() {
 
                       {!isEmailVerified ? (
                         !codeSent ? (
-                          <form onSubmit={handleSendCode} className="space-y-2">
+                          <form onSubmit={handleSendCode} className="space-y-2.5">
                             <input
                               type="email"
                               required
-                              placeholder="investor@fund.com"
+                              placeholder="partner@venturefund.com"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
-                              className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs focus:outline-none focus:border-amber-500"
+                              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-amber-500"
                             />
                             <button
                               type="submit"
                               disabled={isSendingCode}
-                              className="w-full py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                             >
                               {isSendingCode ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Mail className="w-3.5 h-3.5" />}
                               <span>Send Verification Code</span>
                             </button>
                           </form>
                         ) : (
-                          <form onSubmit={handleVerifyCode} className="space-y-2">
+                          <form onSubmit={handleVerifyCode} className="space-y-2.5">
                             <div className="text-[11px] text-slate-500 flex justify-between">
                               <span>Code sent to {email}</span>
-                              <button type="button" onClick={() => setCodeSent(false)} className="text-amber-600 underline">Edit</button>
+                              <button type="button" onClick={() => setCodeSent(false)} className="text-amber-600 underline font-semibold">Change</button>
                             </div>
                             <input
                               type="text"
@@ -721,17 +881,17 @@ export default function StandaloneInvestorApp() {
                               placeholder="Enter 6-digit code"
                               value={verificationCode}
                               onChange={(e) => setVerificationCode(e.target.value)}
-                              className="w-full px-3 py-2 rounded-lg border border-slate-300 text-center font-mono text-sm tracking-widest focus:outline-none focus:border-amber-500"
+                              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-center font-mono text-sm tracking-widest focus:outline-none focus:border-amber-500"
                             />
                             {demoCodeHint && (
-                              <div className="text-[10px] text-amber-800 bg-amber-50 p-1.5 rounded border border-amber-200 text-center">
-                                Demo code: <strong>{demoCodeHint}</strong> (or test: <strong>888999</strong>)
+                              <div className="text-[11px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200 text-center">
+                                Development Code: <strong>{demoCodeHint}</strong> (or test: <strong>888999</strong>)
                               </div>
                             )}
                             <button
                               type="submit"
                               disabled={isVerifyingCode}
-                              className="w-full py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                              className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                             >
                               {isVerifyingCode ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <KeyRound className="w-3.5 h-3.5" />}
                               <span>Verify Code</span>
@@ -739,32 +899,32 @@ export default function StandaloneInvestorApp() {
                           </form>
                         )
                       ) : (
-                        <p className="text-xs text-emerald-800 font-medium">
-                          Verified as <strong>{email}</strong>. Ready for Step 2.
+                        <p className="text-xs text-emerald-800 font-semibold">
+                          Authenticated as <strong>{email}</strong>. Ready for Step 2.
                         </p>
                       )}
 
-                      {verifyError && <p className="text-[11px] text-rose-600 font-medium">{verifyError}</p>}
+                      {verifyError && <p className="text-[11px] text-rose-600 font-semibold">{verifyError}</p>}
                     </div>
 
                     {/* Step 2 */}
-                    <div className={`p-5 rounded-xl border bg-white flex flex-col justify-between ${
+                    <div className={`p-6 rounded-2xl border bg-white flex flex-col justify-between shadow-2xs ${
                       !isEmailVerified ? 'opacity-50 border-slate-200' : 'border-slate-200'
                     }`}>
                       <div className="space-y-2">
-                        <div className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                        <div className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
                           <span className="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px]">2</span>
                           Step 2: Mutual NDA Signature
                         </div>
                         <p className="text-xs text-slate-600 leading-relaxed">
-                          Bilateral non-disclosure agreement compliant with the US E-SIGN Act (15 U.S.C. § 7001) and EU eIDAS regulation.
+                          Bilateral non-disclosure agreement compliant with the US E-SIGN Act (15 U.S.C. § 7001), UETA, and EU eIDAS regulation. Logs IP address, user-agent, and SHA-256 hash.
                         </p>
                       </div>
 
                       <button
                         onClick={() => setShowNdaModal(true)}
                         disabled={!isEmailVerified}
-                        className={`w-full py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer ${
+                        className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer shadow-xs ${
                           isEmailVerified 
                             ? 'bg-slate-900 hover:bg-slate-800 text-white' 
                             : 'bg-slate-200 text-slate-400 cursor-not-allowed'
@@ -783,7 +943,7 @@ export default function StandaloneInvestorApp() {
                 {documents.map((doc) => (
                   <div 
                     key={doc.id}
-                    className="p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition-all flex flex-col justify-between space-y-4"
+                    className="p-6 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition-all flex flex-col justify-between space-y-4 shadow-2xs"
                   >
                     <div className="space-y-2">
                       <div className="flex items-start justify-between gap-2">
@@ -791,7 +951,7 @@ export default function StandaloneInvestorApp() {
                           <FileText className="w-4 h-4 text-amber-600 shrink-0" />
                           <span>{doc.title}</span>
                         </div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 shrink-0">
+                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 shrink-0">
                           {doc.category}
                         </span>
                       </div>
@@ -811,7 +971,7 @@ export default function StandaloneInvestorApp() {
                         <a
                           href={doc.file}
                           download
-                          className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                          className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
                         >
                           <Download className="w-3.5 h-3.5 text-amber-400" />
                           <span>Download PDF</span>
@@ -822,9 +982,9 @@ export default function StandaloneInvestorApp() {
                             if (!isEmailVerified) alert('Please complete Step 1: Verify Email first.');
                             else setShowNdaModal(true);
                           }}
-                          className="px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-400 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                          className="px-4 py-2 rounded-xl bg-slate-100 text-slate-400 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
                         >
-                          <Lock className="w-3 h-3" />
+                          <Lock className="w-3.5 h-3.5" />
                           <span>Locked</span>
                         </button>
                       )}
@@ -835,7 +995,7 @@ export default function StandaloneInvestorApp() {
 
               {/* OFFICIAL SIGNATURE CERTIFICATE (RENDERED ONCE SIGNED) */}
               {signedData && (
-                <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-900 space-y-2">
+                <div className="p-6 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 space-y-2.5 shadow-2xs">
                   <div className="flex items-center justify-between">
                     <div className="font-bold flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
@@ -850,9 +1010,9 @@ export default function StandaloneInvestorApp() {
                     <div>Entity: <strong>{signedData.firmName || 'Individual Angel'}</strong></div>
                   </div>
 
-                  <div className="flex items-center justify-between text-[10px] font-mono text-emerald-700 pt-1 border-t border-emerald-200/60">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-emerald-700 pt-2 border-t border-emerald-200/60">
                     <span className="truncate">Hash: {signedData.signatureHash}</span>
-                    <button onClick={copyHash} className="ml-2 underline hover:text-emerald-950 cursor-pointer shrink-0">
+                    <button onClick={copyHash} className="ml-2 underline hover:text-emerald-950 cursor-pointer shrink-0 font-bold">
                       {copiedHash ? 'Copied!' : 'Copy Hash'}
                     </button>
                   </div>
@@ -863,44 +1023,56 @@ export default function StandaloneInvestorApp() {
 
           {/* TAB 6: M&A EXITS & MULTIPLES */}
           {activeTab === 'exits' && (
-            <div className="space-y-6 animate-fadeIn">
+            <div className="space-y-8 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">M&A Acquirer Landscape & Returns</h2>
-                <p className="text-xs text-slate-500 mt-1">3 to 6-year exit horizons across 4 strategic buyer categories.</p>
+                <h2 className="text-2xl font-black text-slate-900">Strategic M&A Acquirer Landscape & Returns</h2>
+                <p className="text-xs text-slate-500 mt-1">3 to 6-year exit horizons across 3 tier-1 strategic buyer categories.</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
-                  <div className="font-bold text-slate-900">1. Premium Card Issuers</div>
-                  <div className="text-[11px] text-amber-700 font-semibold">Amex, Capital One, Chase</div>
+                <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2">
+                  <div className="font-bold text-slate-900 text-sm">1. Tier-1 Card Issuers</div>
+                  <div className="text-[11px] text-amber-700 font-bold">American Express, Capital One, Chase</div>
                   <p className="text-slate-500 text-[11px] leading-relaxed">
-                    Precedent: Capital One acquired Velocity Black for $297M; Chase acquired Frosch Travel.
+                    Precedent: Capital One acquired Velocity Black for $297 Million (2023); JPMorgan Chase acquired Frosch Travel and The Infatuation. Acquiring ATLAS gives card issuers a proprietary 0% wholesale booking engine driving high interchange volume.
                   </p>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
-                  <div className="font-bold text-slate-900">2. Public OTAs</div>
-                  <div className="text-[11px] text-blue-700 font-semibold">Booking Holdings, Expedia</div>
+                <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2">
+                  <div className="font-bold text-slate-900 text-sm">2. Public OTAs & Portals</div>
+                  <div className="text-[11px] text-blue-700 font-bold">Booking Holdings, Expedia, Tripadvisor</div>
                   <p className="text-slate-500 text-[11px] leading-relaxed">
-                    OTAs acquire high-margin subscription clubs to reduce Google search ad dependency.
+                    OTAs spend billions annually bidding on Google search ads for one-off transactional users. Acquiring ATLAS provides an un-cancelable, high-margin SaaS subscription recurring revenue stream retaining the top 10% of high-net-worth travelers.
                   </p>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
-                  <div className="font-bold text-slate-900">3. Mobility & Super-Apps</div>
-                  <div className="text-[11px] text-purple-700 font-semibold">Revolut, Hopper, Uber</div>
+                <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2">
+                  <div className="font-bold text-slate-900 text-sm">3. FinTech Super-Apps</div>
+                  <div className="text-[11px] text-purple-700 font-bold">Revolut, Mercury, Brex, Ramp</div>
                   <p className="text-slate-500 text-[11px] leading-relaxed">
-                    Fintech apps with millions of cardholders looking to offer 0% markup travel perks.
+                    FinTech neobanks have millions of cardholders looking for high-utility lifestyle perks. ATLAS integrates directly into their membership tiers without requiring separate bedbank licensing.
                   </p>
                 </div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-2">
-                <div className="font-bold text-slate-900">Target Investor Returns on $75k SAFE:</div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px]">
-                  <div>• Base Case M&A (Yr 3): <strong>$74.2M Valuation (~42x return)</strong></div>
-                  <div>• Growth Case (Yr 4): <strong>$378M Valuation (~215x return)</strong></div>
-                  <div>• PE Buyout (Yr 5): <strong>$416M Valuation (~237x return)</strong></div>
+              <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 text-xs space-y-3">
+                <div className="font-bold text-slate-900 text-sm">Target Investor Returns on $75k SAFE (~4.3% Equity at Cap):</div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                  <div className="p-4 rounded-xl bg-white border border-slate-200">
+                    <div className="text-slate-500 text-[11px]">Base Case M&A (Year 3)</div>
+                    <div className="text-lg font-black text-slate-900 mt-1">$79.1M Valuation</div>
+                    <div className="text-emerald-700 font-bold mt-0.5">~45x Return ($3.4M Payout)</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white border border-slate-200">
+                    <div className="text-slate-500 text-[11px]">Growth Case (Year 4)</div>
+                    <div className="text-lg font-black text-slate-900 mt-1">$537.6M Valuation</div>
+                    <div className="text-emerald-700 font-bold mt-0.5">~307x Return ($23.1M Payout)</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white border border-slate-200">
+                    <div className="text-slate-500 text-[11px]">Conservative PE Recap (Year 5)</div>
+                    <div className="text-lg font-black text-slate-900 mt-1">$816.0M Valuation</div>
+                    <div className="text-emerald-700 font-bold mt-0.5">~466x Return ($35.0M Payout)</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -908,7 +1080,7 @@ export default function StandaloneInvestorApp() {
 
           {/* TAB 7: LEGAL & STATUTORY DISCLOSURES */}
           {activeTab === 'legal' && (
-            <div className="space-y-6 animate-fadeIn">
+            <div className="space-y-8 animate-fadeIn">
               <div>
                 <h2 className="text-2xl font-black text-slate-900">Legal, Regulatory & Statutory Disclosures</h2>
                 <p className="text-xs text-slate-500 mt-1">Dedicated compliance memorandums under US, EU, and Norwegian law.</p>
@@ -933,7 +1105,7 @@ export default function StandaloneInvestorApp() {
                   },
                   {
                     title: 'Closed-Loop Rate Parity Memorandum',
-                    desc: 'Legal antitrust basis under US Sherman Act (15 U.S.C. § 1) and EU Loi Macron for wholesale rate distribution.',
+                    desc: 'Legal antitrust basis under US Sherman Act (15 U.S.C. § 1) and EU DMA for wholesale rate distribution.',
                     href: '/legal/rate-parity-compliance'
                   },
                   {
@@ -951,7 +1123,7 @@ export default function StandaloneInvestorApp() {
                     key={idx}
                     href={item.href}
                     target="_blank"
-                    className="p-5 rounded-2xl border border-slate-200 bg-white hover:border-amber-500/80 transition-all flex flex-col justify-between space-y-2 group"
+                    className="p-5 rounded-2xl border border-slate-200 bg-white hover:border-amber-500/80 transition-all flex flex-col justify-between space-y-2 group shadow-2xs"
                   >
                     <div>
                       <div className="font-bold text-sm text-slate-900 group-hover:text-amber-600 transition-colors flex items-center justify-between">
@@ -967,14 +1139,14 @@ export default function StandaloneInvestorApp() {
           )}
 
           {/* Direct Allocation Contact Box */}
-          <div className="p-6 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <div className="font-bold text-sm">Reserve a SAFE Allocation ($10k Minimum)</div>
-              <div className="text-xs text-slate-400">Direct subscription execution via YC Post-Money SAFE for LLCs.</div>
+          <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+            <div className="space-y-1 text-center sm:text-left">
+              <div className="font-black text-base">Reserve a SAFE Allocation ($10,000 Minimum)</div>
+              <div className="text-xs text-slate-400">Direct subscription execution via YC Post-Money SAFE for LLCs ($75k Round).</div>
             </div>
             <a
               href="mailto:executive@atlas-travel-club.com?subject=ATLAS%20SAFE%20Allocation%20Request"
-              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all flex items-center gap-1.5 shrink-0"
+              className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all flex items-center gap-2 shrink-0 shadow-xs"
             >
               <span>Contact Managing Member</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -1053,44 +1225,33 @@ export default function StandaloneInvestorApp() {
                 </div>
               </div>
 
-              {/* Consent Checkbox */}
-              <div className="flex items-start gap-2.5 pt-1">
+              <label className="flex items-start gap-2.5 pt-2 text-xs text-slate-600 cursor-pointer">
                 <input 
                   type="checkbox" 
-                  id="eSignConsentBox"
                   required
-                  checked={eSignConsent}
-                  onChange={(e) => setESignConsent(e.target.checked)}
-                  className="mt-0.5 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                  checked={ndaAgreed}
+                  onChange={(e) => setNdaAgreed(e.target.checked)}
+                  className="mt-0.5 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
                 />
-                <label htmlFor="eSignConsentBox" className="text-[11px] text-slate-600 cursor-pointer leading-tight">
-                  I agree to the terms of the Mutual Non-Disclosure Agreement and consent to conducting this transaction electronically pursuant to the US E-SIGN Act (15 U.S.C. § 7001) and EU eIDAS regulation.
-                </label>
-              </div>
+                <span>
+                  I consent to electronic signature under 15 U.S.C. § 7001 and agree to be bound by the Mutual Non-Disclosure Agreement.
+                </span>
+              </label>
 
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={isSigning || !eSignConsent || !fullName}
-                  className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
-                >
-                  {isSigning ? (
-                    <span className="flex items-center gap-2">
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      Recording Cryptographic E-Signature...
-                    </span>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                      <span>Execute Digital Signature & Unlock Data Room</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              <p className="text-[10px] text-center text-slate-400">
-                Timestamp, verified email ({email}), and cryptographic hash will be permanently recorded.
-              </p>
+              <button
+                type="submit"
+                disabled={isSigning}
+                className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer mt-2"
+              >
+                {isSigning ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <ShieldCheck className="w-4 h-4 text-amber-400" />
+                    <span>Cryptographically Sign & Enter Data Room</span>
+                  </>
+                )}
+              </button>
             </form>
           </div>
         </div>
@@ -1099,45 +1260,45 @@ export default function StandaloneInvestorApp() {
       {/* DOCUMENT PREVIEW MODAL */}
       {activeDocPreview && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="bg-white border border-slate-200 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-slate-900">
+          <div className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-slate-900">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{activeDocPreview.category}</div>
-                <h3 className="font-bold text-base text-slate-900">{activeDocPreview.title}</h3>
+              <div className="font-black text-sm text-slate-900 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-amber-600" />
+                <span>{activeDocPreview.title}</span>
               </div>
               <button 
                 onClick={() => setActiveDocPreview(null)}
-                className="text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 p-1 text-sm cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="space-y-2">
-              <div className="text-xs font-bold text-slate-500">Key Highlights:</div>
-              <ul className="space-y-2">
-                {activeDocPreview.highlights.map((h, i) => (
-                  <li key={i} className="text-xs text-slate-700 flex items-start gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-                    <span className="text-emerald-600 font-bold">✓</span>
+            <div className="space-y-2.5">
+              <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">Document Core Highlights:</div>
+              <ul className="space-y-2 text-xs text-slate-600">
+                {activeDocPreview.highlights.map((h: string, idx: number) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                     <span>{h}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-100">
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
               <button
                 onClick={() => setActiveDocPreview(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer"
+                className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
               >
-                Close
+                Close Preview
               </button>
 
               {signedData ? (
                 <a
                   href={activeDocPreview.file}
                   download
-                  className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
+                  className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5 text-amber-400" />
                   <span>Download Full PDF</span>
@@ -1146,12 +1307,13 @@ export default function StandaloneInvestorApp() {
                 <button
                   onClick={() => {
                     setActiveDocPreview(null);
-                    setShowNdaModal(true);
+                    if (!isEmailVerified) alert('Please verify your email first.');
+                    else setShowNdaModal(true);
                   }}
-                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer"
                 >
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Sign NDA to Download</span>
+                  <span>Verify to Download</span>
                 </button>
               )}
             </div>
