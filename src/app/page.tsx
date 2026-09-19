@@ -522,11 +522,11 @@ export default function StandaloneInvestorApp() {
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
-                  Delivering <span className="text-amber-600">$1,500+</span> in Direct Member Savings Per Stay at 0% Markup Wholesale.
+                  The Private Members&apos; Travel Club Delivering <span className="text-amber-600">$1,500+</span> in Member Savings Per Stay at 0% Markup Wholesale.
                 </h1>
 
                 <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-3xl">
-                  ATLAS gives frequent luxury travelers direct, password-gated access to raw B2B hotel wholesale rates with <strong>zero retail markup</strong>. While public booking platforms add 25% to 40% in retail markups, our members save <strong>30% to 50% on every 5-star hotel stay</strong>—recouping their entire annual membership fee on their very first booking. We monetize purely through predictable <strong>96% gross margin subscription software ARR</strong> and high-ticket card payment interchange.
+                  ATLAS connects frequent luxury travelers directly to institutional B2B hotel wholesale rates behind a verified, password-gated membership. While public booking platforms add 25% to 40% in retail markups, our members save <strong>30% to 50% on every 5-star hotel stay</strong>—recouping their entire annual membership fee on their very first booking. We monetize purely through predictable <strong>96% gross margin subscription software ARR</strong> and high-ticket card payment interchange.
                 </p>
               </div>
 
