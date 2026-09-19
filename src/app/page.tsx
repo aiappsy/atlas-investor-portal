@@ -236,9 +236,10 @@ export default function StandaloneInvestorApp() {
   const documents = [
     {
       id: 'deck',
-      title: '10-Slide Institutional Presentation',
-      category: 'Strategic Pitch Deck',
+      title: '10-Slide Institutional Presentation (PPTX / PDF)',
+      category: 'Strategic Pitch Deck (PowerPoint)',
       file: '/docs/investors/ATLAS_Investor_Pitch_Deck.pdf',
+      filePptx: '/docs/investors/ATLAS_Investor_Pitch_Deck.pptx',
       desc: 'Delivering $1,500+ member savings per stay at 0% markup wholesale, capturing 96% SaaS gross margins & 1.85% interchange, trust architecture, and the $75k SAFE angel opportunity.',
       highlights: [
         'Direct Wholesale Savings: 100% wholesale net savings passed directly at 0% retail markup.',
@@ -1439,28 +1440,56 @@ export default function StandaloneInvestorApp() {
                       </button>
 
                       {signedData ? (
-                        <a
-                          href={doc.file}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs"
-                        >
-                          <Download className="w-3.5 h-3.5 text-amber-400" />
-                          <span>PDF</span>
-                        </a>
+                        <div className="flex items-center gap-1.5">
+                          {doc.id === 'deck' && (
+                            <a
+                              href="/docs/investors/ATLAS_Investor_Pitch_Deck.pptx"
+                              download
+                              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs"
+                              title="Download PowerPoint Presentation (.pptx)"
+                            >
+                              <Download className="w-3.5 h-3.5 text-slate-950" />
+                              <span>PPTX</span>
+                            </a>
+                          )}
+                          <a
+                            href={doc.file}
+                            download
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs"
+                          >
+                            <Download className="w-3.5 h-3.5 text-amber-400" />
+                            <span>PDF</span>
+                          </a>
+                        </div>
                       ) : (
-                        <button
-                          onClick={() => {
-                            if (!isEmailVerified) alert('Please verify your email address first.');
-                            else setShowNdaModal(true);
-                          }}
-                          className="px-4 py-2 rounded-xl bg-slate-200 text-slate-400 text-xs font-bold flex items-center justify-center gap-1.5 cursor-not-allowed"
-                          title="Execute NDA to download"
-                        >
-                          <Lock className="w-3.5 h-3.5" />
-                          <span>PDF</span>
-                        </button>
+                        <div className="flex items-center gap-1.5">
+                          {doc.id === 'deck' && (
+                            <button
+                              onClick={() => {
+                                if (!isEmailVerified) alert('Please verify your email address first.');
+                                else setShowNdaModal(true);
+                              }}
+                              className="px-3 py-2 rounded-xl bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                              title="Execute NDA to download PPTX"
+                            >
+                              <Lock className="w-3.5 h-3.5" />
+                              <span>PPTX</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={() => {
+                              if (!isEmailVerified) alert('Please verify your email address first.');
+                              else setShowNdaModal(true);
+                            }}
+                            className="px-3 py-2 rounded-xl bg-slate-200 text-slate-500 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                            title="Execute NDA to download PDF"
+                          >
+                            <Lock className="w-3.5 h-3.5" />
+                            <span>PDF</span>
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -1718,16 +1747,28 @@ export default function StandaloneInvestorApp() {
               </button>
 
               {signedData ? (
-                <a
-                  href={activeDocPreview.file}
-                  download
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
-                >
-                  <Download className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Download Full PDF ({activeDocPreview.id.toUpperCase()})</span>
-                </a>
+                <div className="flex items-center gap-2">
+                  {activeDocPreview.id === 'deck' && (
+                    <a
+                      href="/docs/investors/ATLAS_Investor_Pitch_Deck.pptx"
+                      download
+                      className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-xs"
+                    >
+                      <Download className="w-3.5 h-3.5 text-slate-950" />
+                      <span>Download PPTX (PowerPoint)</span>
+                    </a>
+                  )}
+                  <a
+                    href={activeDocPreview.file}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
+                  >
+                    <Download className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Download PDF</span>
+                  </a>
+                </div>
               ) : (
                 <button
                   onClick={() => {
