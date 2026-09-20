@@ -256,7 +256,7 @@ export default function StandaloneInvestorApp() {
       filePptx: '/docs/investors/ATLAS_Investor_Pitch_Deck.pptx',
       desc: 'The complete visual pitch: the $120B OTA middleman tax, how closed-loop clubs legally unlock wholesale rates, 96% SaaS margins, and the $75k angel round.',
       highlights: [
-        'The Costco Model for Travel: 100% of wholesale discounts passed to members at 0% markup.',
+        'Direct Wholesale Model: 100% of wholesale discounts passed to members at 0% markup.',
         'Target Audience: Affluent families, frequent business travelers, remote executives, and founders.',
         'Unit Economics: $1,026 blended ARPU, $110 CAC, 38.4x LTV:CAC, Day-1 member payback.',
         'The Terms: $75,000 on a standard $1.75M Post-Money YC SAFE (~4.3% equity at cap).'
@@ -433,7 +433,7 @@ export default function StandaloneInvestorApp() {
       </header>
 
       {/* ========================================================= */}
-      {/* 2. HERO: THE COSTCO OF LUXURY TRAVEL                      */}
+      {/* 2. HERO: WHOLESALE LUXURY TRAVEL WITHOUT MIDDLEMEN        */}
       {/* ========================================================= */}
       <main className="max-w-5xl mx-auto px-4 sm:px-8 py-10 sm:py-16 space-y-16 sm:space-y-24">
 
@@ -445,11 +445,11 @@ export default function StandaloneInvestorApp() {
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950 leading-[1.12]">
-              The Costco of Luxury Travel.
+              Wholesale Luxury Travel Without the Middleman Tax.
             </h1>
 
             <p className="text-xl sm:text-2xl font-bold text-slate-800 leading-snug">
-              Expedia and Booking.com charge a 25% middleman tax on every hotel room. ATLAS cuts them out.
+              Booking.com and Expedia take 25% out of every hotel booking. ATLAS cuts them out.
             </p>
 
             <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl">
