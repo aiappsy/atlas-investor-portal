@@ -4,9 +4,9 @@
   "description": "ATLAS Travel Club - Dedicated Institutional Investor Portal & Data Room",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3010",
+    "dev": "next dev -p 3020",
     "build": "next build",
-    "start": "next start -p 3010",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
