@@ -57,19 +57,42 @@ export default function StandaloneInvestorApp() {
   // Interactive FAQ State
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  // Load Session from localStorage
+  // Load Session from localStorage & Verify with Server
   useEffect(() => {
     try {
+      // Purge all old/stale sessions so the user starts locked until fresh verification
       localStorage.removeItem('atlas_verified_email');
+      localStorage.removeItem('atlas_investor_session');
       localStorage.removeItem('atlas_investor_session_v2');
+      localStorage.removeItem('atlas_investor_session_v3');
 
-      const saved = localStorage.getItem('atlas_investor_session_v3');
+      // Check if active v4 session exists
+      const saved = localStorage.getItem('atlas_investor_session_v4');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.signatureHash && parsed.email) {
-          setSignedData(parsed);
-          setEmail(parsed.email);
-          setIsEmailVerified(true);
+          // Verify with server endpoint
+          fetch('/api/investors/verify-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ signatureHash: parsed.signatureHash, email: parsed.email })
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.authenticated) {
+                setSignedData(parsed);
+                setEmail(parsed.email);
+                setIsEmailVerified(true);
+              } else {
+                localStorage.removeItem('atlas_investor_session_v4');
+                setSignedData(null);
+                setIsEmailVerified(false);
+              }
+            })
+            .catch(() => {
+              setSignedData(null);
+              setIsEmailVerified(false);
+            });
         }
       }
     } catch (e) {
@@ -170,18 +193,22 @@ export default function StandaloneInvestorApp() {
       }).catch(() => {});
 
       setSignedData(signatureRecord);
-      localStorage.setItem('atlas_investor_session_v3', JSON.stringify(signatureRecord));
+      localStorage.setItem('atlas_investor_session_v4', JSON.stringify(signatureRecord));
       setShowNdaModal(false);
     } catch (err) {
       setSignedData(signatureRecord);
-      localStorage.setItem('atlas_investor_session_v3', JSON.stringify(signatureRecord));
+      localStorage.setItem('atlas_investor_session_v4', JSON.stringify(signatureRecord));
       setShowNdaModal(false);
     } finally {
       setIsSigning(false);
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/investors/logout', { method: 'POST' });
+    } catch {}
+    localStorage.removeItem('atlas_investor_session_v4');
     localStorage.removeItem('atlas_investor_session_v3');
     localStorage.removeItem('atlas_investor_session_v2');
     localStorage.removeItem('atlas_verified_email');
@@ -267,7 +294,7 @@ export default function StandaloneInvestorApp() {
       id: 'prospectus',
       title: 'Confidential Investment Prospectus & PPM (PDF)',
       category: 'Official Offering Prospectus',
-      file: '/docs/investors/ATLAS_Confidential_Prospectus.pdf',
+      file: '/api/investors/documents/prospectus',
       desc: 'The official 6-page Private Placement Memorandum: corporate governance, zero-inventory balance sheet mechanics, capital allocation breakdown, and regulatory safe harbor brief.',
       highlights: [
         'Corporate Structure: ATLAS Travel Club LLC (Manager-Managed Delaware/Wyoming structure).',
@@ -280,8 +307,8 @@ export default function StandaloneInvestorApp() {
       id: 'deck',
       title: '10-Slide Strategic Investor Presentation (PPTX / PDF)',
       category: 'Strategic Pitch Deck',
-      file: '/docs/investors/ATLAS_Investor_Pitch_Deck.pdf',
-      filePptx: '/docs/investors/ATLAS_Investor_Pitch_Deck.pptx',
+      file: '/api/investors/documents/deck',
+      filePptx: '/api/investors/documents/deck?format=pptx',
       desc: 'The complete visual pitch deck: the $120B OTA middleman tax, how closed-loop clubs legally unlock wholesale rates, 96% SaaS margins, and the $75k angel round.',
       highlights: [
         'Direct Wholesale Model: 100% of wholesale discounts passed to members at 0% markup.',
@@ -294,7 +321,7 @@ export default function StandaloneInvestorApp() {
       id: 'financials',
       title: '5-Year Financial Model & Use of Proceeds (PDF)',
       category: 'Financial Forecast',
-      file: '/docs/investors/ATLAS_5Year_Financial_Model.pdf',
+      file: '/api/investors/documents/financials',
       desc: 'Comprehensive 6-page financial model detailing Year 1 to Year 5 pro-forma income statement, unit economics, cash flow curves, sensitivity matrix, and line-item budget allocation.',
       highlights: [
         'Use of Proceeds: 57% human execution ($43k), 20% supplier APIs & licensing ($15k), 15% acquisition ($11k).',
@@ -307,7 +334,7 @@ export default function StandaloneInvestorApp() {
       id: 'safe',
       title: 'Standard Investment Agreement — YC SAFE (PDF)',
       category: 'Investment Agreement',
-      file: '/docs/investors/ATLAS_SAFE_Term_Sheet_LLC.pdf',
+      file: '/api/investors/documents/safe',
       desc: 'Standard Y Combinator Post-Money SAFE with 20% conversion discount, $1.75M valuation cap, and optional Delaware C-Corp / QSBS tax conversion.',
       highlights: [
         'Target Round: $75,000 USD (Minimum check: $5,000 | Target check: $25,000).',
@@ -320,7 +347,7 @@ export default function StandaloneInvestorApp() {
       id: 'faq',
       title: 'Investor Due Diligence FAQ & Risk Brief (PDF)',
       category: 'Due Diligence Brief',
-      file: '/docs/investors/ATLAS_Due_Diligence_FAQ.pdf',
+      file: '/api/investors/documents/faq',
       desc: 'Formal due diligence brief answering critical legal, competitive, and operational risk questions for angel investors evaluating ATLAS.',
       highlights: [
         'Rate Parity Safe Harbor: US Sherman Act and EU DMA legal precedents protecting closed-loop clubs.',
@@ -333,7 +360,7 @@ export default function StandaloneInvestorApp() {
       id: 'exit',
       title: 'Strategic Exit Opportunities & M&A Landscape (PDF)',
       category: 'Exit Analysis',
-      file: '/docs/investors/ATLAS_Strategic_Exit_Opportunities.pdf',
+      file: '/api/investors/documents/exit',
       desc: 'Precedent acquisitions (Capital One bought Velocity Black for $297M; Chase bought Frosch), strategic acquirers, and return multiples across 3 exit horizons.',
       highlights: [
         'FinTech & Card Issuers: Premium banks pay high multiples for recurring high-spending cardholders.',
@@ -346,7 +373,7 @@ export default function StandaloneInvestorApp() {
       id: 'tech',
       title: 'Technical Architecture & Network Manual (PDF)',
       category: 'Engineering & Scalability',
-      file: '/docs/investors/ATLAS_Technical_Architecture_Google_Cloud.pdf',
+      file: '/api/investors/documents/tech',
       desc: 'Serverless architecture built on Google Cloud: Cloud Run, Vertex AI (Gemini 2.0 Flash), Cloud SQL PostgreSQL v16, and Secret Manager.',
       highlights: [
         'Serverless Scalability: Google Cloud Run scales automatically to handle booking traffic bursts.',
@@ -359,7 +386,7 @@ export default function StandaloneInvestorApp() {
       id: 'suite',
       title: 'Complete Master Investor Document Suite (PDF)',
       category: 'Master Document',
-      file: '/docs/investors/ATLAS_Complete_Investor_Suite.pdf',
+      file: '/api/investors/documents/suite',
       desc: 'The comprehensive 14-page unified compilation containing the full prospectus, financial model, SAFE term sheet, diligence FAQ, and technical architecture in a single file.',
       highlights: [
         'All-in-One Package: Complete due diligence package for institutional review.',
@@ -372,7 +399,7 @@ export default function StandaloneInvestorApp() {
       id: 'bedbank',
       title: 'Wholesale Bedbank Strategy & Margin Architecture (PDF)',
       category: 'Supplier Architecture',
-      file: '/docs/investors/ATLAS_Wholesale_Bedbank_Strategy.pdf',
+      file: '/api/investors/documents/bedbank',
       desc: 'Deep-dive analysis on global wholesale hotel distribution (RateHawk, Hotelbeds, WebBeds) and how ATLAS passes 100% of discounts to subscribers at zero inventory liability.',
       highlights: [
         'Supplier Architecture: Multi-bedbank aggregation prevents single-supplier lock-in.',
@@ -384,7 +411,7 @@ export default function StandaloneInvestorApp() {
       id: 'nda',
       title: 'Mutual Non-Disclosure Agreement (PDF)',
       category: 'Legal Document',
-      file: '/docs/investors/ATLAS_Mutual_NDA.pdf',
+      file: '/api/investors/documents/nda',
       desc: 'Formal 6-page mutual confidentiality and proprietary information agreement protecting proprietary supplier feeds and commercial strategies.',
       highlights: [
         'Two-Way Protection: Protects proprietary evaluation materials and investor disclosures.',
@@ -625,9 +652,18 @@ export default function StandaloneInvestorApp() {
           {!sidebarCollapsed ? (
             <>
               {signedData ? (
-                <div className="flex items-center gap-2 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span className="truncate">Access Unlocked</span>
+                <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
+                  <div className="flex items-center gap-1.5 truncate">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span className="truncate">Access Unlocked</span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    title="Lock Access and Test Verification Gate"
+                    className="p-1 text-emerald-700 hover:text-slate-900 rounded hover:bg-emerald-100 cursor-pointer transition-colors"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               ) : (
                 <button
@@ -1542,7 +1578,7 @@ export default function StandaloneInvestorApp() {
                     <div className="flex items-center gap-1.5">
                       {doc.filePptx && (
                         <a
-                          href={doc.filePptx}
+                          href={`${doc.filePptx}&hash=${encodeURIComponent(signedData.signatureHash)}`}
                           download
                           className="px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs"
                           title="Download PowerPoint (.pptx)"
@@ -1552,7 +1588,7 @@ export default function StandaloneInvestorApp() {
                         </a>
                       )}
                       <a
-                        href={doc.file}
+                        href={`${doc.file}?hash=${encodeURIComponent(signedData.signatureHash)}`}
                         download
                         target="_blank"
                         rel="noopener noreferrer"
@@ -1712,7 +1748,7 @@ export default function StandaloneInvestorApp() {
                   <div className="flex items-center gap-2">
                     {activeDocPreview.filePptx && (
                       <a
-                        href={activeDocPreview.filePptx}
+                        href={`${activeDocPreview.filePptx}&hash=${encodeURIComponent(signedData.signatureHash)}`}
                         download
                         className="px-3 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 flex items-center gap-1.5 shadow-2xs"
                       >
@@ -1721,7 +1757,7 @@ export default function StandaloneInvestorApp() {
                       </a>
                     )}
                     <a
-                      href={activeDocPreview.file}
+                      href={`${activeDocPreview.file}?hash=${encodeURIComponent(signedData.signatureHash)}`}
                       download
                       target="_blank"
                       rel="noopener noreferrer"

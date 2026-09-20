@@ -95,12 +95,22 @@ export async function POST(req: NextRequest) {
     }
     saveSignatures(signatures);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       signature: signatureRecord,
       record: signatureRecord,
       message: 'Mutual Non-Disclosure Agreement successfully executed and recorded.',
     });
+
+    response.cookies.set('atlas_investor_auth', signatureRecord.signatureHash, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    });
+
+    return response;
   } catch (err: any) {
     console.error('Error recording NDA signature:', err);
     return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
