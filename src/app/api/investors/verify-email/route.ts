@@ -49,8 +49,8 @@ function appendAuditLog(email: string, code: string, status: string, error?: str
 function getTransporter() {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = parseInt(process.env.SMTP_PORT || '465', 10);
-  const user = process.env.SMTP_USER || process.env.SENDER_EMAIL;
-  const pass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
+  const user = (process.env.SMTP_USER || process.env.SENDER_EMAIL || '').trim();
+  const pass = (process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || '').trim().replace(/\s+/g, '');
 
   if (!user || !pass || pass === 'PLACEHOLDER_COMPLETED') {
     return null;
@@ -139,10 +139,10 @@ executive@atlastravelclub.com
 
   if (!transporter) {
     console.log(`[EMAIL DISPATCH - LOCAL/DEV] Code: ${code} for recipient: ${recipient}`);
-    appendAuditLog(recipient, code, 'SAVED_LOCAL_DEV_NO_SMTP');
+    appendAuditLog(recipient, code, 'SAVED_LOCAL_DEV_NO_SMTP', 'Missing SMTP credentials in .env.local');
     return {
-      sent: true,
-      message: `Verification code generated and recorded for ${recipient}.`,
+      sent: false,
+      message: `Verification code recorded in local audit log (data/verification_emails_sent.log). To enable real Gmail delivery, add SMTP_PASS in .env.local.`,
     };
   }
 
@@ -164,8 +164,8 @@ executive@atlastravelclub.com
     console.error(`[EMAIL DISPATCH ERROR] Failed to send email to ${recipient}:`, error);
     appendAuditLog(recipient, code, 'SMTP_FAILED', error.message);
     return {
-      sent: true,
-      message: `Code generated for ${recipient}. Note: SMTP delivery encountered an issue (${error.message}).`,
+      sent: false,
+      message: `Gmail SMTP delivery failed: ${error.message}`,
     };
   }
 }
