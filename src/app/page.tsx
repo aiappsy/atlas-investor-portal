@@ -27,6 +27,7 @@ export default function StandaloneInvestorApp() {
 
   // Interactive Check Calculator State ($5k / $10k / $25k / $75k)
   const [selectedCheck, setSelectedCheck] = useState<5000 | 10000 | 25000 | 75000>(25000);
+  const [showReturnDetailsModal, setShowReturnDetailsModal] = useState(false);
 
   // Real-World Example Trip Selector State ('city' | 'vacation' | 'annual')
   const [exampleTrip, setExampleTrip] = useState<'city' | 'vacation' | 'annual'>('city');
@@ -808,6 +809,21 @@ export default function StandaloneInvestorApp() {
                 <strong>Annual Cash Dividends:</strong> If we choose not to sell, our projected Year 3 EBITDA of $13.1M allows annual dividend distributions yielding ~<strong>${Math.round(dividendYr3 / 1000)}k / year in cash</strong> on your ${selectedCheck.toLocaleString()} check ({Math.round((dividendYr3 / selectedCheck) * 100)}% annual cash yield).
               </div>
             </div>
+
+            {/* Detailed Calculations Modal Trigger */}
+            <div className="pt-3 border-t border-amber-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setShowReturnDetailsModal(true)}
+                className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900 hover:text-amber-950 underline decoration-amber-400 hover:decoration-amber-700 cursor-pointer transition-all"
+              >
+                <Calculator className="w-4 h-4 text-amber-700" />
+                <span>How are these returns calculated? View detailed math, assumptions &amp; valuation matrix →</span>
+              </button>
+              <div className="text-xs text-slate-500 font-medium">
+                Standard YC Post-Money SAFE • $1.75M Cap
+              </div>
+            </div>
           </div>
 
           {/* 3 Liquidity Paths */}
@@ -1447,6 +1463,193 @@ export default function StandaloneInvestorApp() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* DETAILED ANGEL RETURN CALCULATIONS & ASSUMPTIONS MODAL    */}
+      {/* ========================================================= */}
+      {showReturnDetailsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/75 backdrop-blur-xs">
+          <div className="w-full max-w-3xl bg-white rounded-3xl p-6 sm:p-8 space-y-6 border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto">
+            
+            {/* Header */}
+            <div className="flex items-start justify-between border-b border-slate-200 pb-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-950 text-xs font-bold uppercase tracking-wider">
+                  <Calculator className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Transparent Financial Math</span>
+                </div>
+                <h3 className="font-black text-slate-950 text-xl sm:text-2xl">
+                  Detailed Return Calculations &amp; Assumptions
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600">
+                  Full mathematical breakdown for a <strong>${selectedCheck.toLocaleString()}</strong> check at the <strong>$1.75M valuation cap</strong>.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowReturnDetailsModal(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Section 1: The Core Formula */}
+            <div className="p-5 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-3">
+              <div className="text-xs font-bold text-amber-900 uppercase tracking-wider">1. The Ownership Formula</div>
+              <div className="p-3.5 rounded-xl bg-white border border-amber-200 font-mono text-xs sm:text-sm text-slate-900 space-y-1">
+                <div>Equity % = (Investment Check / Valuation Cap)</div>
+                <div className="text-amber-800 font-bold">
+                  Equity % = (${selectedCheck.toLocaleString()} / $1,750,000) = {equityPct}% ownership
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                You are investing via a standard Y Combinator Post-Money SAFE (Simple Agreement for Future Equity). This means your equity percentage is fixed against the $1.75M cap and will not be diluted by any other convertible notes or SAFEs prior to the next priced venture round.
+              </p>
+            </div>
+
+            {/* Section 2: Step-by-Step Scenario Breakdown */}
+            <div className="space-y-4">
+              <div className="text-sm font-black text-slate-950 uppercase tracking-wider">
+                2. How Each Scenario Is Calculated on Your ${selectedCheck.toLocaleString()} Check
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                {/* Seed Round */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="font-bold text-slate-950 flex items-center justify-between">
+                    <span>A. Next Funding Round (12–15 Mos)</span>
+                    <span className="text-amber-800 font-mono font-black">8.6x – 11.4x</span>
+                  </div>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    <strong>Assumption:</strong> ATLAS reaches 1,000 active paying members ($1.5M ARR) on the $75k runway, raising a Series Seed at a <strong>$15M to $20M valuation</strong> (standard 10x–13x ARR SaaS multiple).
+                  </p>
+                  <div className="pt-2 border-t border-slate-200 font-mono text-xs text-slate-800">
+                    <div>• Value at $15M: <strong>${Math.round(seedValLow).toLocaleString()}</strong> (8.6x)</div>
+                    <div>• Value at $20M: <strong>${Math.round(seedValHigh).toLocaleString()}</strong> (11.4x)</div>
+                  </div>
+                </div>
+
+                {/* Strategic M&A */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="font-bold text-slate-950 flex items-center justify-between">
+                    <span>B. Mid-Market Acquisition (Year 3)</span>
+                    <span className="text-emerald-800 font-mono font-black">~34.3x</span>
+                  </div>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    <strong>Assumption:</strong> Acquired by a card issuer (e.g. Capital One acquired Velocity Black for $297M; Chase acquired Frosch) or travel platform at <strong>$60M</strong> (~2.6x Year 3 revenue of $22.6M, or ~4.5x EBITDA of $13.1M).
+                  </p>
+                  <div className="pt-2 border-t border-slate-200 font-mono text-xs text-emerald-800 font-bold">
+                    <div>• Cash payout: <strong>${Math.round(exitYr3).toLocaleString()}</strong></div>
+                  </div>
+                </div>
+
+                {/* Scale Exit */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="font-bold text-slate-950 flex items-center justify-between">
+                    <span>C. Scale Buyout (Year 5)</span>
+                    <span className="text-purple-800 font-mono font-black">~100x</span>
+                  </div>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    <strong>Assumption:</strong> Acquired at <strong>$175M</strong>, representing just 1.2x projected Year 5 revenue ($143.7M) or 1.7x projected Year 5 EBITDA ($102.4M).
+                  </p>
+                  <div className="pt-2 border-t border-slate-200 font-mono text-xs text-purple-800 font-bold">
+                    <div>• Cash payout: <strong>${Math.round(exitYr4).toLocaleString()}</strong></div>
+                  </div>
+                </div>
+
+                {/* Annual Cash Dividend */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="font-bold text-slate-950 flex items-center justify-between">
+                    <span>D. Annual Cash Dividend Yield</span>
+                    <span className="text-blue-800 font-mono font-black">750% / yr</span>
+                  </div>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    <strong>Assumption:</strong> If held privately, Year 3 projected EBITDA is $13.13M. With 96% SaaS gross margins, cash is distributed to equity holders annually.
+                  </p>
+                  <div className="pt-2 border-t border-slate-200 font-mono text-xs text-blue-800 font-bold">
+                    <div>• Annual cash dividend: ~<strong>${Math.round(dividendYr3).toLocaleString()} / year</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3: Sensitivity Matrix Table across all Check Sizes */}
+            <div className="space-y-3">
+              <div className="text-sm font-black text-slate-950 uppercase tracking-wider">
+                3. Complete Valuation Sensitivity Matrix
+              </div>
+              <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider">
+                        <th className="p-3 pl-4">Check Size</th>
+                        <th className="p-3">Equity %</th>
+                        <th className="p-3">Next Round ($15M)</th>
+                        <th className="p-3">Early Sale ($35M)</th>
+                        <th className="p-3">Base Sale ($60M)</th>
+                        <th className="p-3 pr-4">Scale Sale ($175M)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-mono text-slate-800">
+                      {[5000, 10000, 25000, 75000].map((chk) => {
+                        const eq = (chk / 1750000);
+                        const isSel = chk === selectedCheck;
+                        return (
+                          <tr key={chk} className={isSel ? 'bg-amber-50/80 font-bold text-amber-950' : 'hover:bg-slate-50'}>
+                            <td className="p-3 pl-4 font-sans font-bold">
+                              ${chk.toLocaleString()} {isSel && <span className="text-[10px] bg-amber-200 px-1.5 py-0.5 rounded ml-1 font-mono">SELECTED</span>}
+                            </td>
+                            <td className="p-3">{(eq * 100).toFixed(2)}%</td>
+                            <td className="p-3 text-amber-700">${Math.round(chk * (15000000 / 1750000)).toLocaleString()}</td>
+                            <td className="p-3 text-slate-700">${Math.round(chk * (35000000 / 1750000)).toLocaleString()}</td>
+                            <td className="p-3 text-emerald-700">${Math.round(chk * (60000000 / 1750000)).toLocaleString()}</td>
+                            <td className="p-3 pr-4 text-purple-700 font-black">${Math.round(chk * (175000000 / 1750000)).toLocaleString()}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                * Note on Dilution: Exit payouts illustrate pre-dilution equity value. Subsequent institutional priced venture rounds typically dilute early convertible holders by 15%–20% per round, offset by standard pro-rata participation rights.
+              </p>
+            </div>
+
+            {/* Modal Action Footer */}
+            <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <button
+                onClick={() => setShowReturnDetailsModal(false)}
+                className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-bold transition-all cursor-pointer"
+              >
+                Close Breakdown
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setShowReturnDetailsModal(false);
+                    scrollTo('dataroom');
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-all shadow-xs cursor-pointer"
+                >
+                  Download Full Prospectus
+                </button>
+                <a
+                  href="mailto:executive@atlastravelclub.com?subject=ATLAS%20SAFE%20Investment%20Commitment"
+                  className="px-4 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+                >
+                  <span>Commit a Check</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
+                </a>
+              </div>
+            </div>
+
           </div>
         </div>
       )}
