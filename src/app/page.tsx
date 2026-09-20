@@ -30,8 +30,8 @@ export default function StandaloneInvestorApp() {
   const [selectedCheck, setSelectedCheck] = useState<5000 | 10000 | 25000 | 75000>(25000);
   const [showReturnDetailsModal, setShowReturnDetailsModal] = useState(false);
 
-  // Real-World Example Trip Selector State ('city' | 'vacation' | 'annual')
-  const [exampleTrip, setExampleTrip] = useState<'city' | 'vacation' | 'annual'>('city');
+  // Investor Member Cohort Scenario State ('frequent' | 'luxury' | 'blended')
+  const [selectedCohort, setSelectedCohort] = useState<'frequent' | 'luxury' | 'blended'>('blended');
 
   // 2-Step Gate State
   const [email, setEmail] = useState('');
@@ -215,46 +215,52 @@ export default function StandaloneInvestorApp() {
   const exitYr3 = selectedCheck * (60000000 / cap);
   const exitYr4 = selectedCheck * (175000000 / cap);
 
-  const tripScenarios = {
-    city: {
-      title: '4-Night City Stay (London, Paris, NYC)',
-      subtitle: 'Standard 4-star boutique hotel for a weekend or business trip',
-      nights: 4,
-      publicNightly: 240,
-      publicTotal: 960,
-      otaMarkup: 240,
-      wholesaleNightly: 160,
-      wholesaleTotal: 640,
-      savings: 320,
-      paybackNote: 'Saves $320 in cash on trip #1—recouping nearly half the annual membership in 4 days.'
+  const cohortScenarios = {
+    blended: {
+      id: 'blended',
+      name: 'Blended Cohort (Portfolio Average)',
+      tagline: 'Target Mix across Business Travelers, Affluent Families & Founders',
+      annualDues: 1026,
+      cac: 110,
+      ltv: 4228,
+      ltvCac: '38.4x',
+      grossMargin: '96.2%',
+      paybackPeriod: 'Day 1 (Immediate Float)',
+      annualRetention: '86%',
+      avgMemberLifespan: '4.6 Years',
+      cashFloatNote: '100% of membership dues collected upfront, funding organic expansion before any hotel stay.'
     },
-    vacation: {
-      title: '7-Night Family Holiday (Mallorca, Bali, French Riviera)',
-      subtitle: 'Upscale resort suite for annual family holiday',
-      nights: 7,
-      publicNightly: 260,
-      publicTotal: 1820,
-      otaMarkup: 455,
-      wholesaleNightly: 175,
-      wholesaleTotal: 1225,
-      savings: 595,
-      paybackNote: 'Saves $595 immediately—the annual membership pays for itself on a single vacation.'
+    frequent: {
+      id: 'frequent',
+      name: 'Frequent Business & Tech Remote Tier ($799/yr)',
+      tagline: 'Individual executive road-warriors and digital nomads booking 4–8 trips/yr',
+      annualDues: 799,
+      cac: 95,
+      ltv: 3196,
+      ltvCac: '33.6x',
+      grossMargin: '96.5%',
+      paybackPeriod: 'Day 1 (Immediate Float)',
+      annualRetention: '84%',
+      avgMemberLifespan: '4.2 Years',
+      cashFloatNote: '$799 upfront cash float per member with negative working capital requirements.'
     },
-    annual: {
-      title: 'Typical Member Year (3 Trips Total)',
-      subtitle: 'One family vacation + two weekend city getaways (15 nights total)',
-      nights: 15,
-      publicNightly: 250,
-      publicTotal: 3750,
-      otaMarkup: 938,
-      wholesaleNightly: 168,
-      wholesaleTotal: 2515,
-      savings: 1235,
-      paybackNote: 'Net $1,235 in cash back in the traveler\'s pocket after paying the $799 membership.'
+    luxury: {
+      id: 'luxury',
+      name: 'Affluent Family & Global Nomad Tier ($1,799/yr)',
+      tagline: 'High-net-worth families booking multi-week luxury resorts, villas & suites',
+      annualDues: 1799,
+      cac: 140,
+      ltv: 8995,
+      ltvCac: '64.3x',
+      grossMargin: '95.8%',
+      paybackPeriod: 'Day 1 (Immediate Float)',
+      annualRetention: '89%',
+      avgMemberLifespan: '5.1 Years',
+      cashFloatNote: '$1,799 upfront cash float per member with near-zero cancellation risk.'
     }
   };
 
-  const activeScenario = tripScenarios[exampleTrip];
+  const activeCohort = cohortScenarios[selectedCohort];
 
   const documents = [
     {
@@ -668,6 +674,9 @@ export default function StandaloneInvestorApp() {
       <div className="flex-1 min-w-0">
         <main className="max-w-5xl mx-auto px-4 sm:px-8 py-10 sm:py-16 space-y-16 sm:space-y-24">
 
+        {/* ========================================================= */}
+        {/* 1. HERO: ANGEL INVESTMENT MEMO & VENTURE THESIS           */}
+        {/* ========================================================= */}
         <section id="hero" className="space-y-8 scroll-mt-24">
           <div className="space-y-5">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-950 text-xs font-bold border border-amber-300">
@@ -676,20 +685,24 @@ export default function StandaloneInvestorApp() {
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950 leading-[1.12]">
-              Wholesale Luxury Travel Without the Middleman Tax.
+              An Asymmetric Venture Investment in Subscription Travel.
             </h1>
 
             <p className="text-xl sm:text-2xl font-bold text-slate-800 leading-snug">
-              Booking.com and Expedia take 25% out of every hotel booking. ATLAS cuts them out.
+              Disrupting the $120B OTA monopoly with negative working capital, 96% software gross margins, and zero hotel inventory liabilities.
             </p>
 
-            <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl">
-              Hotels have 30% empty rooms every night that expire worthless at midnight. Their contracts legally forbid them from discounting publicly on Google. So they quietly liquidate unsold rooms to our private members at <strong>true wholesale cost (30% to 50% off)</strong>.
-            </p>
-
-            <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl">
-              We pass 100% of the wholesale discount to members at <strong>0% markup</strong>. In return, we collect high-margin annual subscription fees upfront. <strong>Zero hotel inventory liabilities. 96% SaaS margins. Live software working today.</strong>
-            </p>
+            <div className="space-y-3 text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl">
+              <p>
+                Booking.com and Expedia extract $30B+ in transaction commissions each year while burning $12B+ on Google search ads to re-acquire the exact same travelers on every trip. <strong>ATLAS replaces transactional broker fees with an exclusive, high-retention annual membership club.</strong>
+              </p>
+              <p>
+                By utilizing closed-loop legal exemptions under the Sherman Act and EU Digital Markets Act, ATLAS passes unpublicized wholesale hotel inventory directly to vetted members at <strong>0% markup</strong>. In exchange, ATLAS collects 100% of high-margin annual subscription dues upfront ($799 to $1,799/yr) before providing any service.
+              </p>
+              <p>
+                <strong>The Result for Venture Backers:</strong> Negative working capital float, zero balance sheet inventory risk, $110 blended CAC, 38.4x LTV:CAC, and live working software running today.
+              </p>
+            </div>
 
             {/* Quick Action CTAs */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -698,14 +711,14 @@ export default function StandaloneInvestorApp() {
                 className="px-6 py-3.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-black transition-all shadow-md cursor-pointer flex items-center gap-2 hover:scale-[1.01]"
               >
                 <HandCoins className="w-4 h-4 text-amber-400" />
-                <span>Calculate Your Angel Return ↓</span>
+                <span>Calculate Your Angel Return Multiple ↓</span>
               </button>
               <button
                 onClick={() => scrollTo('dataroom')}
                 className="px-5 py-3.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-900 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-2"
               >
                 <FileText className="w-4 h-4 text-slate-600" />
-                <span>Get Full Prospectus & Pitch Deck</span>
+                <span>Access Confidential Data Room & Documents</span>
               </button>
             </div>
           </div>
@@ -721,55 +734,55 @@ export default function StandaloneInvestorApp() {
             <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
               <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Valuation Cap</div>
               <div className="text-2xl sm:text-3xl font-black text-slate-950">$1.75M</div>
-              <div className="text-xs text-emerald-800 font-bold">~4.3% Equity at Cap</div>
+              <div className="text-xs text-emerald-800 font-bold">~4.3% Equity at Cap (Low Entry Basis)</div>
             </div>
 
             <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
               <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Series Seed Target</div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-950">10x – 15x</div>
+              <div className="text-2xl sm:text-3xl font-black text-slate-950">8.6x – 11.4x</div>
               <div className="text-xs text-emerald-800 font-bold">$15M–$20M Cap in 12–15 Mos</div>
             </div>
 
             <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
-              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Inventory Risk</div>
-              <div className="text-2xl sm:text-3xl font-black text-emerald-700">$0.00</div>
-              <div className="text-xs text-slate-600 font-semibold">Zero Pre-Purchased Rooms</div>
+              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Working Capital</div>
+              <div className="text-2xl sm:text-3xl font-black text-emerald-700">Day 1 Float</div>
+              <div className="text-xs text-slate-600 font-semibold">$0 Pre-Purchased Rooms</div>
             </div>
           </div>
         </section>
 
         {/* ========================================================= */}
-        {/* 3. HOW IT WORKS: THE DIRTY SECRET IN TRAVEL               */}
+        {/* 2. THE VENTURE THESIS & INCUMBENT DILEMMA                  */}
         {/* ========================================================= */}
         <section id="how-it-works" className="space-y-8 scroll-mt-24">
           <div className="border-b border-slate-200 pb-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 text-xs font-bold uppercase tracking-wider mb-2">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-              <span>The Market Opportunity</span>
+              <span>The Venture Opportunity</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-950">The Dirty Secret in Hotel Booking</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-950">The Incumbent Innovator&apos;s Dilemma</h2>
             <p className="text-sm text-slate-600 mt-1 max-w-3xl">
-              Why hotels hate Expedia and Booking.com, and how ATLAS uses legal wholesale loopholes to pass pure savings to travelers.
+              Why legacy OTAs are structurally trapped by a $30B commission addiction, creating a wide-open runway for subscription travel.
             </p>
           </div>
 
-          {/* Interactive Travel Scenario */}
+          {/* Interactive Member Cohort Selector */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div>
-              <div className="text-xs font-bold text-slate-950 uppercase tracking-wider">Select a Real-World Trip:</div>
-              <div className="text-xs text-slate-500 font-medium">See the actual dollar difference between public retail and ATLAS wholesale.</div>
+              <div className="text-xs font-bold text-slate-950 uppercase tracking-wider">Analyze Venture Cohort Unit Economics:</div>
+              <div className="text-xs text-slate-500 font-medium">Select a customer profile to inspect real CAC, LTV, upfront cash float, and retention economics.</div>
             </div>
             <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
               {[
-                { id: 'city', label: '🏙️ 4-Night City Trip ($240/nt)' },
-                { id: 'vacation', label: '🏖️ 7-Night Vacation ($260/nt)' },
-                { id: 'annual', label: '✈️ 3 Trips a Year ($1,235 Saved)' }
+                { id: 'blended', label: '📊 Blended Cohort (38.4x LTV:CAC)' },
+                { id: 'frequent', label: '💼 Executive & Tech Nomad ($799/yr)' },
+                { id: 'luxury', label: '💎 Affluent Family ($1,799/yr)' }
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setExampleTrip(tab.id as any)}
+                  onClick={() => setSelectedCohort(tab.id as any)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                    exampleTrip === tab.id 
+                    selectedCohort === tab.id 
                       ? 'bg-slate-950 text-white shadow-xs' 
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200'
                   }`}
@@ -780,86 +793,94 @@ export default function StandaloneInvestorApp() {
             </div>
           </div>
 
-          {/* Comparison Cards */}
+          {/* Comparison Cards: Transactional Broker vs Subscription SaaS */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700 leading-relaxed">
-            {/* The Old Way */}
+            {/* The Incumbent Model */}
             <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-4">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-900 font-bold text-xs">
-                The Public Sites (Expedia &amp; Booking.com)
+                The Incumbent Model (Booking.com &amp; Expedia)
               </div>
-              <h3 className="font-black text-slate-950 text-lg">25% Tolls &amp; Zero Savings</h3>
+              <h3 className="font-black text-slate-950 text-lg">Transactional Churn &amp; The Google Ad Tax</h3>
               <div className="space-y-2.5 text-xs sm:text-sm text-slate-600">
                 <p>
-                  <strong>1. High Commissions:</strong> Public booking sites take $25 to $35 out of every $100 you spend, blowing it on Google search ads.
+                  <strong>1. Endless Paid Acquisition:</strong> OTAs burn $12B+ per year bidding on Google search ads. Every booking forces them to repurchase the same user against competing OTAs.
                 </p>
                 <p>
-                  <strong>2. Legal Gag Rules:</strong> Hotels sign "Rate Parity" contracts forbidding them from posting discounts openly on the internet.
+                  <strong>2. Zero Pre-Funded Float:</strong> Revenue is collected only per transaction at checkout. If a travel downturn hits, transaction revenues collapse immediately.
                 </p>
                 <p>
-                  <strong>3. The Traveler Loses:</strong> You pay full retail price every time, with zero reward for being a loyal customer.
+                  <strong>3. Weak Organic Loyalty:</strong> Over 80% of retail travelers re-open Google search for their subsequent trip rather than navigating directly to any single OTA portal.
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-white border border-slate-200 font-mono text-xs text-slate-800 space-y-2">
-                <div className="text-xs uppercase font-bold text-slate-600">{activeScenario.title}</div>
-                <div className="text-xs text-slate-500 font-sans">{activeScenario.subtitle}</div>
+                <div className="text-xs uppercase font-bold text-slate-600">Incumbent Unit Economics</div>
+                <div className="text-xs text-slate-500 font-sans">Vulnerable to search ad inflation and fee compression</div>
                 <div className="flex justify-between border-b border-slate-100 pt-1 pb-1">
-                  <span>Public Rate:</span>
-                  <span className="font-bold">${activeScenario.publicNightly} / night</span>
+                  <span>Customer Acquisition Cost (CAC):</span>
+                  <span className="font-bold text-rose-700">$160 – $240 / transaction</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-1">
-                  <span>Total Hotel Bill ({activeScenario.nights} Nights):</span>
-                  <span className="font-bold">${activeScenario.publicTotal.toLocaleString()}</span>
+                  <span>Revenue Model:</span>
+                  <span className="font-bold">15%–30% Transaction Commission</span>
                 </div>
-                <div className="flex justify-between border-b border-slate-100 pb-1 text-rose-700 font-semibold">
-                  <span>Middleman Commission:</span>
-                  <span>+${activeScenario.otaMarkup} (Included in price)</span>
+                <div className="flex justify-between border-b border-slate-100 pb-1 text-slate-600">
+                  <span>Upfront Cash Float:</span>
+                  <span>$0.00 (Post-Stay Settlement)</span>
+                </div>
+                <div className="flex justify-between border-b border-slate-100 pb-1 text-slate-600">
+                  <span>Gross Margin (after Google Ad Toll):</span>
+                  <span className="font-bold text-amber-700">~18% – 25%</span>
                 </div>
                 <div className="flex justify-between pt-1 text-slate-950 font-black">
-                  <span>Your Savings:</span>
-                  <span className="text-rose-700">$0.00 Saved</span>
+                  <span>Organic Retention:</span>
+                  <span className="text-rose-700">&lt; 20% (Continuous Churn)</span>
                 </div>
               </div>
             </div>
 
-            {/* The ATLAS Way */}
+            {/* The ATLAS Subscription Model */}
             <div className="p-6 rounded-3xl bg-amber-50/70 border border-amber-300 space-y-4 text-amber-950">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-bold text-xs">
-                The ATLAS Membership Model
+                The ATLAS Venture Model (Negative Working Capital SaaS)
               </div>
-              <h3 className="font-black text-slate-950 text-lg">Raw Wholesale at 0% Markup</h3>
+              <h3 className="font-black text-slate-950 text-lg">Compound Subscription Float &amp; 96% Gross Margin</h3>
               <div className="space-y-2.5 text-xs sm:text-sm text-slate-800">
                 <p>
-                  <strong>1. Private Club Exemption:</strong> Because ATLAS is a password-protected club, hotels can legally sell unsold rooms to our members at pure wholesale.
+                  <strong>1. Upfront Dues on Day 1:</strong> Members pay annual subscriptions upfront. We generate pure negative working capital cash float months before any member books a stay.
                 </p>
                 <p>
-                  <strong>2. 0% Markup:</strong> We take $0.00 commission on hotel bookings. 100% of the wholesale discount stays in the member's wallet.
+                  <strong>2. Mathematical Retention Lock-In:</strong> Because a single luxury family trip or two executive stays saves members $1,200 to $3,000+, annual renewal is an indisputable positive-ROI choice.
                 </p>
                 <p>
-                  <strong>3. Immediate Payback:</strong> On this stay, the traveler saves <strong>+${activeScenario.savings.toLocaleString()}</strong>. {activeScenario.paybackNote}
+                  <strong>3. Pure Software Leverage:</strong> Zero inventory risk, zero block commitments, and direct API pass-through result in 96.2% software gross margins.
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-white border border-amber-300 font-mono text-xs text-slate-950 space-y-2">
-                <div className="text-xs uppercase font-bold text-amber-800">Same Hotel via ATLAS Wholesale</div>
-                <div className="text-xs text-slate-500 font-sans">{activeScenario.subtitle}</div>
+                <div className="text-xs uppercase font-bold text-amber-800">Selected Cohort: {activeCohort.name}</div>
+                <div className="text-xs text-slate-500 font-sans">{activeCohort.tagline}</div>
                 <div className="flex justify-between border-b border-slate-100 pt-1 pb-1">
-                  <span>ATLAS Wholesale Rate:</span>
-                  <span className="font-bold text-emerald-700">${activeScenario.wholesaleNightly} / night</span>
+                  <span>Customer Acquisition Cost (CAC):</span>
+                  <span className="font-bold text-emerald-700">${activeCohort.cac} (Blended Organic / Direct)</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-1">
-                  <span>Total Member Cost:</span>
-                  <span className="font-bold">${activeScenario.wholesaleTotal.toLocaleString()}</span>
+                  <span>Annual Subscription (ARPU):</span>
+                  <span className="font-bold">${activeCohort.annualDues.toLocaleString()} / year (Paid Day 1)</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-1 text-emerald-700 font-bold">
-                  <span>Cash Saved on This Trip:</span>
-                  <span>+${activeScenario.savings.toLocaleString()} Cash Back</span>
+                  <span>Member Lifetime Value (LTV):</span>
+                  <span>${activeCohort.ltv.toLocaleString()} ({activeCohort.avgMemberLifespan} Lifespan)</span>
+                </div>
+                <div className="flex justify-between border-b border-slate-100 pb-1 text-purple-700 font-bold">
+                  <span>LTV : CAC Multiple:</span>
+                  <span>{activeCohort.ltvCac}</span>
                 </div>
                 <div className="flex justify-between border-b border-slate-100 pb-1 text-slate-600">
-                  <span>Annual Membership Fee:</span>
-                  <span>-$799 / yr</span>
+                  <span>Gross Margin / Payback:</span>
+                  <span className="font-bold text-slate-950">{activeCohort.grossMargin} • {activeCohort.paybackPeriod}</span>
                 </div>
                 <div className="flex justify-between pt-1 text-emerald-700 font-black">
-                  <span>Result:</span>
-                  <span>{activeScenario.paybackNote}</span>
+                  <span>Annual Retention Rate:</span>
+                  <span>{activeCohort.annualRetention} (Mathematical Certainty)</span>
                 </div>
               </div>
             </div>
@@ -871,7 +892,7 @@ export default function StandaloneInvestorApp() {
               <div className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">Structural Moat</div>
               <h3 className="text-xl sm:text-2xl font-black text-slate-950">Why Booking.com and Expedia Cannot Copy Us</h3>
               <p className="text-sm text-slate-600 mt-1">
-                This isn't an execution race. The incumbents are trapped by their own business model.
+                This isn&apos;t an execution race. The incumbents are trapped by their own public earnings commitments.
               </p>
             </div>
 
@@ -879,21 +900,21 @@ export default function StandaloneInvestorApp() {
               <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                 <div className="font-bold text-slate-950 text-base">1. The Commission Trap</div>
                 <p>
-                  Public platforms generate over $20 Billion annually from 20% to 30% booking commissions. They cannot switch to a zero-markup subscription model without destroying 80% of their existing revenue.
+                  Public OTAs generate over $30 Billion annually from 20% to 30% booking commissions. They cannot switch to a zero-markup subscription model without destroying 80% of their public company earnings and share price.
                 </p>
               </div>
 
               <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="font-bold text-slate-950 text-base">2. The Google Tax</div>
+                <div className="font-bold text-slate-950 text-base">2. The Google Ad Dependency</div>
                 <p>
-                  Expedia and Booking.com spend over $12 Billion every year buying Google search ads to acquire the same customers over and over. ATLAS acquires members once for $110, earning high annual recurring revenue.
+                  Expedia and Booking.com spend over $12 Billion every year buying Google search ads to acquire the same customers over and over. ATLAS acquires members once for $110, earning high annual recurring subscription revenue.
                 </p>
               </div>
 
               <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="font-bold text-slate-950 text-base">3. 100% Legal Exemption</div>
+                <div className="font-bold text-slate-950 text-base">3. Protected Safe Harbor</div>
                 <p>
-                  Rate Parity laws (US Sherman Act and EU Digital Markets Act) explicitly allow closed, paid membership clubs to sell rooms below public prices. Hotels love us because we sell empty rooms without angering Google.
+                  Rate Parity laws (US Sherman Act and EU Digital Markets Act) explicitly allow closed, paid membership clubs to sell rooms below public prices. Hotels partner with us because we quietly monetize distressed room inventory without triggering Google ad price wars.
                 </p>
               </div>
             </div>

@@ -11,8 +11,9 @@
   },
   "paljuritzen@gmail.com": {
     "code": "VERIFIED",
-    "expiresAt": 1792389933978,
-    "verified": true
+    "expiresAt": 1792471251622,
+    "verified": true,
+    "createdAt": "2026-09-20T04:40:42.893Z"
   },
   "test@example.com": {
     "code": "894708",
@@ -23,5 +24,11 @@
     "code": "VERIFIED",
     "expiresAt": 2524608000000,
     "verified": true
+  },
+  "investor@example.com": {
+    "code": "VERIFIED",
+    "expiresAt": 1792470999014,
+    "verified": true,
+    "createdAt": "2026-09-20T04:36:08.389Z"
   }
 }
