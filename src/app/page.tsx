@@ -38,7 +38,6 @@ export default function StandaloneInvestorApp() {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [codeSent, setCodeSent] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
-  const [demoCodeHint, setDemoCodeHint] = useState<string | null>(null);
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [isVerifyingCode, setIsVerifyingCode] = useState(false);
   const [verifyError, setVerifyError] = useState<string | null>(null);
@@ -55,8 +54,8 @@ export default function StandaloneInvestorApp() {
   // Active Doc Modal Preview State
   const [activeDocPreview, setActiveDocPreview] = useState<any | null>(null);
 
-  // Active Expected Security OTP
-  const [expectedCode, setExpectedCode] = useState<string | null>(null);
+  // Interactive FAQ State
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   // Load Session from localStorage
   useEffect(() => {
@@ -78,7 +77,7 @@ export default function StandaloneInvestorApp() {
     }
   }, []);
 
-  // Step 1: Send Real 6-Digit Security Verification Code
+  // Step 1: Send Real 6-Digit Security Verification Code to Investor's Email
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = (email || '').trim();
@@ -89,46 +88,56 @@ export default function StandaloneInvestorApp() {
     setVerifyError(null);
     setIsSendingCode(true);
 
-    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    setExpectedCode(generatedOtp);
-    setDemoCodeHint(generatedOtp);
-    setVerificationCode('');
-
     try {
-      await fetch('/api/investors/verify-email', {
+      const res = await fetch('/api/investors/verify-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: cleanEmail, action: 'send' })
-      }).catch(() => {});
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        setVerifyError(data.error || 'Failed to dispatch verification code. Please check the email address.');
+        return;
+      }
+      setVerificationCode('');
+      setCodeSent(true);
+    } catch (err: any) {
+      setVerifyError(err.message || 'Network error occurred. Please try again.');
     } finally {
       setIsSendingCode(false);
-      setCodeSent(true);
     }
   };
 
-  // Step 2: Strict OTP Code Validation
+  // Step 2: Strict Server-Side OTP Code Validation
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setVerifyError(null);
     const typed = (verificationCode || '').trim();
 
     if (!typed || typed.length !== 6) {
-      setVerifyError('Please enter the complete 6-digit verification code.');
+      setVerifyError('Please enter the complete 6-digit verification code sent to your email.');
       return;
     }
 
     setIsVerifyingCode(true);
-    const isValid = typed === expectedCode || typed === '888999';
-
-    if (!isValid) {
+    try {
+      const res = await fetch('/api/investors/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: (email || '').trim(), code: typed, action: 'verify' })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setVerifyError(data.error || 'Incorrect or expired verification code. Please check your inbox and try again.');
+        return;
+      }
+      setIsEmailVerified(true);
+      setShowNdaModal(true);
+    } catch (err: any) {
+      setVerifyError(err.message || 'Verification connection failed. Please try again.');
+    } finally {
       setIsVerifyingCode(false);
-      setVerifyError('Incorrect verification code. Please check the 6 digits shown above and re-enter.');
-      return;
     }
-
-    setIsVerifyingCode(false);
-    setIsEmailVerified(true);
-    setShowNdaModal(true);
   };
 
   // Step 3: Sign Digital NDA & Authorize Full Document Access
@@ -180,7 +189,6 @@ export default function StandaloneInvestorApp() {
     setIsEmailVerified(false);
     setCodeSent(false);
     setVerificationCode('');
-    setExpectedCode(null);
   };
 
   const copySignatureHash = () => {
@@ -250,12 +258,25 @@ export default function StandaloneInvestorApp() {
 
   const documents = [
     {
+      id: 'prospectus',
+      title: 'Confidential Investment Prospectus & PPM (PDF)',
+      category: 'Official Offering Prospectus',
+      file: '/docs/investors/ATLAS_Confidential_Prospectus.pdf',
+      desc: 'The official 6-page Private Placement Memorandum: corporate governance, zero-inventory balance sheet mechanics, capital allocation breakdown, and regulatory safe harbor brief.',
+      highlights: [
+        'Corporate Structure: ATLAS Travel Club LLC (Manager-Managed Delaware/Wyoming structure).',
+        'Financial Projections: Year 1: $1.03M Net Revenue -> Year 3: $22.6M -> Year 5: $143.7M ($102M EBITDA).',
+        'Frugal Founder Burn: $2,500/month stipend keeps burn low and extends runway to 10 months.',
+        'Real-Time Settlement: Zero inventory liability via direct bedbank APIs (RateHawk, Duffel, Stripe).'
+      ]
+    },
+    {
       id: 'deck',
-      title: '10-Slide Investor Presentation (PPTX / PDF)',
+      title: '10-Slide Strategic Investor Presentation (PPTX / PDF)',
       category: 'Strategic Pitch Deck',
       file: '/docs/investors/ATLAS_Investor_Pitch_Deck.pdf',
       filePptx: '/docs/investors/ATLAS_Investor_Pitch_Deck.pptx',
-      desc: 'The complete visual pitch: the $120B OTA middleman tax, how closed-loop clubs legally unlock wholesale rates, 96% SaaS margins, and the $75k angel round.',
+      desc: 'The complete visual pitch deck: the $120B OTA middleman tax, how closed-loop clubs legally unlock wholesale rates, 96% SaaS margins, and the $75k angel round.',
       highlights: [
         'Direct Wholesale Model: 100% of wholesale discounts passed to members at 0% markup.',
         'Target Audience: Affluent families, frequent business travelers, remote executives, and founders.',
@@ -264,16 +285,16 @@ export default function StandaloneInvestorApp() {
       ]
     },
     {
-      id: 'prospectus',
-      title: 'Full Investment Prospectus & 5-Year Model (PDF)',
-      category: 'Official Offering Prospectus',
-      file: '/docs/investors/ATLAS_Confidential_Prospectus.pdf',
-      desc: 'Detailed 5-year financial forecast, zero-inventory balance sheet mechanics, capital allocation breakdown, and regulatory safe harbor brief.',
+      id: 'financials',
+      title: '5-Year Financial Model & Use of Proceeds (PDF)',
+      category: 'Financial Forecast',
+      file: '/docs/investors/ATLAS_5Year_Financial_Model.pdf',
+      desc: 'Comprehensive 6-page financial model detailing Year 1 to Year 5 pro-forma income statement, unit economics, cash flow curves, sensitivity matrix, and line-item budget allocation.',
       highlights: [
-        'Corporate Entity: ATLAS Travel Club LLC (Manager-Managed Delaware/Wyoming structure).',
-        'Growth Plan: Year 1: $1.03M ARR -> Year 3: $22.6M ARR -> Year 5: $143.7M ARR ($102M EBITDA).',
-        'Frugal Founder Burn: $2,500/month stipend keeps burn low and extends runway to 10 months.',
-        'Real-Time Settlement: Zero inventory liability via direct bedbank APIs (RateHawk, Duffel, Stripe).'
+        'Use of Proceeds: 57% human execution ($43k), 20% supplier APIs & licensing ($15k), 15% acquisition ($11k).',
+        'Positive Cash Flow: Annual upfront collections create working capital float from Month 3.',
+        'Operating Margin: 96% software gross margin scales to 71% EBITDA margin at Year 5.',
+        'Conservative Metrics: Assumes 85% annual retention, $110 blended CAC, and $684-$1,799 ARPU.'
       ]
     },
     {
@@ -290,8 +311,34 @@ export default function StandaloneInvestorApp() {
       ]
     },
     {
+      id: 'faq',
+      title: 'Investor Due Diligence FAQ & Risk Brief (PDF)',
+      category: 'Due Diligence Brief',
+      file: '/docs/investors/ATLAS_Due_Diligence_FAQ.pdf',
+      desc: 'Formal due diligence brief answering critical legal, competitive, and operational risk questions for angel investors evaluating ATLAS.',
+      highlights: [
+        'Rate Parity Safe Harbor: US Sherman Act and EU DMA legal precedents protecting closed-loop clubs.',
+        'Anti-Sharing Controls: Device fingerprinting and passport matching prevent credential sharing.',
+        'Seamless Hotel Check-in: Vouchers clear directly in hotel front-desk systems like standard VIP bookings.',
+        'Capital Efficiency: Why $75k is enough to hit 1,000 paying members without large ad budgets.'
+      ]
+    },
+    {
+      id: 'exit',
+      title: 'Strategic Exit Opportunities & M&A Landscape (PDF)',
+      category: 'Exit Analysis',
+      file: '/docs/investors/ATLAS_Strategic_Exit_Opportunities.pdf',
+      desc: 'Precedent acquisitions (Capital One bought Velocity Black for $297M; Chase bought Frosch), strategic acquirers, and return multiples across 3 exit horizons.',
+      highlights: [
+        'FinTech & Card Issuers: Premium banks pay high multiples for recurring high-spending cardholders.',
+        'OTA Acquirers: Booking and Expedia seeking subscription cash flow to reduce Google ad dependency.',
+        'Estimated Multiples: 10x–12x at Series Seed; 34x at $60M M&A; 100x at $175M scale exit.',
+        'Multiple Liquidity Horizons: Strategic trade sale, institutional buyout, or secondary share liquidity.'
+      ]
+    },
+    {
       id: 'tech',
-      title: 'Technical Architecture & Google Cloud Stack (PDF)',
+      title: 'Technical Architecture & Network Manual (PDF)',
       category: 'Engineering & Scalability',
       file: '/docs/investors/ATLAS_Technical_Architecture_Google_Cloud.pdf',
       desc: 'Serverless architecture built on Google Cloud: Cloud Run, Vertex AI (Gemini 2.0 Flash), Cloud SQL PostgreSQL v16, and Secret Manager.',
@@ -303,30 +350,94 @@ export default function StandaloneInvestorApp() {
       ]
     },
     {
-      id: 'faq',
-      title: 'Investor FAQ & Risk Brief (PDF)',
-      category: 'Investor FAQ',
-      file: '/docs/investors/ATLAS_Due_Diligence_FAQ.pdf',
-      desc: 'Answers to the top 10 investor questions: rate parity law, supplier relationships, anti-churn mechanics, and how we keep customer acquisition costs under $110.',
+      id: 'suite',
+      title: 'Complete Master Investor Document Suite (PDF)',
+      category: 'Master Document',
+      file: '/docs/investors/ATLAS_Complete_Investor_Suite.pdf',
+      desc: 'The comprehensive 14-page unified compilation containing the full prospectus, financial model, SAFE term sheet, diligence FAQ, and technical architecture in a single file.',
       highlights: [
-        'Rate Parity Safe Harbor: US Sherman Act and EU DMA legal precedents protecting closed-loop clubs.',
-        'Anti-Sharing Controls: Device fingerprinting and passport matching prevent credential sharing.',
-        'Seamless Hotel Check-in: Vouchers clear directly in hotel front-desk systems like standard VIP bookings.',
-        'Capital Efficiency: Why $75k is enough to hit 1,000 paying members without large ad budgets.'
+        'All-in-One Package: Complete due diligence package for institutional review.',
+        'Executive Summary: Consolidated overview of problem, solution, unit economics, and team.',
+        'Cap Table & Scenarios: Detailed capitalization table and ownership dilution modeling.',
+        'Ready for Archival: Formatted for institutional angel syndicates and investment committees.'
       ]
     },
     {
-      id: 'exit',
-      title: 'Company Sale & Acquisition Opportunities (PDF)',
-      category: 'Exit Analysis',
-      file: '/docs/investors/ATLAS_Strategic_Exit_Opportunities.pdf',
-      desc: 'Precedent acquisitions (Capital One bought Velocity Black for $297M; Chase bought Frosch), strategic acquirers, and return multiples across 3 exit horizons.',
+      id: 'bedbank',
+      title: 'Wholesale Bedbank Strategy & Margin Architecture (PDF)',
+      category: 'Supplier Architecture',
+      file: '/docs/investors/ATLAS_Wholesale_Bedbank_Strategy.pdf',
+      desc: 'Deep-dive analysis on global wholesale hotel distribution (RateHawk, Hotelbeds, WebBeds) and how ATLAS passes 100% of discounts to subscribers at zero inventory liability.',
       highlights: [
-        'FinTech & Card Issuers: Premium banks pay high multiples for recurring high-spending cardholders.',
-        'OTA Acquirers: Booking and Expedia seeking subscription cash flow to reduce Google ad dependency.',
-        'Estimated Multiples: 10x–12x at Series Seed; 34x at $60M M&A; 100x at $175M scale exit.',
-        'Multiple Liquidity Horizons: Strategic trade sale, institutional buyout, or secondary share liquidity.'
+        'Supplier Architecture: Multi-bedbank aggregation prevents single-supplier lock-in.',
+        'Real-Time Settlement: Synchronous booking clearing with zero pre-purchased hotel inventory.',
+        'Competitive Moat: B2B wholesale API contracts requiring corporate credential verification.'
       ]
+    },
+    {
+      id: 'nda',
+      title: 'Mutual Non-Disclosure Agreement (PDF)',
+      category: 'Legal Document',
+      file: '/docs/investors/ATLAS_Mutual_NDA.pdf',
+      desc: 'Formal 6-page mutual confidentiality and proprietary information agreement protecting proprietary supplier feeds and commercial strategies.',
+      highlights: [
+        'Two-Way Protection: Protects proprietary evaluation materials and investor disclosures.',
+        'Standard Legal Terms: Governed under standard US commercial confidentiality precedents.',
+        'Digital Execution: Automatically executed and archived upon signing in the portal.'
+      ]
+    }
+  ];
+
+  const faqs = [
+    {
+      category: 'Investment Terms & Valuation',
+      q: 'Why is the valuation cap set at $1.75M on a YC Post-Money SAFE?',
+      a: 'The $1.75M valuation cap is specifically calibrated to provide early angel investors with outsized asymmetric upside on a modest $75,000 pre-seed check. Unlike high-priced seed rounds that demand $10M+ valuations with zero revenue, ATLAS gives Day-1 angels ~4.29% equity for the entire $75k round (or ~1.43% for a standard $25k check). When the company reaches 1,000 paying members ($1.03M–$1.5M ARR) and raises its institutional Series Seed at a projected $15M–$20M valuation, your SAFE automatically converts at the discounted cap, generating an immediate 8.6x to 11.4x unrealized markup.'
+    },
+    {
+      category: 'Investment Terms & Valuation',
+      q: 'What are the check sizes and how do I commit to the round?',
+      a: 'The round minimum check size is $5,000 USD, with a target check of $25,000 USD (~1.43% equity). Lead investors can take up to $75,000 USD (~4.29% equity). Once you review the full prospectus and SAFE agreement in the portal below, you can digitally countersign the term sheet and execute bank wire or ACH transfer directly into ATLAS Travel Club LLC’s dedicated capital account.'
+    },
+    {
+      category: 'Investment Terms & Valuation',
+      q: 'Does this investment qualify for US Qualified Small Business Stock (QSBS)?',
+      a: 'Yes. ATLAS Travel Club LLC is a manager-managed entity formed with formal contractual covenants in the SAFE to convert into a Delaware C-Corporation prior to the next equity financing. Under Section 1202 of the Internal Revenue Code (QSBS), qualified investors holding stock for at least 5 years may exclude up to 100% of federal capital gains tax on the sale of stock, up to the greater of $10 million or 10x the adjusted basis.'
+    },
+    {
+      category: 'Capital Efficiency & Runway',
+      q: 'Why is your pre-seed capital requirement so lean ($75,000), and how will it be spent?',
+      a: 'Unlike legacy travel agencies that lock up $100,000+ in non-productive bank guarantees and hotel room blocks, ATLAS operates an asset-light software model with zero inventory liability and $0 in supplier deposits. We leverage modern real-time API protocols (RateHawk B2B, Duffel NDC, Stripe Issuing) that settle bookings synchronously at the exact moment of reservation. Over 57% of this $75,000 raise ($43,000 across founder living stipend at $2,500/mo and contract engineering) funds direct execution on Google Cloud to reach 1,000 paying members. 20% ($15,000) covers direct supplier API feeds and multi-state travel seller licenses, 15% ($11,000) goes to targeted outbound distribution, and 8% ($6,000) covers legal and accounting.'
+    },
+    {
+      category: 'Capital Efficiency & Runway',
+      q: 'What is the company’s burn rate and how long does this round last?',
+      a: 'Founder Pål Juritzen draws a modest living stipend of $2,500/month, and cloud infrastructure on Google Cloud Run costs under $350/month in early stages. With zero inventory holding costs and annual subscriptions collected upfront from Day 1 ($799–$1,799/yr), the $75,000 raise provides a full 10-month runway. Every new subscription generates positive operating cash flow immediately.'
+    },
+    {
+      category: 'Legal Safe Harbor & Competition',
+      q: 'Can Booking.com or Expedia legally shut this down or sue over Rate Parity?',
+      a: 'No. Rate Parity clauses apply exclusively to open, publicly accessible internet distribution. Three distinct legal protections apply: (1) United States: Vertical price-fixing agreements that restrict closed membership groups were established as anti-competitive under the Sherman Antitrust Act (15 U.S.C. § 1). (2) European Union: Article L. 311-5-1 of the French Tourism Code (Loi Macron) and European Commission Decision AT.40153 completely outlawed rate parity enforcement against closed-loop associations. (3) Commercial Reality: Global bedbanks (RateHawk, Hotelbeds, WebBeds) exist specifically to distribute unsold hotel wholesale inventory behind closed authentication gates so hotels can fill empty rooms without discounting their public brand rates.'
+    },
+    {
+      category: 'Operational Integrity & Fulfillment',
+      q: 'What happens if a hotel does not honor the wholesale reservation at check-in?',
+      a: 'All reservations settle directly into the hotel’s central reservation system (CRS) via Tier-1 bedbanks (RateHawk / Hotelbeds) with instant, pre-paid confirmation codes. At the front desk, the voucher appears as a standard corporate pre-paid booking indistinguishable from an American Express Fine Hotels & Resorts or corporate voucher. Non-honoring risk is structurally identical to booking through any major OTA and is backed by 24/7 supplier rebooking guarantees.'
+    },
+    {
+      category: 'Operational Integrity & Fulfillment',
+      q: 'What prevents members from sharing logins with family, friends, or strangers?',
+      a: 'ATLAS uses three layered controls: (1) Device fingerprinting and strict session limits restrict concurrent sessions to authenticated devices. (2) Passport / legal ID verification requires the hotel reservation name to match the authenticated member or their registered family roster. (3) Economic alignment: high annual savings and price-drop wallet credits are tied directly to the individual member’s verified profile, making account sharing counterproductive.'
+    },
+    {
+      category: 'Go-To-Market & Acquisition',
+      q: 'How do you keep Customer Acquisition Cost (CAC) under $110 without burning ad dollars?',
+      a: 'We do not run broad-market Google Ads or compete with Booking.com’s $6 billion advertising budget. ATLAS targets high-frequency travelers through 3 highly efficient channels: (1) Direct executive outbound to remote tech workers, corporate executives, and private family offices who travel 4+ times per year. (2) B2B affinity partnerships with startup networks, accelerator alumni, and business clubs. (3) Referral virality: when a member saves $1,200 on a single trip, they receive an invite link that earns them membership renewal credits when colleagues sign up.'
+    },
+    {
+      category: 'Exit Strategy & Liquidity',
+      q: 'What are the realistic exit scenarios and potential acquirers for ATLAS?',
+      a: 'Premium, recurring travel subscribers are among the highest-value assets in consumer fintech. Recent precedent M&A transactions include Capital One acquiring luxury travel concierge Velocity Black for $297M and JPMorgan Chase acquiring Frosch Travel. Tier-1 acquirers include: (1) Premium Credit Card & FinTech Banks seeking cardholder engagement; (2) OTA Conglomerates (Booking Holdings, Expedia Group) seeking high-margin subscription ARR to offset rising Google ad costs; and (3) Luxury Travel & Lifestyle Clubs (Inspirato, Soho House). An eventual acquisition between $60M and $175M yields a 34x to 100x cash-on-cash return for this angel round.'
     }
   ];
 
@@ -402,6 +513,10 @@ export default function StandaloneInvestorApp() {
                   <TrendingUp className="w-4 h-4 text-purple-600" />
                   <span>Financial Plan</span>
                 </button>
+                <button onClick={() => scrollTo('faq')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
+                  <HelpCircle className="w-4 h-4 text-indigo-600" />
+                  <span>Investor FAQ</span>
+                </button>
                 <button onClick={() => scrollTo('dataroom')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-amber-50 text-amber-950 hover:bg-amber-100 text-left">
                   <FileText className="w-4 h-4 text-amber-700" />
                   <span>Full Prospectus</span>
@@ -476,6 +591,7 @@ export default function StandaloneInvestorApp() {
               { id: 'safety', label: "Why It's Safe", icon: ShieldCheck, color: 'text-blue-600' },
               { id: 'calculator', label: 'Returns Calculator', icon: Calculator, color: 'text-amber-700' },
               { id: 'financials', label: 'Financial Plan', icon: TrendingUp, color: 'text-purple-600' },
+              { id: 'faq', label: 'Investor FAQ', icon: HelpCircle, color: 'text-indigo-600' },
               { id: 'dataroom', label: 'Full Prospectus', icon: FileText, color: 'text-amber-800' }
             ].map((item) => {
               const Icon = item.icon;
@@ -1071,6 +1187,75 @@ export default function StandaloneInvestorApp() {
         </section>
 
         {/* ========================================================= */}
+        {/* 6. INVESTOR DUE DILIGENCE & FREQUENTLY ASKED QUESTIONS   */}
+        {/* ========================================================= */}
+        <section id="faq" className="space-y-8 scroll-mt-24">
+          <div className="border-b border-slate-200 pb-4">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100 text-indigo-950 text-xs font-bold uppercase tracking-wider mb-2">
+              <HelpCircle className="w-3.5 h-3.5 text-indigo-700" />
+              <span>Investor Due Diligence</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-950">Frequently Asked Questions for Angels &amp; LPs</h2>
+            <p className="text-sm text-slate-600 mt-1 max-w-3xl">
+              Direct answers to the most critical diligence questions covering valuation cap, rate parity legal precedent, capital efficiency, operational controls, and exit paths.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div
+                  key={idx}
+                  className={`rounded-2xl border transition-all ${
+                    isOpen
+                      ? 'border-amber-400 bg-linear-to-br from-amber-50/40 via-white to-white shadow-sm'
+                      : 'border-slate-200 bg-white hover:border-slate-300'
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="w-full p-5 sm:p-6 text-left flex items-start justify-between gap-4 cursor-pointer"
+                  >
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-bold text-amber-900 bg-amber-100/80 px-2 py-0.5 rounded uppercase tracking-wider">
+                        {faq.category}
+                      </span>
+                      <h3 className="font-bold text-slate-950 text-base sm:text-lg mt-1">
+                        {faq.q}
+                      </h3>
+                    </div>
+                    <div className="p-1 rounded-lg text-slate-400 hover:text-slate-800 shrink-0 mt-1">
+                      <ChevronRight className={`w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-90 text-amber-700' : ''}`} />
+                    </div>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-5 pb-6 sm:px-6 sm:pb-6 text-sm text-slate-700 leading-relaxed border-t border-slate-100/80 pt-4 space-y-3 animate-in fade-in duration-200">
+                      <p>{faq.a}</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs sm:text-sm text-indigo-950">
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck className="w-5 h-5 text-indigo-600 shrink-0" />
+              <span>Have a specific legal, technical, or deal terms question not covered here?</span>
+            </div>
+            <a
+              href="mailto:executive@atlastravelclub.com?subject=Investor%20Diligence%20Inquiry%20-%20ATLAS"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-950 text-white text-xs font-bold hover:bg-slate-800 transition-colors shrink-0"
+            >
+              Ask Founder Directly →
+            </a>
+          </div>
+        </section>
+
+        {/* ========================================================= */}
         {/* 7. GATED DATA ROOM & DUE DILIGENCE LIBRARY                */}
         {/* ========================================================= */}
         <section id="dataroom" className="space-y-8 scroll-mt-24">
@@ -1145,32 +1330,38 @@ export default function StandaloneInvestorApp() {
                     </form>
                   ) : (
                     <form onSubmit={handleVerifyCode} className="space-y-4">
-                      <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 text-slate-900 space-y-2.5">
+                      <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 text-slate-900 space-y-3">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
-                            <ShieldCheck className="w-4 h-4 text-amber-700" />
-                            Access Code Ready
+                            <Mail className="w-4 h-4 text-amber-700" />
+                            Verification Code Sent to Inbox
                           </span>
                           <span className="text-xs bg-amber-200 text-amber-950 px-2.5 py-0.5 rounded font-mono font-bold">
                             Valid for 15 min
                           </span>
                         </div>
-                        <p className="text-sm text-slate-700">
-                          Your one-time 6-digit access code for <strong>{email}</strong>:
+                        <p className="text-sm text-slate-800 leading-relaxed">
+                          We sent a 6-digit access code to <strong className="text-slate-950 underline decoration-amber-400 font-bold">{email}</strong>. Please check your inbox (and spam folder) and enter the code below.
                         </p>
-                        <div className="p-3.5 rounded-xl bg-white border border-amber-200 text-center shadow-2xs">
-                          <div className="text-3xl font-mono font-black tracking-widest text-slate-950 select-all">
-                            {expectedCode || '888999'}
-                          </div>
-                          <p className="text-xs text-slate-500 mt-1">
-                            Type these 6 digits into the field below to unlock instant access
-                          </p>
+                        <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-amber-200/80">
+                          <span>Didn't receive it?</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCodeSent(false);
+                              setVerificationCode('');
+                              setVerifyError(null);
+                            }}
+                            className="text-amber-900 font-bold hover:underline cursor-pointer"
+                          >
+                            Resend code or edit email
+                          </button>
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 mb-1">
-                          Enter 6-Digit Code:
+                        <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                          Enter 6-Digit Code from Email:
                         </label>
                         <input
                           type="text"
@@ -1208,7 +1399,7 @@ export default function StandaloneInvestorApp() {
                           className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition-all shadow-md cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                           {isVerifyingCode ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4 text-white" />}
-                          <span>Unlock All 6 Documents →</span>
+                          <span>Verify Code &amp; Access Prospectus →</span>
                         </button>
                       </div>
                     </form>
