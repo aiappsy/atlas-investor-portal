@@ -1371,29 +1371,6 @@ export default function StandaloneInvestorApp() {
           </div>
         </section>
 
-        {/* ========================================================= */}
-        {/* 8. DISCREET COMPLIANCE & LEGAL FOOTER                     */}
-        {/* ========================================================= */}
-        <footer className="mt-20 pt-8 pb-12 border-t border-slate-200 text-xs text-slate-500">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-medium">
-              <Link href="/terms" className="hover:text-slate-900 hover:underline">Terms of Service</Link>
-              <Link href="/privacy" className="hover:text-slate-900 hover:underline">Privacy Policy</Link>
-              <Link href="/legal" className="hover:text-slate-900 hover:underline">Legal Safe Harbor</Link>
-              <Link href="/legal/investor-disclosures" className="hover:text-slate-900 hover:underline">Investor Disclosures</Link>
-              <Link href="/legal/rate-parity-compliance" className="hover:text-slate-900 hover:underline">Rate Parity Compliance</Link>
-              <Link href="/legal/sec-compliance" className="hover:text-slate-900 hover:underline">SEC Rule 506(c)</Link>
-            </div>
-            <div className="text-slate-400">
-              © {new Date().getFullYear()} ATLAS Travel Club LLC. All rights reserved.
-            </div>
-          </div>
-          <div className="mt-4 text-[11px] text-slate-400 leading-relaxed max-w-4xl">
-            This confidential portal is intended solely for prospective angel investors evaluating the ATLAS Post-Money SAFE offering. 
-            Past performance and financial projections are forward-looking estimates and do not guarantee future returns.
-          </div>
-        </footer>
-
         </main>
       </div>
 
