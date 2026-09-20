@@ -507,9 +507,9 @@ export default function StandaloneInvestorApp() {
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>How It Works</span>
                 </button>
-                <button onClick={() => scrollTo('safety')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
+                <button onClick={() => scrollTo('risk-mitigation')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
                   <ShieldCheck className="w-4 h-4 text-blue-600" />
-                  <span>Why It's Safe</span>
+                  <span>Risk Mitigation</span>
                 </button>
                 <button onClick={() => scrollTo('calculator')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
                   <Calculator className="w-4 h-4 text-amber-700" />
@@ -594,7 +594,7 @@ export default function StandaloneInvestorApp() {
             {[
               { id: 'hero', label: 'The Pitch', icon: Sparkles, color: 'text-amber-600' },
               { id: 'how-it-works', label: 'How It Works', icon: CheckCircle2, color: 'text-emerald-600' },
-              { id: 'safety', label: "Why It's Safe", icon: ShieldCheck, color: 'text-blue-600' },
+              { id: 'risk-mitigation', label: 'Risk Mitigation', icon: ShieldCheck, color: 'text-blue-600' },
               { id: 'calculator', label: 'Returns Calculator', icon: Calculator, color: 'text-amber-700' },
               { id: 'financials', label: 'Financial Plan', icon: TrendingUp, color: 'text-purple-600' },
               { id: 'faq', label: 'Investor FAQ', icon: HelpCircle, color: 'text-indigo-600' },
@@ -922,71 +922,82 @@ export default function StandaloneInvestorApp() {
         </section>
 
         {/* ========================================================= */}
-        {/* 4. DOWNSIDE PROTECTION: WHY YOUR CAPITAL IS SAFE          */}
+        {/* 4. STRUCTURAL RISK MITIGATION                             */}
         {/* ========================================================= */}
-        <section id="safety" className="space-y-8 scroll-mt-24">
+        <section id="risk-mitigation" className="space-y-8 scroll-mt-24">
           <div className="border-b border-slate-200 pb-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-950 text-xs font-bold uppercase tracking-wider mb-2">
               <ShieldCheck className="w-3.5 h-3.5 text-blue-700" />
-              <span>Capital Preservation</span>
+              <span>Capital Efficiency &amp; Risk Architecture</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-950">Downside Protection: Why Your Money Is Safe</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-950">Structural Risk Mitigation: Eliminating Binary Failure Modes</h2>
             <p className="text-sm text-slate-600 mt-1 max-w-3xl">
-              Most travel startups fail because they take inventory risk or burn millions on ads. Here is how ATLAS eliminates those risks.
+              Most venture-backed travel platforms fail due to inventory liabilities, customer churn, unbuilt tech, or bloated burn. ATLAS is engineered to eliminate each failure mode.
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[
               {
                 num: '1',
-                title: 'Zero Hotel Inventory Risk (We Never Pre-Buy Rooms)',
-                desc: 'We never buy hotel room blocks in advance. We never lease properties, and we have zero minimum purchase quotas. If zero bookings occur next week, our hotel room cost is exactly $0.00. We hold zero inventory on our balance sheet.',
+                title: 'Zero Balance Sheet Inventory Risk',
+                traditionalFail: 'Traditional Failure Mode: Pre-buying hotel room blocks or signing long-term master leases that sit vacant during off-peak demand.',
+                atlasDefense: 'ATLAS Architectural Defense: Direct API pass-through to global bedbanks (RateHawk, Duffel, Stripe). We hold zero hotel rooms on our balance sheet and carry zero minimum volume purchase quotas. If zero bookings occur in a given week, our hotel inventory cost is exactly $0.00.',
                 badge: '$0 Inventory Risk',
                 color: 'text-emerald-800 bg-emerald-50 border-emerald-300'
               },
               {
                 num: '2',
-                title: 'Members Pay Upfront (Immediate Cash Flow)',
-                desc: 'Members pay their annual dues ($799 to $1,799) on Day 1. We collect cash before delivering services, giving us strong working capital float with zero bad-debt risk and zero unpaid receivables.',
-                badge: 'Paid Upfront Cash',
+                title: 'Negative Working Capital (Day-1 Cash Float)',
+                traditionalFail: 'Traditional Failure Mode: Net-60/90 accounts receivable, deferred billing, and credit risk straining cash reserves before revenue is recognized.',
+                atlasDefense: 'ATLAS Architectural Defense: Members pay 100% of their annual subscription dues ($799 to $1,799) upfront on Day 1. This creates recurring negative working capital float, self-funding ongoing company operations months before any hotel stay is booked.',
+                badge: 'Upfront Cash Float',
                 color: 'text-blue-800 bg-blue-50 border-blue-300'
               },
               {
                 num: '3',
-                title: 'The Software Is Already Built and Live Today',
-                desc: 'You are not funding wireframes, concepts, or slide deck promises. The wholesale search engine, live API feeds, automated booking flow, and member portal are fully coded, tested, and running right now.',
-                badge: 'Working Product',
+                title: 'Live Operational Software (Derisked Tech)',
+                traditionalFail: 'Traditional Failure Mode: Spending early pre-seed rounds paying agencies to build wireframes, untested prototypes, or conceptual mockups.',
+                atlasDefense: 'ATLAS Architectural Defense: ATLAS is already fully built, tested, and operational today. The wholesale pricing engine, real-time supplier APIs, automated payment infrastructure, and member portal are live. Pre-seed capital directly accelerates member acquisition and bedbank integration.',
+                badge: 'Live Working Software',
                 color: 'text-purple-800 bg-purple-50 border-purple-300'
               },
               {
                 num: '4',
                 title: 'Disciplined Founder Burn ($2,500/mo Cap)',
-                desc: 'Founder Pål Juritzen takes a strict living stipend of $2,500/month. There are no bloated executive salaries or luxury expenses. This $75k raise provides a full 10 months of runway to reach our first 1,000 paying members ($1.5M ARR).',
+                traditionalFail: 'Traditional Failure Mode: Premature executive compensation and luxury overhead draining pre-seed capital before finding repeatable distribution.',
+                atlasDefense: 'ATLAS Architectural Defense: Founder Pål Juritzen takes a strict living stipend of $2,500/month. There are zero bloated overhead costs. This $75k pre-seed round secures a full 10-month runway to reach 1,000 paid members ($1.5M ARR) and achieve seed-stage milestones.',
                 badge: '10-Month Runway',
                 color: 'text-amber-800 bg-amber-50 border-amber-300'
               }
             ].map((pillar) => (
-              <div key={pillar.num} className="p-6 rounded-3xl border border-slate-200 bg-white shadow-xs space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-slate-950 text-white flex items-center justify-center font-black text-sm shrink-0">
-                      {pillar.num}
+              <div key={pillar.num} className="p-6 rounded-3xl border border-slate-200 bg-white shadow-xs space-y-3 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-xl bg-slate-950 text-white flex items-center justify-center font-black text-xs shrink-0">
+                        {pillar.num}
+                      </div>
+                      <h3 className="font-bold text-slate-950 text-base">{pillar.title}</h3>
                     </div>
-                    <h3 className="font-bold text-slate-950 text-base">{pillar.title}</h3>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border shrink-0 ${pillar.color}`}>
+                      {pillar.badge}
+                    </span>
                   </div>
-                  <span className={`text-xs font-bold px-3 py-1 rounded-full border shrink-0 ${pillar.color}`}>
-                    {pillar.badge}
-                  </span>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-500 font-medium leading-relaxed">
+                    {pillar.traditionalFail}
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+                    {pillar.atlasDefense}
+                  </p>
                 </div>
-                <p className="text-sm text-slate-600 leading-relaxed pl-11">{pillar.desc}</p>
               </div>
             ))}
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-100 border border-slate-200 flex items-center gap-3 text-xs sm:text-sm text-slate-700">
             <Calendar className="w-5 h-5 text-amber-600 shrink-0" />
-            <span><strong>Transparent Monthly Reporting:</strong> Every angel investor receives an executive dashboard on the 1st of every month tracking active members, ARR, CAC, and cash runway.</span>
+            <span><strong>Transparent Investor Governance:</strong> Comprehensive monthly shareholder update delivered on the 1st of every month detailing active member count, ARR, blended CAC, and remaining cash runway.</span>
           </div>
         </section>
 
