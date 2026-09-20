@@ -206,7 +206,6 @@ export default function StandaloneInvestorApp() {
   const seedValHigh = selectedCheck * (20000000 / cap);
   const exitYr3 = selectedCheck * (60000000 / cap);
   const exitYr4 = selectedCheck * (175000000 / cap);
-  const dividendYr3 = 13130000 * (selectedCheck / cap);
 
   const tripScenarios = {
     city: {
@@ -326,7 +325,7 @@ export default function StandaloneInvestorApp() {
         'FinTech & Card Issuers: Premium banks pay high multiples for recurring high-spending cardholders.',
         'OTA Acquirers: Booking and Expedia seeking subscription cash flow to reduce Google ad dependency.',
         'Estimated Multiples: 10x–12x at Series Seed; 34x at $60M M&A; 100x at $175M scale exit.',
-        'Dividend Alternative: High EBITDA margins allow self-funded dividend recaps if held privately.'
+        'Multiple Liquidity Horizons: Strategic trade sale, institutional buyout, or secondary share liquidity.'
       ]
     }
   ];
@@ -918,13 +917,6 @@ export default function StandaloneInvestorApp() {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-amber-100/70 border border-amber-300 text-xs sm:text-sm text-amber-950 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-700 shrink-0" />
-              <div>
-                <strong>Annual Cash Dividends:</strong> If we choose not to sell, our projected Year 3 EBITDA of $13.1M allows annual dividend distributions yielding ~<strong>${Math.round(dividendYr3 / 1000)}k / year in cash</strong> on your ${selectedCheck.toLocaleString()} check ({Math.round((dividendYr3 / selectedCheck) * 100)}% annual cash yield).
-              </div>
-            </div>
-
             {/* Detailed Calculations Modal Trigger */}
             <div className="pt-3 border-t border-amber-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <button
@@ -943,58 +935,36 @@ export default function StandaloneInvestorApp() {
 
           {/* 3 Liquidity Paths */}
           <div className="space-y-4">
-            <h3 className="font-black text-slate-950 text-lg">3 Ways You Realize Returns on Your Investment</h3>
+            <h3 className="font-black text-slate-950 text-lg">3 Potential Liquidity Paths for Angel Investors</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
               <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
                 <div className="font-black text-slate-950 text-base flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-blue-600" />
-                  <span>1. Value Growth at the Next Funding Round</span>
+                  <span>1. Series Seed Conversion</span>
                 </div>
                 <p>
-                  At 1,000 paying members ($1.5M ARR), we raise an institutional Series Seed at <strong>$15M–$20M</strong>. Your SAFE converts with an immediate <strong>10x–12x paper gain</strong>, with secondary sale options at Series A.
+                  At 1,000 paying members ($1.5M ARR), ATLAS targets an institutional Series Seed at a <strong>$15M–$20M valuation</strong>. Your SAFE automatically converts into Preferred Equity at the discounted valuation cap.
                 </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
                 <div className="font-black text-slate-950 text-base flex items-center gap-2">
                   <Building2 className="w-5 h-5 text-amber-600" />
-                  <span>2. Acquisition by a Major Bank or Travel Company</span>
+                  <span>2. Strategic M&amp;A Acquisition</span>
                 </div>
                 <p>
-                  Card issuers pay massive premiums for high-spending travelers. Capital One acquired <strong>Velocity Black for $297M</strong>. An acquisition by a bank or OTA at $45M–$75M delivers <strong>25x to 43x cash return</strong>.
+                  Major credit card issuers and travel groups acquire high-spending subscription platforms (e.g. Capital One acquired <strong>Velocity Black for $297M</strong>). An acquisition provides cash liquidity to equity holders.
                 </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
                 <div className="font-black text-slate-950 text-base flex items-center gap-2">
                   <Landmark className="w-5 h-5 text-emerald-600" />
-                  <span>3. Annual Cash Profit Payouts (Dividends)</span>
+                  <span>3. Secondary Liquidity in Later Rounds</span>
                 </div>
                 <p>
-                  Because we hold zero inventory risk and enjoy 96% SaaS margins, ATLAS generates positive free cash flow early. We can distribute annual dividends paying back <strong>100%+ of your check every year</strong>.
+                  As the company scales through subsequent institutional rounds (Series A/B), early angel investors can participate in secondary share sales or tender offers to realize early cash gains.
                 </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Investor Lifestyle Privileges */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-slate-950 text-white space-y-4 shadow-sm">
-            <div className="flex items-center gap-2 text-amber-400 font-bold text-sm sm:text-base">
-              <Gift className="w-5 h-5 text-amber-400" />
-              <span>Investor Privileges (Included With Every Check)</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-slate-300">
-              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                <div className="font-bold text-white text-base">Lifetime Sovereign Pass</div>
-                <p>Annual VIP membership ($1,799/yr) permanently waived for you and your family.</p>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                <div className="font-bold text-white text-base">Founder Concierge</div>
-                <p>Direct WhatsApp access to Founder Pål Juritzen for custom hotel bookings and upgrades.</p>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                <div className="font-bold text-white text-base">Annual Retreat</div>
-                <p>Invitation to our annual private investor briefing at a premier partner hotel property.</p>
               </div>
             </div>
           </div>
@@ -1677,17 +1647,17 @@ export default function StandaloneInvestorApp() {
                   </div>
                 </div>
 
-                {/* Annual Cash Dividend */}
+                {/* Secondary Liquidity */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                   <div className="font-bold text-slate-950 flex items-center justify-between">
-                    <span>D. Annual Cash Dividend Yield</span>
-                    <span className="text-blue-800 font-mono font-black">750% / yr</span>
+                    <span>D. Secondary Share Liquidity</span>
+                    <span className="text-blue-800 font-mono font-black">Series A/B</span>
                   </div>
                   <p className="text-slate-600 text-xs leading-relaxed">
-                    <strong>Assumption:</strong> If held privately, Year 3 projected EBITDA is $13.13M. With 96% SaaS gross margins, cash is distributed to equity holders annually.
+                    <strong>Mechanism:</strong> In growth rounds, incoming institutional funds often purchase a portion of early angel shares to expand their ownership without creating company dilution.
                   </p>
                   <div className="pt-2 border-t border-slate-200 font-mono text-xs text-blue-800 font-bold">
-                    <div>• Annual cash dividend: ~<strong>${Math.round(dividendYr3).toLocaleString()} / year</strong></div>
+                    <div>• Early cash realization option before full trade sale or IPO</div>
                   </div>
                 </div>
               </div>
