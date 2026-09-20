@@ -264,10 +264,10 @@ export default function StandaloneInvestorApp() {
     },
     {
       id: 'prospectus',
-      title: 'Offering Memorandum & 5-Year Model (PDF)',
-      category: 'Financial Memorandum',
+      title: 'Full Investment Prospectus & 5-Year Model (PDF)',
+      category: 'Official Offering Prospectus',
       file: '/docs/investors/ATLAS_Confidential_Prospectus.pdf',
-      desc: 'Detailed pro-forma income statement, zero-inventory balance sheet mechanics, capital allocation breakdown, and regulatory safe harbor brief.',
+      desc: 'Detailed 5-year financial forecast, zero-inventory balance sheet mechanics, capital allocation breakdown, and regulatory safe harbor brief.',
       highlights: [
         'Corporate Entity: ATLAS Travel Club LLC (Manager-Managed Delaware/Wyoming structure).',
         'Growth Plan: Year 1: $1.03M ARR -> Year 3: $22.6M ARR -> Year 5: $143.7M ARR ($102M EBITDA).',
@@ -277,7 +277,7 @@ export default function StandaloneInvestorApp() {
     },
     {
       id: 'safe',
-      title: 'YC Post-Money SAFE Agreement (PDF)',
+      title: 'Standard Investment Agreement — YC SAFE (PDF)',
       category: 'Investment Agreement',
       file: '/docs/investors/ATLAS_SAFE_Term_Sheet_LLC.pdf',
       desc: 'Standard Y Combinator Post-Money SAFE with 20% conversion discount, $1.75M valuation cap, and optional Delaware C-Corp / QSBS tax conversion.',
@@ -303,8 +303,8 @@ export default function StandaloneInvestorApp() {
     },
     {
       id: 'faq',
-      title: 'Due Diligence FAQ & Risk Assessment (PDF)',
-      category: 'Legal & Risk Analysis',
+      title: 'Investor FAQ & Risk Brief (PDF)',
+      category: 'Investor FAQ',
       file: '/docs/investors/ATLAS_Due_Diligence_FAQ.pdf',
       desc: 'Answers to the top 10 investor questions: rate parity law, supplier relationships, anti-churn mechanics, and how we keep customer acquisition costs under $110.',
       highlights: [
@@ -316,8 +316,8 @@ export default function StandaloneInvestorApp() {
     },
     {
       id: 'exit',
-      title: 'Strategic Exit & Acquisition Landscape (PDF)',
-      category: 'M&A & Liquidity',
+      title: 'Company Sale & Acquisition Opportunities (PDF)',
+      category: 'Exit Analysis',
       file: '/docs/investors/ATLAS_Strategic_Exit_Opportunities.pdf',
       desc: 'Precedent acquisitions (Capital One bought Velocity Black for $297M; Chase bought Frosch), strategic acquirers, and return multiples across 3 exit horizons.',
       highlights: [
@@ -378,8 +378,8 @@ export default function StandaloneInvestorApp() {
             <button onClick={() => scrollTo('financials')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer">
               Financial Plan
             </button>
-            <button onClick={() => scrollTo('dataroom')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer text-amber-800">
-              Data Room
+            <button onClick={() => scrollTo('dataroom')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer text-amber-800 font-bold">
+              Full Prospectus
             </button>
           </nav>
 
@@ -388,7 +388,7 @@ export default function StandaloneInvestorApp() {
             {signedData ? (
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>NDA Verified</span>
+                <span>Access Unlocked</span>
               </div>
             ) : (
               <button
@@ -396,7 +396,7 @@ export default function StandaloneInvestorApp() {
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black transition-all shadow-xs cursor-pointer"
               >
                 <Lock className="w-3.5 h-3.5" />
-                <span>Data Room</span>
+                <span>Get Full Prospectus</span>
               </button>
             )}
 
@@ -427,7 +427,7 @@ export default function StandaloneInvestorApp() {
             <button onClick={() => scrollTo('safety')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100">Why Your Money Is Safe</button>
             <button onClick={() => scrollTo('calculator')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100">Angel Returns Calculator</button>
             <button onClick={() => scrollTo('financials')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100">Runway &amp; Financial Model</button>
-            <button onClick={() => scrollTo('dataroom')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-amber-800">📁 Due Diligence &amp; Data Room</button>
+            <button onClick={() => scrollTo('dataroom')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-amber-800">📄 Full Prospectus &amp; Pitch Deck</button>
           </div>
         )}
       </header>
@@ -474,7 +474,7 @@ export default function StandaloneInvestorApp() {
                 className="px-5 py-3.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-900 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-2"
               >
                 <FileText className="w-4 h-4 text-slate-600" />
-                <span>Review Pitch Deck &amp; SAFE Terms</span>
+                <span>Get Full Prospectus & Pitch Deck</span>
               </button>
             </div>
           </div>
@@ -484,7 +484,7 @@ export default function StandaloneInvestorApp() {
             <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
               <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">The Raise</div>
               <div className="text-2xl sm:text-3xl font-black text-slate-950">$75,000</div>
-              <div className="text-xs text-amber-800 font-bold">$5,000 Min Check (YC SAFE)</div>
+              <div className="text-xs text-amber-800 font-bold">$5,000 Min Check (Standard SAFE Agreement)</div>
             </div>
 
             <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
@@ -688,14 +688,14 @@ export default function StandaloneInvestorApp() {
             {[
               {
                 num: '1',
-                title: 'Zero Hotel Room Inventory Liabilities',
+                title: 'Zero Hotel Inventory Risk (We Never Pre-Buy Rooms)',
                 desc: 'We never buy hotel room blocks in advance. We never lease properties, and we have zero minimum purchase quotas. If zero bookings occur next week, our hotel room cost is exactly $0.00. We hold zero inventory on our balance sheet.',
                 badge: '$0 Inventory Risk',
                 color: 'text-emerald-800 bg-emerald-50 border-emerald-300'
               },
               {
                 num: '2',
-                title: 'We Get Paid Upfront (Positive Cash Float)',
+                title: 'Members Pay Upfront (Immediate Cash Flow)',
                 desc: 'Members pay their annual dues ($799 to $1,799) on Day 1. We collect cash before delivering services, giving us strong working capital float with zero bad-debt risk and zero unpaid receivables.',
                 badge: 'Paid Upfront Cash',
                 color: 'text-blue-800 bg-blue-50 border-blue-300'
@@ -784,9 +784,9 @@ export default function StandaloneInvestorApp() {
             {/* Return Multiple Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
               <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-1 shadow-2xs">
-                <div className="text-xs uppercase font-bold text-slate-500">12–15 Mos (Series Seed Markup)</div>
+                <div className="text-xs uppercase font-bold text-slate-500">Next Funding Round (12–15 Months)</div>
                 <div className="text-2xl font-black text-amber-700">${Math.round(seedValLow / 1000)}k–${Math.round(seedValHigh / 1000)}k</div>
-                <div className="text-xs text-emerald-800 font-bold">8.6x – 11.4x Paper Gain ($15M–$20M Val)</div>
+                <div className="text-xs text-emerald-800 font-bold">8.6x – 11.4x Value Gain ($15M–$20M Val)</div>
               </div>
 
               <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-1 shadow-2xs">
@@ -805,19 +805,19 @@ export default function StandaloneInvestorApp() {
             <div className="p-4 rounded-2xl bg-amber-100/70 border border-amber-300 text-xs sm:text-sm text-amber-950 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-700 shrink-0" />
               <div>
-                <strong>The Cash Cow Alternative:</strong> If we choose not to sell, our projected Year 3 EBITDA of $13.1M allows annual dividend distributions yielding ~<strong>${Math.round(dividendYr3 / 1000)}k / year in cash</strong> on your ${selectedCheck.toLocaleString()} check ({Math.round((dividendYr3 / selectedCheck) * 100)}% annual cash yield).
+                <strong>Annual Cash Dividends:</strong> If we choose not to sell, our projected Year 3 EBITDA of $13.1M allows annual dividend distributions yielding ~<strong>${Math.round(dividendYr3 / 1000)}k / year in cash</strong> on your ${selectedCheck.toLocaleString()} check ({Math.round((dividendYr3 / selectedCheck) * 100)}% annual cash yield).
               </div>
             </div>
           </div>
 
           {/* 3 Liquidity Paths */}
           <div className="space-y-4">
-            <h3 className="font-black text-slate-950 text-lg">3 Ways You Make Money</h3>
+            <h3 className="font-black text-slate-950 text-lg">3 Ways You Realize Returns on Your Investment</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
               <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
                 <div className="font-black text-slate-950 text-base flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-blue-600" />
-                  <span>1. Venture Series Seed</span>
+                  <span>1. Value Growth at the Next Funding Round</span>
                 </div>
                 <p>
                   At 1,000 paying members ($1.5M ARR), we raise an institutional Series Seed at <strong>$15M–$20M</strong>. Your SAFE converts with an immediate <strong>10x–12x paper gain</strong>, with secondary sale options at Series A.
@@ -827,7 +827,7 @@ export default function StandaloneInvestorApp() {
               <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
                 <div className="font-black text-slate-950 text-base flex items-center gap-2">
                   <Building2 className="w-5 h-5 text-amber-600" />
-                  <span>2. Strategic Bank &amp; Travel M&amp;A</span>
+                  <span>2. Acquisition by a Major Bank or Travel Company</span>
                 </div>
                 <p>
                   Card issuers pay massive premiums for high-spending travelers. Capital One acquired <strong>Velocity Black for $297M</strong>. An acquisition by a bank or OTA at $45M–$75M delivers <strong>25x to 43x cash return</strong>.
@@ -837,7 +837,7 @@ export default function StandaloneInvestorApp() {
               <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
                 <div className="font-black text-slate-950 text-base flex items-center gap-2">
                   <Landmark className="w-5 h-5 text-emerald-600" />
-                  <span>3. Cash Dividends</span>
+                  <span>3. Annual Cash Profit Payouts (Dividends)</span>
                 </div>
                 <p>
                   Because we hold zero inventory risk and enjoy 96% SaaS margins, ATLAS generates positive free cash flow early. We can distribute annual dividends paying back <strong>100%+ of your check every year</strong>.
@@ -976,11 +976,11 @@ export default function StandaloneInvestorApp() {
           <div className="border-b border-slate-200 pb-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-950 text-xs font-bold uppercase tracking-wider mb-2">
               <FileText className="w-3.5 h-3.5 text-amber-700" />
-              <span>Due Diligence</span>
+              <span>Investment Documents</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-950">Institutional Due Diligence Data Room</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-950">Get the Full Investment Prospectus & Pitch Deck</h2>
             <p className="text-sm text-slate-600 mt-1 max-w-3xl">
-              Review our 10-slide PowerPoint presentation deck, YC SAFE investment agreements, offering memorandum, and technical architecture.
+              Download the complete 10-slide pitch deck (PowerPoint &amp; PDF), the official offering prospectus, 5-year financial forecasts, and the investment agreement.
             </p>
           </div>
 
@@ -995,8 +995,8 @@ export default function StandaloneInvestorApp() {
                   <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider mb-1">
                     <span>Quick Verification Gate</span>
                   </div>
-                  <h3 className="text-xl font-black text-slate-900">Enter Your Email to Unlock All 6 Documents</h3>
-                  <p className="text-sm text-slate-700">Enter your email address below to receive an instant access code and unlock the pitch deck and SAFE terms.</p>
+                  <h3 className="text-xl font-black text-slate-900">Enter Your Email to Download the Full Prospectus</h3>
+                  <p className="text-sm text-slate-700">Enter your email address below to receive a simple 6-digit access code and instantly download the prospectus, pitch deck, and investment agreement.</p>
                 </div>
               </div>
 
@@ -1138,7 +1138,7 @@ export default function StandaloneInvestorApp() {
                 </div>
                 <div>
                   <div className="font-black text-slate-900 text-base flex items-center gap-2">
-                    <span>Access Unlocked: All 6 Due Diligence Documents Ready</span>
+                    <span>Access Unlocked: Full Prospectus & Investment Documents Ready</span>
                     <span className="text-xs bg-emerald-200 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold">Authorized</span>
                   </div>
                   <div className="text-xs text-emerald-950 font-medium mt-0.5">
@@ -1306,7 +1306,7 @@ export default function StandaloneInvestorApp() {
                 <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold">
                   <FileCheck className="w-4 h-4" />
                 </div>
-                <h3 className="font-black text-slate-900 text-lg">Sign Digital Confidentiality NDA</h3>
+                <h3 className="font-black text-slate-900 text-lg">Sign Confidentiality Agreement</h3>
               </div>
               <button onClick={() => setShowNdaModal(false)} className="text-slate-400 hover:text-slate-600 p-1">
                 <X className="w-5 h-5" />
@@ -1362,7 +1362,7 @@ export default function StandaloneInvestorApp() {
                 className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-md cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isSigning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                <span>Sign Electronic NDA &amp; Unlock Data Room</span>
+                <span>Sign Confidentiality Agreement & Access Prospectus</span>
               </button>
             </form>
           </div>
