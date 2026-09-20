@@ -24,6 +24,7 @@ interface SignatureRecord {
 
 export default function StandaloneInvestorApp() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Interactive Check Calculator State ($5k / $10k / $25k / $75k)
   const [selectedCheck, setSelectedCheck] = useState<5000 | 10000 | 25000 | 75000>(25000);
@@ -331,112 +332,226 @@ export default function StandaloneInvestorApp() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-amber-100 selection:text-amber-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-amber-100 selection:text-amber-900 flex flex-col lg:flex-row">
 
       {/* ========================================================= */}
-      {/* 1. TOP STICKY BAR: DEAL SNAPSHOT & NAVIGATION             */}
+      {/* MOBILE TOP BAR (Hidden on Desktop)                        */}
       {/* ========================================================= */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-8 py-3.5">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
-          
-          {/* Logo & Deal Tag */}
-          <div className="flex items-center gap-3">
-            <button onClick={() => scrollTo('hero')} className="flex items-center gap-2.5 text-left cursor-pointer">
-              <div className="w-8 h-8 rounded-xl bg-slate-950 flex items-center justify-center text-amber-400 font-black text-sm shadow-xs">
-                A
-              </div>
-              <div>
-                <div className="font-black text-slate-950 text-sm tracking-tight leading-none">ATLAS</div>
-                <div className="text-[10px] font-bold text-slate-500 mt-0.5">Travel Club LLC</div>
-              </div>
-            </button>
+      <header className="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+        <button onClick={() => scrollTo('hero')} className="flex items-center gap-2.5 text-left cursor-pointer">
+          <div className="w-8 h-8 rounded-xl bg-slate-950 flex items-center justify-center text-amber-400 font-black text-sm shadow-xs">
+            A
+          </div>
+          <div>
+            <div className="font-black text-slate-950 text-sm tracking-tight leading-none">ATLAS</div>
+            <div className="text-[10px] font-bold text-slate-500 mt-0.5">Travel Club LLC</div>
+          </div>
+        </button>
 
-            <span className="hidden md:inline-block h-4 w-px bg-slate-200 mx-1" />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => scrollTo('dataroom')}
+            className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-all shadow-xs cursor-pointer"
+          >
+            Prospectus
+          </button>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-xl text-slate-700 hover:bg-slate-100 cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </header>
 
-            <div className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-950 text-xs font-bold">
-              <span>$75k Angel Round</span>
-              <span>•</span>
-              <span className="text-amber-800">$1.75M Cap</span>
-              <span>•</span>
-              <span className="text-slate-600 font-medium">YC SAFE</span>
+      {/* Mobile Slide-Out Drawer */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex justify-end">
+          <div className="w-72 max-w-[85vw] bg-white h-full p-6 space-y-6 shadow-2xl flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="font-black text-slate-950 text-base">Navigation</div>
+                <button onClick={() => setMobileMenuOpen(false)} className="p-1 text-slate-400 hover:text-slate-700">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950 font-bold space-y-1">
+                <div>$75,000 Angel Round</div>
+                <div className="text-amber-800">$1.75M Cap • YC SAFE</div>
+              </div>
+
+              <nav className="space-y-1 text-sm font-bold text-slate-700">
+                <button onClick={() => scrollTo('hero')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
+                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  <span>The Pitch</span>
+                </button>
+                <button onClick={() => scrollTo('how-it-works')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>How It Works</span>
+                </button>
+                <button onClick={() => scrollTo('safety')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
+                  <ShieldCheck className="w-4 h-4 text-blue-600" />
+                  <span>Why It's Safe</span>
+                </button>
+                <button onClick={() => scrollTo('calculator')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
+                  <Calculator className="w-4 h-4 text-amber-700" />
+                  <span>Returns Calculator</span>
+                </button>
+                <button onClick={() => scrollTo('financials')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-left">
+                  <TrendingUp className="w-4 h-4 text-purple-600" />
+                  <span>Financial Plan</span>
+                </button>
+                <button onClick={() => scrollTo('dataroom')} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-amber-50 text-amber-950 hover:bg-amber-100 text-left">
+                  <FileText className="w-4 h-4 text-amber-700" />
+                  <span>Full Prospectus</span>
+                </button>
+              </nav>
+            </div>
+
+            <div className="space-y-2 pt-4 border-t border-slate-100">
+              <a
+                href="mailto:executive@atlastravelclub.com?subject=ATLAS%20SAFE%20Investment%20Commitment"
+                className="w-full py-3 rounded-xl bg-slate-950 hover:bg-slate-800 text-white font-black text-xs transition-all shadow-xs flex items-center justify-center gap-2"
+              >
+                <span>Commit a Check</span>
+                <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
+              </a>
             </div>
           </div>
+        </div>
+      )}
 
-          {/* Desktop Links */}
-          <nav className="hidden lg:flex items-center gap-1 text-xs font-bold text-slate-600">
-            <button onClick={() => scrollTo('hero')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer">
-              The Pitch
-            </button>
-            <button onClick={() => scrollTo('how-it-works')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer">
-              How It Works
-            </button>
-            <button onClick={() => scrollTo('safety')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer">
-              Why It's Safe
-            </button>
-            <button onClick={() => scrollTo('calculator')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer">
-              Returns Calculator
-            </button>
-            <button onClick={() => scrollTo('financials')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer">
-              Financial Plan
-            </button>
-            <button onClick={() => scrollTo('dataroom')} className="px-3 py-1.5 rounded-lg hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer text-amber-800 font-bold">
-              Full Prospectus
-            </button>
-          </nav>
-
-          {/* Right Action Buttons */}
-          <div className="flex items-center gap-2.5">
-            {signedData ? (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Access Unlocked</span>
-              </div>
+      {/* ========================================================= */}
+      {/* DESKTOP COLLAPSIBLE SIDEBAR NAVIGATION (Sticky Left)      */}
+      {/* ========================================================= */}
+      <aside
+        className={`hidden lg:flex flex-col justify-between sticky top-0 h-screen z-40 bg-white border-r border-slate-200 transition-all duration-300 shrink-0 ${
+          sidebarCollapsed ? 'w-20 p-3 items-center' : 'w-64 p-5'
+        }`}
+      >
+        {/* Top: Logo & Collapse Button */}
+        <div className="space-y-5 w-full">
+          <div className="flex items-center justify-between gap-2">
+            {!sidebarCollapsed ? (
+              <button onClick={() => scrollTo('hero')} className="flex items-center gap-2.5 text-left cursor-pointer">
+                <div className="w-9 h-9 rounded-xl bg-slate-950 flex items-center justify-center text-amber-400 font-black text-base shadow-xs shrink-0">
+                  A
+                </div>
+                <div>
+                  <div className="font-black text-slate-950 text-base tracking-tight leading-none">ATLAS</div>
+                  <div className="text-[10px] font-bold text-slate-500 mt-0.5">Travel Club LLC</div>
+                </div>
+              </button>
             ) : (
-              <button
-                onClick={() => scrollTo('dataroom')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black transition-all shadow-xs cursor-pointer"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                <span>Get Full Prospectus</span>
+              <button onClick={() => scrollTo('hero')} className="w-10 h-10 rounded-xl bg-slate-950 flex items-center justify-center text-amber-400 font-black text-base shadow-xs mx-auto">
+                A
               </button>
             )}
 
-            <a
-              href="mailto:executive@atlastravelclub.com?subject=ATLAS%20SAFE%20Investment%20Inquiry"
-              className="px-3.5 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
-            >
-              <span>Commit a Check</span>
-              <ArrowRight className="w-3 h-3 text-amber-400" />
-            </a>
-
-            {/* Mobile Hamburger */}
+            {/* Collapse / Expand Toggle Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 cursor-pointer"
-              aria-label="Toggle menu"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-label="Toggle sidebar"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
             </button>
           </div>
+
+          {/* Deal Badge (Expanded Only) */}
+          {!sidebarCollapsed && (
+            <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950 space-y-0.5">
+              <div className="font-black text-amber-900">$75k Pre-Seed Round</div>
+              <div className="text-slate-600 font-medium">$1.75M Cap • Standard SAFE</div>
+            </div>
+          )}
+
+          {/* Navigation Links */}
+          <nav className="space-y-1 w-full pt-1">
+            {[
+              { id: 'hero', label: 'The Pitch', icon: Sparkles, color: 'text-amber-600' },
+              { id: 'how-it-works', label: 'How It Works', icon: CheckCircle2, color: 'text-emerald-600' },
+              { id: 'safety', label: "Why It's Safe", icon: ShieldCheck, color: 'text-blue-600' },
+              { id: 'calculator', label: 'Returns Calculator', icon: Calculator, color: 'text-amber-700' },
+              { id: 'financials', label: 'Financial Plan', icon: TrendingUp, color: 'text-purple-600' },
+              { id: 'dataroom', label: 'Full Prospectus', icon: FileText, color: 'text-amber-800' }
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => scrollTo(item.id)}
+                  title={sidebarCollapsed ? item.label : undefined}
+                  className={`w-full flex items-center rounded-xl font-bold text-xs transition-all cursor-pointer ${
+                    sidebarCollapsed
+                      ? 'justify-center p-3 hover:bg-slate-100 text-slate-700'
+                      : 'gap-3 px-3.5 py-2.5 hover:bg-slate-100 text-slate-700 hover:text-slate-950 text-left'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 shrink-0 ${item.color}`} />
+                  {!sidebarCollapsed && <span>{item.label}</span>}
+                </button>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* Mobile Nav */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-slate-200 mt-3 pt-3 pb-2 space-y-1 text-sm font-bold text-slate-800">
-            <button onClick={() => scrollTo('hero')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100">The Pitch</button>
-            <button onClick={() => scrollTo('how-it-works')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100">How It Works &amp; Real Savings</button>
-            <button onClick={() => scrollTo('safety')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100">Why Your Money Is Safe</button>
-            <button onClick={() => scrollTo('calculator')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100">Angel Returns Calculator</button>
-            <button onClick={() => scrollTo('financials')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100">Runway &amp; Financial Model</button>
-            <button onClick={() => scrollTo('dataroom')} className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-amber-800">📄 Full Prospectus &amp; Pitch Deck</button>
-          </div>
-        )}
-      </header>
+        {/* Bottom: Action Buttons */}
+        <div className="space-y-2 w-full pt-4 border-t border-slate-100">
+          {!sidebarCollapsed ? (
+            <>
+              {signedData ? (
+                <div className="flex items-center gap-2 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span className="truncate">Access Unlocked</span>
+                </div>
+              ) : (
+                <button
+                  onClick={() => scrollTo('dataroom')}
+                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Get Full Prospectus</span>
+                </button>
+              )}
+
+              <a
+                href="mailto:executive@atlastravelclub.com?subject=ATLAS%20SAFE%20Investment%20Commitment"
+                className="w-full py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
+              >
+                <span>Commit a Check</span>
+                <ArrowRight className="w-3 h-3 text-amber-400" />
+              </a>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-2">
+              <button
+                onClick={() => scrollTo('dataroom')}
+                title="Get Full Prospectus"
+                className="w-10 h-10 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 flex items-center justify-center shadow-xs cursor-pointer"
+              >
+                <Lock className="w-4 h-4" />
+              </button>
+              <a
+                href="mailto:executive@atlastravelclub.com?subject=ATLAS%20SAFE%20Investment%20Commitment"
+                title="Commit a Check"
+                className="w-10 h-10 rounded-xl bg-slate-950 hover:bg-slate-800 text-white flex items-center justify-center shadow-xs"
+              >
+                <ArrowRight className="w-4 h-4 text-amber-400" />
+              </a>
+            </div>
+          )}
+        </div>
+      </aside>
 
       {/* ========================================================= */}
-      {/* 2. HERO: WHOLESALE LUXURY TRAVEL WITHOUT MIDDLEMEN        */}
+      {/* MAIN CONTENT CONTAINER                                    */}
       {/* ========================================================= */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-8 py-10 sm:py-16 space-y-16 sm:space-y-24">
+      <div className="flex-1 min-w-0">
+        <main className="max-w-5xl mx-auto px-4 sm:px-8 py-10 sm:py-16 space-y-16 sm:space-y-24">
 
         <section id="hero" className="space-y-8 scroll-mt-24">
           <div className="space-y-5">
@@ -1309,7 +1424,8 @@ export default function StandaloneInvestorApp() {
           </div>
         </footer>
 
-      </main>
+        </main>
+      </div>
 
       {/* ========================================================= */}
       {/* DIGITAL NDA SIGNATURE MODAL                                */}
