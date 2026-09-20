@@ -31,7 +31,7 @@ export default function RateParityCompliancePage() {
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-900">1. Memorandum Purpose & Summary</h2>
             <p>
-              This document sets forth the legal, regulatory, and contractual framework governing the distribution of non-public wholesale hotel rates, negotiated B2B Bedbank inventory, and opaque travel packages by ATLAS VIP Platform Inc. ("ATLAS").
+              This document sets forth the legal, regulatory, and contractual framework governing the distribution of non-public wholesale hotel rates, negotiated B2B Bedbank inventory, and opaque travel packages by ATLAS Travel Club LLC ("ATLAS").
             </p>
             <p>
               <strong>Core Legal Finding:</strong> Because ATLAS operates as a bona fide, paid, password-protected membership collective, the distribution of net wholesale inventory to authenticated members is <strong>100% EXEMPT from public Rate Parity agreements</strong> maintained by Online Travel Agencies (OTAs) including Expedia Group and Booking Holdings.

@@ -31,7 +31,7 @@ export default function BankingDisclosuresPage() {
           <section className="space-y-3">
             <h2 className="text-xl font-black text-slate-900">1. Program Sponsorship & Partner Bank Disclosures</h2>
             <p>
-              ATLAS VIP Platform Inc. is a financial technology platform and private travel collective, not an FDIC-insured bank.
+              ATLAS Travel Club LLC is a financial technology platform and private travel collective, not an FDIC-insured bank.
             </p>
             <p>
               The <strong>ATLAS Obsidian / Gold Visa® Prepaid and Debit Card</strong> program is issued by licensed sponsor bank partners pursuant to a license from Visa U.S.A. Inc. and Visa International. Funds deposited into member card accounts are held by FDIC-insured or FCA-regulated partner financial institutions up to applicable legal limits.

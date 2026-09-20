@@ -27,7 +27,7 @@ export default function StandaloneInvestorApp() {
   // Sidebar Collapsible State
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'teaser' | 'returns' | 'trust' | 'arbitrage' | 'economics' | 'budget' | 'dataroom' | 'exits' | 'legal'>('teaser');
+  const [activeTab, setActiveTab] = useState<'teaser' | 'returns' | 'trust' | 'arbitrage' | 'economics' | 'budget' | 'dataroom' | 'exits'>('teaser');
 
   // Interactive Check Calculator State ($10k / $25k / $75k)
   const [selectedCheck, setSelectedCheck] = useState<5000 | 10000 | 25000 | 75000>(25000);
@@ -369,28 +369,27 @@ export default function StandaloneInvestorApp() {
         {/* Navigation Items */}
         <div className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
           {!sidebarCollapsed && (
-            <div className="px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="px-3 pb-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
               Investment Brief
             </div>
           )}
 
           <nav className="space-y-1">
             {[
-              { id: 'teaser', label: 'Executive Thesis', icon: Award },
+              { id: 'teaser', label: 'Executive Summary', icon: Award },
               { id: 'returns', label: "What's In It For You", icon: HandCoins, highlight: true },
-              { id: 'trust', label: 'Trust & Governance', icon: ShieldCheck, highlight: true },
+              { id: 'trust', label: 'Why You Can Trust Us', icon: ShieldCheck, highlight: true },
               { id: 'arbitrage', label: 'The Savings Engine', icon: Sparkles },
               { id: 'economics', label: 'Unit Economics', icon: TrendingUp },
               { id: 'budget', label: '$75k Capital Plan', icon: DollarSign },
               { 
                 id: 'dataroom', 
-                label: 'Access All Project Documents', 
+                label: 'Project Documents & Data Room', 
                 icon: FileText, 
-                badge: signedData ? 'Authorized' : 'Verification Required',
+                badge: signedData ? 'Authorized' : 'Verified Access',
                 highlight: true
               },
               { id: 'exits', label: 'Strategic M&A Exits', icon: Building2 },
-              { id: 'legal', label: 'Statutory Compliance', icon: Scale },
             ].map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -398,12 +397,12 @@ export default function StandaloneInvestorApp() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id as any)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all text-left cursor-pointer group ${
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all text-left cursor-pointer group ${
                     isActive 
                       ? 'bg-slate-900 text-white shadow-xs' 
                       : item.highlight 
-                        ? 'text-amber-950 bg-amber-50/60 hover:bg-amber-100/80 border border-amber-200/50' 
-                        : 'text-slate-600 hover:bg-slate-200/50 hover:text-slate-900'
+                        ? 'text-amber-950 bg-amber-50/80 hover:bg-amber-100 border border-amber-200/70' 
+                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
                   }`}
                   title={sidebarCollapsed ? item.label : undefined}
                 >
@@ -411,17 +410,17 @@ export default function StandaloneInvestorApp() {
                     isActive 
                       ? 'text-amber-400' 
                       : item.highlight 
-                        ? 'text-amber-600' 
-                        : 'text-slate-400 group-hover:text-slate-700'
+                        ? 'text-amber-700' 
+                        : 'text-slate-500 group-hover:text-slate-900'
                   }`} />
                   {!sidebarCollapsed && (
                     <span className="truncate flex-1">{item.label}</span>
                   )}
                   {!sidebarCollapsed && item.badge && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                      item.badge === 'Unlocked' 
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                      item.badge === 'Authorized' 
                         ? 'bg-emerald-100 text-emerald-800' 
-                        : 'bg-slate-100 text-slate-500'
+                        : 'bg-amber-100 text-amber-900'
                     }`}>
                       {item.badge}
                     </span>
@@ -433,24 +432,24 @@ export default function StandaloneInvestorApp() {
         </div>
 
         {/* Sidebar Verification Status Card */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/70">
+        <div className="p-4 border-t border-slate-200 bg-slate-50">
           {signedData ? (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 {!sidebarCollapsed && (
-                  <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wide">
-                    Institutional Access
+                  <span className="text-xs font-bold text-emerald-800 uppercase tracking-wide">
+                    Authorized Investor Access
                   </span>
                 )}
               </div>
               {!sidebarCollapsed && (
-                <div className="text-xs text-slate-600">
-                  <div className="font-semibold text-slate-900 truncate">{signedData.fullName}</div>
-                  <div className="text-[10px] text-slate-500 truncate">{signedData.email}</div>
+                <div className="text-xs text-slate-700 space-y-0.5">
+                  <div className="font-bold text-slate-900 truncate">{signedData.fullName}</div>
+                  <div className="text-xs text-slate-600 truncate">{signedData.email}</div>
                   <button
                     onClick={handleLogout}
-                    className="text-[10px] text-rose-600 hover:underline mt-1 block cursor-pointer"
+                    className="text-xs text-rose-600 hover:underline pt-1 block cursor-pointer font-semibold"
                   >
                     Clear Credentials
                   </button>
@@ -460,16 +459,16 @@ export default function StandaloneInvestorApp() {
           ) : (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Lock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <Lock className="w-4 h-4 text-amber-700 shrink-0" />
                 {!sidebarCollapsed && (
-                  <span className="text-[11px] font-bold text-amber-900">
-                    Confidential Tier
+                  <span className="text-xs font-bold text-amber-950">
+                    Confidential Due Diligence
                   </span>
                 )}
               </div>
               {!sidebarCollapsed && (
-                <p className="text-[10px] text-slate-500 leading-tight">
-                  Verify email and sign digital NDA to inspect SAFE and pro-forma documents.
+                <p className="text-xs text-slate-600 leading-normal">
+                  Verify your email and sign the mutual NDA to access the SAFE agreement and pro-forma models.
                 </p>
               )}
             </div>
@@ -542,15 +541,14 @@ export default function StandaloneInvestorApp() {
         {mobileMenuOpen && (
           <div className="md:hidden border-b border-slate-200 bg-slate-50 p-4 space-y-2">
             {[
-              { id: 'teaser', label: 'Executive Thesis' },
+              { id: 'teaser', label: 'Executive Summary' },
               { id: 'returns', label: "What's In It For You" },
-              { id: 'trust', label: 'Trust & Governance' },
+              { id: 'trust', label: 'Why You Can Trust Us' },
               { id: 'arbitrage', label: 'The Savings Engine' },
               { id: 'economics', label: 'Unit Economics' },
               { id: 'budget', label: '$75k Capital Plan' },
-              { id: 'dataroom', label: '📁 Access All Project Documents' },
+              { id: 'dataroom', label: '📁 Project Documents & Data Room' },
               { id: 'exits', label: 'Strategic M&A Exits' },
-              { id: 'legal', label: 'Statutory Compliance' },
             ].map((item) => (
               <button
                 key={item.id}
@@ -558,8 +556,8 @@ export default function StandaloneInvestorApp() {
                   setActiveTab(item.id as any);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold ${
-                  activeTab === item.id ? 'bg-slate-900 text-white' : 'text-slate-700'
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold ${
+                  activeTab === item.id ? 'bg-slate-900 text-white' : 'text-slate-800 hover:bg-slate-200'
                 }`}
               >
                 {item.label}
@@ -571,122 +569,122 @@ export default function StandaloneInvestorApp() {
         {/* Content View Area */}
         <div className="p-6 sm:p-10 max-w-5xl w-full mx-auto space-y-10">
 
-          {/* TAB 1: EXECUTIVE TEASER */}
+          {/* TAB 1: EXECUTIVE SUMMARY */}
           {activeTab === 'teaser' && (
             <div className="space-y-8 animate-fadeIn">
               {/* Hero Banner */}
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200/80">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-950 text-xs font-bold border border-amber-300">
+                  <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
                   <span>Confidential Angel Brief • $75,000 Pre-Seed Round • $1.75M Post-Money Cap • $5,000 Min Check</span>
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
-                  Invest in the Next-Gen Travel App Delivering <span className="text-amber-600">30% to 50%</span> Direct Wholesale Savings on Everyday Hotel Stays.
+                  Invest in the Private Travel App Delivering <span className="text-amber-600">30% to 50%</span> Direct Wholesale Savings on Everyday Hotel Stays.
                 </h1>
 
-                <p className="text-base sm:text-lg text-slate-700 leading-relaxed max-w-3xl">
-                  ATLAS connects frequent travelers directly to institutional B2B hotel wholesale rates behind a verified, password-gated membership. While public booking platforms add 25% to 40% in retail markups, our members save <strong>30% to 50% on everyday 4-star and 5-star hotel stays</strong>—saving <strong>$300 to $600+ on a single trip</strong> and over <strong>$1,200+ per year</strong> at 0% markup. We monetize through predictable <strong>96% gross margin subscription software ARR</strong> and high-ticket card payment interchange.
+                <p className="text-base sm:text-lg text-slate-800 leading-relaxed max-w-3xl">
+                  ATLAS connects frequent travelers directly to wholesale hotel rates behind a private, members-only club. While public booking platforms tack on 25% to 40% in middleman commissions, our members pocket <strong>30% to 50% in direct savings on everyday 4-star and 5-star hotel stays</strong>—keeping <strong>$300 to $600+ on a single trip</strong> and over <strong>$1,200+ every year</strong> at zero retail markup. We monetize through predictable <strong>96% gross margin software memberships</strong> and payment interchange.
                 </p>
               </div>
 
               {/* Deal Card Metrics */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Round & Min Check</div>
-                  <div className="text-2xl font-black text-slate-900">$75,000</div>
-                  <div className="text-[11px] text-amber-600 font-bold">$5,000 Min Check (YC SAFE)</div>
+                <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
+                  <div className="text-xs font-bold text-slate-600 uppercase tracking-wider">Round &amp; Min Check</div>
+                  <div className="text-2xl font-black text-slate-950">$75,000</div>
+                  <div className="text-xs text-amber-700 font-bold">$5,000 Min Check (YC SAFE)</div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Valuation Cap</div>
-                  <div className="text-2xl font-black text-slate-900">$1.75M</div>
-                  <div className="text-[11px] text-emerald-700 font-bold">~4.3% Ownership Cap</div>
+                <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
+                  <div className="text-xs font-bold text-slate-600 uppercase tracking-wider">Valuation Cap</div>
+                  <div className="text-2xl font-black text-slate-950">$1.75M</div>
+                  <div className="text-xs text-emerald-800 font-bold">~4.3% Pre-dilution Ownership</div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Avg. Member Savings</div>
-                  <div className="text-2xl font-black text-slate-900">$1,235 / yr</div>
-                  <div className="text-[11px] text-emerald-700 font-bold">30%–50% Direct Wholesale Savings</div>
+                <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
+                  <div className="text-xs font-bold text-slate-600 uppercase tracking-wider">Avg. Member Savings</div>
+                  <div className="text-2xl font-black text-slate-950">$1,235 / yr</div>
+                  <div className="text-xs text-emerald-800 font-bold">30%–50% Direct Cash Savings</div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-slate-200/80 bg-white shadow-2xs space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Member Payback</div>
+                <div className="p-5 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-1">
+                  <div className="text-xs font-bold text-slate-600 uppercase tracking-wider">Member Payback</div>
                   <div className="text-2xl font-black text-emerald-700">Trip #1 – #2</div>
-                  <div className="text-[11px] text-slate-500">38.4x LTV:CAC • 91% Retention</div>
+                  <div className="text-xs text-slate-700 font-medium">38.4x LTV:CAC • 91% Retention</div>
                 </div>
               </div>
 
-              {/* CORE HIGHLIGHT BOX: TRUST & WHAT'S IN IT FOR YOU */}
-              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/40 bg-linear-to-br from-amber-50/60 via-white to-slate-50 space-y-6 shadow-xs">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-4">
+              {/* CORE HIGHLIGHT BOX: WHAT'S IN IT FOR YOU & TRUST */}
+              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-400/80 bg-linear-to-br from-amber-50/70 via-white to-slate-50 space-y-6 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200 pb-4">
                   <div>
-                    <span className="text-[10px] uppercase font-black tracking-widest text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs uppercase font-black tracking-wider text-amber-950 bg-amber-100 px-3 py-1 rounded-full border border-amber-200">
                       The Investor Covenant
                     </span>
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-1.5">
-                      Trust & What&apos;s In It For You (At a Glance)
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-950 mt-2">
+                      Key Highlights &amp; Angel Return (At a Glance)
                     </h2>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setActiveTab('returns')}
-                      className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1.5"
+                      className="px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
                     >
-                      <HandCoins className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Full Return Model</span>
+                      <HandCoins className="w-4 h-4 text-amber-400" />
+                      <span>Explore Return Calculator</span>
                     </button>
                     <button
                       onClick={() => setActiveTab('trust')}
-                      className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1.5"
+                      className="px-4 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
                     >
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Trust Framework</span>
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <span>Why You Can Trust Us</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600 leading-relaxed">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700 leading-relaxed">
                   {/* Pillar 1: What's In It For You */}
-                  <div className="space-y-3 bg-white p-5 rounded-2xl border border-amber-200/70 shadow-2xs">
-                    <div className="flex items-center gap-2 font-black text-slate-900 text-sm">
-                      <HandCoins className="w-4 h-4 text-amber-600" />
+                  <div className="space-y-3 bg-white p-5 rounded-2xl border border-amber-200 shadow-xs">
+                    <div className="flex items-center gap-2 font-black text-slate-950 text-base">
+                      <HandCoins className="w-5 h-5 text-amber-600 shrink-0" />
                       <span>1. What&apos;s In It For You (Your Real Return)</span>
                     </div>
-                    <ul className="space-y-2 text-[11px]">
-                      <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span><strong>10x–15x Seed Markup Target:</strong> Reach 1,000 members ($1M+ ARR) in 12–15 months to price Series Seed at $15M–$20M valuation.</span>
+                    <ul className="space-y-2.5 text-xs sm:text-sm text-slate-800">
+                      <li className="flex items-start gap-2.5">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>10x–15x Seed Markup Target:</strong> Scale to 1,000 paying members ($1.0M+ ARR) in 12–15 months to price an institutional Series Seed at a $15M–$20M valuation.</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span><strong>34x–100x M&A Cash Payout:</strong> Strategic buyout scenarios ($60M–$175M) return $171k–$500k on a $5k min check ($857k–$2.5M on a $25k check).</span>
+                      <li className="flex items-start gap-2.5">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>34x–100x Potential Buyout:</strong> Strategic acquisitions ($60M–$175M) project $171k–$500k on a $5k check ($857k–$2.5M on a $25k check).</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span><strong>Immediate Lifestyle ROI:</strong> Lifetime Sovereign VIP Club membership ($1,799/yr waived forever) saving $1,500+ on every personal vacation.</span>
+                      <li className="flex items-start gap-2.5">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>Immediate Lifestyle ROI:</strong> Lifetime Sovereign VIP Club membership ($1,799/yr waived permanently) saving $1,500+ on every personal family vacation.</span>
                       </li>
                     </ul>
                   </div>
 
                   {/* Pillar 2: Why You Can Trust Us */}
-                  <div className="space-y-3 bg-white p-5 rounded-2xl border border-emerald-200/70 shadow-2xs">
-                    <div className="flex items-center gap-2 font-black text-slate-900 text-sm">
-                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      <span>2. Why You Can Trust Us (Capital Preservation)</span>
+                  <div className="space-y-3 bg-white p-5 rounded-2xl border border-emerald-200 shadow-xs">
+                    <div className="flex items-center gap-2 font-black text-slate-950 text-base">
+                      <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+                      <span>2. Why You Can Trust Us (Capital Safety)</span>
                     </div>
-                    <ul className="space-y-2 text-[11px]">
-                      <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span><strong>$0 Inventory Liabilities:</strong> Negative working capital cycle means we never prepay room blocks or lease villas. Your check cannot be burned on room vacancies.</span>
+                    <ul className="space-y-2.5 text-xs sm:text-sm text-slate-800">
+                      <li className="flex items-start gap-2.5">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>Zero Inventory Liability:</strong> We never buy room blocks in advance. If 0 rooms are booked tomorrow, our room cost is exactly $0. Your capital is never burned on empty rooms.</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span><strong>Founder Frugality & Alignment:</strong> Founder draws a modest $2,500/mo stipend. C-Corp conversion flexibility preserves Section 1202 QSBS ($10M tax-free capital gains).</span>
+                      <li className="flex items-start gap-2.5">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>Disciplined Founder Runway:</strong> Founder takes a modest, capped $2,500/month living stipend for 10 months. There are zero inflated executive salaries or wasted overhead.</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span><strong>Working Production Code:</strong> Live operational booking platform, automated price-drop rebooking algorithms, and direct wholesale supplier inventory connections already built.</span>
+                      <li className="flex items-start gap-2.5">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span><strong>Live Working Technology:</strong> Real booking flow, automatic price-drop rebooking algorithms, and direct wholesale inventory connections are already built and operating today.</span>
                       </li>
                     </ul>
                   </div>
@@ -694,76 +692,76 @@ export default function StandaloneInvestorApp() {
               </div>
 
               {/* The High-Asymmetry Investment Thesis */}
-              <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 bg-slate-50/70 space-y-6">
+              <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 bg-slate-50 space-y-6">
                 <div>
-                  <h3 className="text-lg font-black text-slate-900">Why This Is an Asymmetric Pre-Seed Bet</h3>
-                  <p className="text-xs text-slate-500 mt-1">Why retail markups fail and why our 0% markup wholesale subscription model scales.</p>
+                  <h3 className="text-xl font-black text-slate-950">Why This Business Model Scales</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1">Why public booking platforms struggle while our private membership model generates high margins.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-600 leading-relaxed">
-                  <div className="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
-                    <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-800 font-black text-sm">1</div>
-                    <div className="font-bold text-slate-900 text-sm">Zero Inventory Liabilities</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                    <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-900 font-black text-sm">1</div>
+                    <div className="font-bold text-slate-950 text-sm sm:text-base">Zero Hotel Inventory Risk</div>
                     <p>
-                      We hold <strong>zero inventory risk</strong> and $0 in hotel room blocks. Members pay us upfront upon booking; wholesale bedbanks are settled post-checkout via synchronous card rails. We generate cash float without balance sheet debt.
+                      We never pre-purchase hotel rooms or sign minimum volume quotas. Members pay upfront when booking; wholesale suppliers are settled only when the stay happens. We generate healthy cash float with zero debt.
                     </p>
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
-                    <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-800 font-black text-sm">2</div>
-                    <div className="font-bold text-slate-900 text-sm">Direct Wholesale Savings Engine</div>
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                    <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-900 font-black text-sm">2</div>
+                    <div className="font-bold text-slate-950 text-sm sm:text-base">Direct Wholesale Pass-Through</div>
                     <p>
-                      By passing 100% of B2B wholesale rates directly to members at <strong>0% retail markup</strong>, members save $1,200 to $1,800+ per stay. The irresistible savings proposition creates immediate word-of-mouth, driving CAC down to $110.
+                      By passing 100% of wholesale supplier rates directly to members with zero retail markup, members save $300 to $600+ on every single trip. The immediate cash savings drive organic word-of-mouth, keeping customer acquisition costs low ($110).
                     </p>
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 font-black text-sm">3</div>
-                    <div className="font-bold text-slate-900 text-sm">Day-1 Payback & 91% Retention</div>
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-900 font-black text-sm">3</div>
+                    <div className="font-bold text-slate-950 text-sm sm:text-base">Immediate Payback &amp; High Retention</div>
                     <p>
-                      A member saving $1,400 on a 5-night stay covers their annual membership on their very first booking with $600+ in pure net profit. Churn is economically irrational when leaving the club means forfeiting thousands in annual savings.
+                      A member saving $595 on a single summer vacation recoups their annual membership immediately on their very first booking. Annual retention reaches 91%, because leaving the club means throwing away thousands in annual travel savings.
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* THE PRICE PARITY MOAT CALLOUT */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
-                    <Scale className="w-4 h-4 text-amber-600" />
-                    <span>The &ldquo;Price Parity&rdquo; Moat: Why Public Booking Sites Can Never Match Our Rates</span>
+              {/* THE PRICE MOAT CALLOUT */}
+              <div className="p-6 rounded-2xl bg-slate-100 border border-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-sm font-bold text-slate-950">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    <span>The Pricing Moat: Why Public Booking Sites Cannot Match Our Rates</span>
                   </div>
-                  <p className="text-xs text-slate-600 max-w-2xl">
-                    Online Travel Agencies legally force hotels to sign &ldquo;Price Parity&rdquo; clauses forbidding public discounts. Because ATLAS is a paid, password-gated club, we are <strong>100% legally exempt</strong> under the US Sherman Act and EU Digital Markets Act—allowing hotels to quietly clear unsold rooms at 30%–50% off without breaching public contracts.
+                  <p className="text-xs sm:text-sm text-slate-700 max-w-2xl leading-relaxed">
+                    Public booking websites contractually forbid hotels from showing discounted rates openly on Google or search engines. But because ATLAS is a private, password-protected club, hotels can quietly sell their unsold rooms directly to our members at 30% to 50% wholesale discounts without breaking their public pricing agreements.
                   </p>
                 </div>
                 <button
                   onClick={() => setActiveTab('arbitrage')}
-                  className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
-                  <span>Explore The Savings Engine</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
+                  <span>See How The Savings Work</span>
+                  <ArrowRight className="w-4 h-4 text-amber-400" />
                 </button>
               </div>
 
               {/* WHERE WE ARE TODAY: DEVELOPMENT PHASES & TIMESCALE */}
-              <div className="p-6 sm:p-8 rounded-3xl border-2 border-slate-200 bg-white space-y-6 shadow-xs">
+              <div className="p-6 sm:p-8 rounded-3xl border border-slate-200 bg-white space-y-6 shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                   <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 font-bold text-[11px] uppercase tracking-wider">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-950 font-bold text-xs uppercase tracking-wider">
                       <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                       Current Milestone: Phase 2 Active
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
-                      Where We Are Today: Phases of Development &amp; Rollout Timescale
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-950 mt-2">
+                      Where We Are Today: 4 Commercial Rollout Phases
                     </h2>
-                    <p className="text-xs text-slate-500 mt-1">
-                      Our commercialization trajectory from wholesale supplier connectivity to private pilot testing and continental scale.
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                      Our commercial roadmap from wholesale inventory integration to private pilot testing and European/US expansion.
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <div className="px-3.5 py-2 rounded-xl bg-slate-900 text-white text-xs font-mono font-bold flex items-center gap-2 shadow-xs">
+                    <div className="px-4 py-2.5 rounded-xl bg-slate-950 text-white text-xs font-mono font-bold flex items-center gap-2 shadow-xs">
                       <Clock className="w-4 h-4 text-amber-400" />
                       <span>Timescale: Month 4 (You Are Here)</span>
                     </div>
@@ -771,21 +769,21 @@ export default function StandaloneInvestorApp() {
                 </div>
 
                 {/* Overall Timescale Progress Bar */}
-                <div className="space-y-2 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/70">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-bold text-slate-700">
+                <div className="space-y-2.5 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs font-bold text-slate-800">
                     <span className="text-emerald-700">✓ Phase 1: Foundation (Months 1–3)</span>
-                    <span className="text-amber-800 font-black">● Phase 2: Pilot &amp; Maturation (Month 4 • Current)</span>
-                    <span className="text-slate-500">○ Phase 3: Beta (Months 5–6)</span>
-                    <span className="text-slate-400">○ Phase 4: 1,000 Members (Months 7–12)</span>
+                    <span className="text-amber-900 font-black">● Phase 2: Pilot &amp; Maturation (Month 4 • Current)</span>
+                    <span className="text-slate-600">○ Phase 3: Controlled Beta (Months 5–6)</span>
+                    <span className="text-slate-500">○ Phase 4: 1,000 Members (Months 7–12)</span>
                   </div>
                   <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden flex">
-                    <div className="h-full bg-emerald-500" style={{ width: '25%' }} title="Phase 1: 100% Completed" />
-                    <div className="h-full bg-amber-500 animate-pulse" style={{ width: '15%' }} title="Phase 2: In Progress (You Are Here)" />
+                    <div className="h-full bg-emerald-500" style={{ width: '25%' }} title="Phase 1: Completed" />
+                    <div className="h-full bg-amber-500 animate-pulse" style={{ width: '15%' }} title="Phase 2: In Progress (Current)" />
                     <div className="h-full bg-slate-200" style={{ width: '60%' }} />
                   </div>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] text-slate-500 pt-0.5">
-                    <span>Wholesale Inventory &amp; Legal Entity Setup</span>
-                    <span className="font-bold text-amber-800">Platform Built • $75,000 SAFE Open</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-slate-600 pt-0.5">
+                    <span>Wholesale Inventory &amp; Legal Registration</span>
+                    <span className="font-bold text-amber-950">Platform Built • $75,000 SAFE Open</span>
                     <span>100 Founding Members &amp; Concierge</span>
                     <span>$1.03M ARR • Series Seed Target</span>
                   </div>
@@ -794,69 +792,69 @@ export default function StandaloneInvestorApp() {
                 {/* 4 Phase Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Phase 1 */}
-                  <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 flex flex-col justify-between space-y-3">
+                  <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md">
+                        <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
                           Phase 1 • Months 1–3
                         </span>
                         <span className="text-emerald-700 text-xs font-bold flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Delivered
+                          <CheckCircle2 className="w-4 h-4" /> Delivered
                         </span>
                       </div>
-                      <h3 className="font-bold text-slate-900 text-sm">Wholesale Connectivity &amp; Foundation</h3>
-                      <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
+                      <h3 className="font-bold text-slate-950 text-sm">Wholesale Connectivity &amp; Foundation</h3>
+                      <ul className="text-xs text-slate-700 space-y-1.5 pt-1">
                         <li className="flex items-start gap-1.5">
                           <span className="text-emerald-600 font-bold shrink-0">✓</span>
-                          <span>Direct supplier access established across 650,000+ global hotels.</span>
+                          <span>Direct wholesale supplier access across 650,000+ global hotels.</span>
                         </li>
                         <li className="flex items-start gap-1.5">
                           <span className="text-emerald-600 font-bold shrink-0">✓</span>
-                          <span>Proprietary zero-markup price discovery engine finalized.</span>
+                          <span>Zero-markup real-time price discovery engine completed.</span>
                         </li>
                         <li className="flex items-start gap-1.5">
                           <span className="text-emerald-600 font-bold shrink-0">✓</span>
-                          <span>Manager-Managed LLC corporate governance registered.</span>
+                          <span>Manager-Managed LLC corporate structure formed and registered.</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="text-[10px] font-semibold text-slate-500 pt-2 border-t border-slate-200/60">
+                    <div className="text-xs font-semibold text-slate-600 pt-2 border-t border-slate-200">
                       Outcome: Zero inventory liability model validated.
                     </div>
                   </div>
 
                   {/* Phase 2 (CURRENT) */}
-                  <div className="p-5 rounded-2xl bg-amber-50/40 border-2 border-amber-500/60 shadow-xs flex flex-col justify-between space-y-3 relative">
-                    <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-amber-500 text-white font-black text-[9px] uppercase tracking-wider shadow-xs">
+                  <div className="p-5 rounded-2xl bg-amber-50/60 border-2 border-amber-400 shadow-xs flex flex-col justify-between space-y-3 relative">
+                    <div className="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-xs">
                       You Are Here
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-amber-900 bg-amber-200/70 px-2 py-0.5 rounded-md">
+                        <span className="text-xs font-bold text-amber-950 bg-amber-200/80 px-2 py-0.5 rounded-md">
                           Phase 2 • Month 4 (Present)
                         </span>
-                        <span className="text-amber-700 text-xs font-bold flex items-center gap-1">
+                        <span className="text-amber-800 text-xs font-bold flex items-center gap-1">
                           <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" /> Active
                         </span>
                       </div>
-                      <h3 className="font-bold text-slate-900 text-sm">Platform Maturation &amp; Closed Pilot</h3>
-                      <ul className="text-[11px] text-slate-700 space-y-1.5 pt-1">
+                      <h3 className="font-bold text-slate-950 text-sm">Platform Maturation &amp; Closed Pilot</h3>
+                      <ul className="text-xs text-slate-800 space-y-1.5 pt-1">
                         <li className="flex items-start gap-1.5">
                           <span className="text-emerald-600 font-bold shrink-0">✓</span>
                           <span>Complete member search, booking, and checkout experience operational.</span>
                         </li>
                         <li className="flex items-start gap-1.5">
                           <span className="text-emerald-600 font-bold shrink-0">✓</span>
-                          <span>Real-world price audits completed, proving 30%–50% actual savings.</span>
+                          <span>Real-world price audits completed, proving 30%–50% actual cash savings.</span>
                         </li>
                         <li className="flex items-start gap-1.5">
-                          <span className="text-amber-700 font-bold shrink-0">●</span>
-                          <span>$75,000 SAFE round open ($5k min ticket) for pre-launch buffer.</span>
+                          <span className="text-amber-800 font-bold shrink-0">●</span>
+                          <span>$75,000 SAFE round open ($5k min check) for pre-launch runway.</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="text-[10px] font-semibold text-amber-900 pt-2 border-t border-amber-200/70">
-                      Outcome: Platform operational &amp; diligence unlocked.
+                    <div className="text-xs font-semibold text-amber-950 pt-2 border-t border-amber-200">
+                      Outcome: Platform operational &amp; data room unlocked.
                     </div>
                   </div>
 
@@ -864,28 +862,28 @@ export default function StandaloneInvestorApp() {
                   <div className="p-5 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between space-y-3">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-blue-800 bg-blue-100/80 px-2 py-0.5 rounded-md">
+                        <span className="text-xs font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded-md">
                           Phase 3 • Months 5–6
                         </span>
-                        <span className="text-slate-400 text-xs font-semibold">Upcoming</span>
+                        <span className="text-slate-500 text-xs font-bold">Upcoming</span>
                       </div>
-                      <h3 className="font-bold text-slate-900 text-sm">Controlled Beta &amp; 100 Members</h3>
-                      <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
+                      <h3 className="font-bold text-slate-950 text-sm">Controlled Beta &amp; 100 Members</h3>
+                      <ul className="text-xs text-slate-700 space-y-1.5 pt-1">
                         <li className="flex items-start gap-1.5">
                           <span className="text-slate-400 font-bold shrink-0">○</span>
-                          <span>Invite-only onboarding of first 100 private founding members.</span>
+                          <span>Private invite onboarding of first 100 founding members.</span>
                         </li>
                         <li className="flex items-start gap-1.5">
                           <span className="text-slate-400 font-bold shrink-0">○</span>
-                          <span>Live hotel bookings executed with dedicated VIP concierge support.</span>
+                          <span>Live hotel bookings executed with concierge support.</span>
                         </li>
                         <li className="flex items-start gap-1.5">
                           <span className="text-slate-400 font-bold shrink-0">○</span>
-                          <span>Activation of member referral mechanics and savings testimonials.</span>
+                          <span>Member referral program and member savings testimonials.</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="text-[10px] font-semibold text-slate-500 pt-2 border-t border-slate-200/60">
+                    <div className="text-xs font-semibold text-slate-600 pt-2 border-t border-slate-200">
                       Target: 100 members • High NPS &amp; viral retention.
                     </div>
                   </div>
@@ -894,16 +892,16 @@ export default function StandaloneInvestorApp() {
                   <div className="p-5 rounded-2xl bg-white border border-slate-200 flex flex-col justify-between space-y-3">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-purple-800 bg-purple-100/80 px-2 py-0.5 rounded-md">
+                        <span className="text-xs font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded-md">
                           Phase 4 • Months 7–12
                         </span>
-                        <span className="text-slate-400 text-xs font-semibold">Expansion</span>
+                        <span className="text-slate-500 text-xs font-bold">Expansion</span>
                       </div>
-                      <h3 className="font-bold text-slate-900 text-sm">Scale to 1,000 Members ($1M ARR)</h3>
-                      <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
+                      <h3 className="font-bold text-slate-950 text-sm">Scale to 1,000 Members ($1M ARR)</h3>
+                      <ul className="text-xs text-slate-700 space-y-1.5 pt-1">
                         <li className="flex items-start gap-1.5">
                           <span className="text-slate-400 font-bold shrink-0">○</span>
-                          <span>Commercial rollout across key European and US business hubs.</span>
+                          <span>Commercial rollout across key European and US travel hubs.</span>
                         </li>
                         <li className="flex items-start gap-1.5">
                           <span className="text-slate-400 font-bold shrink-0">○</span>
@@ -915,7 +913,7 @@ export default function StandaloneInvestorApp() {
                         </li>
                       </ul>
                     </div>
-                    <div className="text-[10px] font-semibold text-purple-900 pt-2 border-t border-slate-200/60">
+                    <div className="text-xs font-semibold text-purple-900 pt-2 border-t border-slate-200">
                       Target: $1.03M ARR • 10x–12x paper markup.
                     </div>
                   </div>
@@ -923,17 +921,17 @@ export default function StandaloneInvestorApp() {
               </div>
 
               {/* Prominent Access All Project Documents Callout */}
-              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/50 bg-gradient-to-r from-amber-50/90 via-white to-amber-50/50 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-400/80 bg-linear-to-r from-amber-50/90 via-white to-amber-50/50 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
                 <div className="space-y-1 text-center sm:text-left">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold uppercase tracking-wider mb-1">
-                    <FileText className="w-3 h-3 text-amber-700" />
-                    <span>Project Due Diligence Files</span>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-950 text-xs font-bold uppercase tracking-wider mb-1">
+                    <FileText className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Due Diligence Data Room</span>
                   </div>
-                  <h3 className="font-black text-slate-900 text-lg flex items-center gap-2 justify-center sm:justify-start">
-                    <span>Access All Project Documents</span>
+                  <h3 className="font-black text-slate-950 text-xl flex items-center gap-2 justify-center sm:justify-start">
+                    <span>Project Documents &amp; Investment Agreements</span>
                   </h3>
-                  <p className="text-xs text-slate-600 max-w-xl leading-relaxed">
-                    Direct access to all 6 official PDF documents, 10-slide Institutional Pitch Deck (.pptx &amp; .pdf), YC SAFE Agreement, 5-Year Financial Model, and Legal Safe-Harbor Memorandums.
+                  <p className="text-xs sm:text-sm text-slate-700 max-w-xl leading-relaxed">
+                    Direct access to all 6 official PDF documents, 10-slide PowerPoint pitch deck (.pptx), YC SAFE agreement, 5-year financial model, and technical architecture brief.
                   </p>
                 </div>
                 <button
@@ -943,10 +941,10 @@ export default function StandaloneInvestorApp() {
                       setShowNdaModal(true);
                     }
                   }}
-                  className="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs shrink-0 shadow-md cursor-pointer flex items-center gap-2 hover:scale-[1.02] transition-all"
+                  className="px-6 py-3.5 rounded-2xl bg-slate-950 hover:bg-slate-800 text-white font-black text-xs shrink-0 shadow-md cursor-pointer flex items-center gap-2 hover:scale-[1.02] transition-all"
                 >
                   {signedData ? <FileCheck className="w-4 h-4 text-emerald-400" /> : <Lock className="w-4 h-4 text-amber-400" />}
-                  <span>{signedData ? 'View All Project Documents →' : 'Access All Project Documents →'}</span>
+                  <span>{signedData ? 'View Project Documents →' : 'Access Project Documents →'}</span>
                 </button>
               </div>
             </div>
@@ -956,18 +954,18 @@ export default function StandaloneInvestorApp() {
           {activeTab === 'returns' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">What&apos;s In It For You: Real Financial & Lifestyle ROI</h2>
-                <p className="text-xs text-slate-500 mt-1">
-                  Concrete scenarios, mathematical returns, and tangible perks for angel investors in the $75,000 SAFE round.
+                <h2 className="text-2xl font-black text-slate-950">What&apos;s In It For You: Financial &amp; Lifestyle Return</h2>
+                <p className="text-sm text-slate-600 mt-1">
+                  Concrete return scenarios, mathematical multiples, and tangible membership perks for angel investors in the $75,000 SAFE round.
                 </p>
               </div>
 
               {/* Interactive Check Return Calculator */}
-              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/40 bg-white space-y-6 shadow-xs">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-400 bg-white space-y-6 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">Select Investment Check Size:</div>
-                    <div className="text-[11px] text-slate-500">Valuation Cap: $1,750,000 USD (YC Post-Money SAFE) • Min. Check: $5,000</div>
+                    <div className="text-xs font-bold text-slate-950 uppercase tracking-wider">Select Investment Check Size:</div>
+                    <div className="text-xs text-slate-600 font-medium">Valuation Cap: $1,750,000 USD (YC Post-Money SAFE) • Min. Check: $5,000</div>
                   </div>
                   <div className="flex items-center gap-2">
                     {[
@@ -981,8 +979,8 @@ export default function StandaloneInvestorApp() {
                         onClick={() => setSelectedCheck(btn.amt as any)}
                         className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                           selectedCheck === btn.amt 
-                            ? 'bg-slate-900 text-white shadow-xs' 
-                            : 'bg-white hover:bg-slate-200/70 text-slate-700 border border-slate-200'
+                            ? 'bg-slate-950 text-white shadow-xs' 
+                            : 'bg-white hover:bg-slate-100 text-slate-800 border border-slate-300'
                         }`}
                       >
                         {btn.label}
@@ -993,105 +991,109 @@ export default function StandaloneInvestorApp() {
 
                 {/* Dynamic Return Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
-                    <div className="text-[10px] uppercase font-bold text-slate-500">Implied Equity Cap</div>
-                    <div className="text-2xl font-black text-slate-900">~{equityPct}%</div>
-                    <div className="text-[10px] text-slate-500">Pre-dilution ownership</div>
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1 shadow-2xs">
+                    <div className="text-xs uppercase font-bold text-slate-600">Implied Equity Cap</div>
+                    <div className="text-2xl font-black text-slate-950">~{equityPct}%</div>
+                    <div className="text-xs text-slate-600 font-medium">Pre-dilution ownership</div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
-                    <div className="text-[10px] uppercase font-bold text-slate-500">Seed Round Markup (12–15 Mos)</div>
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1 shadow-2xs">
+                    <div className="text-xs uppercase font-bold text-slate-600">Seed Round Markup (12–15 Mos)</div>
                     <div className="text-2xl font-black text-amber-600">${Math.round(seedValLow / 1000)}k–${Math.round(seedValHigh / 1000)}k</div>
-                    <div className="text-[10px] text-emerald-700 font-bold">8.6x – 11.4x Paper Markup</div>
+                    <div className="text-xs text-emerald-800 font-bold">8.6x – 11.4x Paper Markup</div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
-                    <div className="text-[10px] uppercase font-bold text-slate-500">Mid-Market M&A (Yr 3 @ $60M)</div>
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1 shadow-2xs">
+                    <div className="text-xs uppercase font-bold text-slate-600">Mid-Market M&amp;A (Yr 3 @ $60M)</div>
                     <div className="text-2xl font-black text-emerald-700">{exitYr3 >= 1000000 ? `$${(exitYr3 / 1000000).toFixed(2)}M` : `$${Math.round(exitYr3 / 1000)}k`}</div>
-                    <div className="text-[10px] text-emerald-700 font-bold">~34.3x Cash Return</div>
+                    <div className="text-xs text-emerald-800 font-bold">~34.3x Cash Return</div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
-                    <div className="text-[10px] uppercase font-bold text-slate-500">Scale Buyout (Yr 4–5 @ $175M)</div>
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1 shadow-2xs">
+                    <div className="text-xs uppercase font-bold text-slate-600">Scale Buyout (Yr 4–5 @ $175M)</div>
                     <div className="text-2xl font-black text-purple-700">{exitYr4 >= 1000000 ? `$${(exitYr4 / 1000000).toFixed(2)}M` : `$${Math.round(exitYr4 / 1000)}k`}</div>
-                    <div className="text-[10px] text-purple-700 font-bold">~100x Cash Return</div>
+                    <div className="text-xs text-purple-800 font-bold">~100x Cash Return</div>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-300 text-xs sm:text-sm text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <span className="font-bold">Alternative Cash Dividend Yield (Schedule K-1):</span> If retained as a high-EBITDA private cash cow, Year 3 projected EBITDA of $13.1M yields ~<strong>${Math.round(dividendYr3 / 1000)}k / year in passive cash distributions</strong> on your ${selectedCheck.toLocaleString()} check ({Math.round((dividendYr3 / selectedCheck) * 100)}% annual cash yield).
+                    <span className="font-bold">Alternative Cash Dividend Yield:</span> If operated as a profitable private business without selling, Year 3 projected EBITDA of $13.1M yields ~<strong>${Math.round(dividendYr3 / 1000)}k / year in passive cash distributions</strong> on your ${selectedCheck.toLocaleString()} check ({Math.round((dividendYr3 / selectedCheck) * 100)}% annual cash yield).
                   </div>
+                </div>
+
+                <div className="text-xs text-slate-500 font-medium italic">
+                  * Note: M&amp;A scenario multiples illustrate pre-dilution equity value. Subsequent institutional priced equity rounds typically dilute early convertible holders by 15%–20% per round.
                 </div>
               </div>
 
               {/* 3 Exit Scenarios Detailed */}
               <div className="space-y-4">
-                <h3 className="font-black text-slate-900 text-base">The 3 Distinct Paths to Liquidity</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-600 leading-relaxed">
-                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-2xs">
-                    <div className="font-black text-slate-900 text-sm flex items-center gap-1.5">
-                      <TrendingUp className="w-4 h-4 text-blue-600" />
-                      <span>Path A: Venture Institutional Seed</span>
+                <h3 className="font-black text-slate-950 text-lg">The 3 Distinct Paths to Liquidity</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                    <div className="font-black text-slate-950 text-base flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-blue-600" />
+                      <span>Path A: Venture Series Seed</span>
                     </div>
                     <p>
                       At 1,000 active paying members ($1.0M+ ARR), ATLAS raises an institutional Series Seed at a <strong>$15M–$20M valuation</strong>. Angel investors in this SAFE convert into preferred shares with an immediate <strong>10x–12x paper gain</strong>, with secondary liquidity options at Series A.
                     </p>
                   </div>
 
-                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-2xs">
-                    <div className="font-black text-slate-900 text-sm flex items-center gap-1.5">
-                      <Building2 className="w-4 h-4 text-amber-600" />
-                      <span>Path B: Strategic FinTech/Card M&A</span>
+                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                    <div className="font-black text-slate-950 text-base flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-amber-600" />
+                      <span>Path B: Strategic FinTech &amp; Travel M&amp;A</span>
                     </div>
                     <p>
-                      Banks and card issuers (Amex, Capital One, Chase, Revolut) pay top dollar for high-spend consumer travel volume. Capital One paid <strong>$297M for Velocity Black</strong> to capture card spend. An acquisition at $79M–$538M returns <strong>45x to 307x cash on invested capital</strong>.
+                      Banks, card issuers, and travel groups pay premium valuations for affluent, high-spending travelers. Capital One acquired <strong>Velocity Black for $297M</strong> to capture card spend. A strategic acquisition at $45M–$75M delivers <strong>25x to 43x cash return</strong> on invested capital.
                     </p>
                   </div>
 
-                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-2xs">
-                    <div className="font-black text-slate-900 text-sm flex items-center gap-1.5">
-                      <Landmark className="w-4 h-4 text-emerald-600" />
-                      <span>Path C: Private Equity Dividend Cash Cow</span>
+                  <div className="p-6 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                    <div className="font-black text-slate-950 text-base flex items-center gap-2">
+                      <Landmark className="w-5 h-5 text-emerald-600" />
+                      <span>Path C: Cash Dividend Distributions</span>
                     </div>
                     <p>
-                      Because ATLAS holds zero inventory risk and achieves 96% gross margins, the business generates enormous positive free cash flow. In lieu of selling, ATLAS can distribute quarterly cash dividends yielding <strong>over 100% of your initial check per year</strong> by Year 4.
+                      Because ATLAS holds zero inventory risk and achieves 96% software gross margins, the business generates strong positive free cash flow. In lieu of selling, ATLAS can distribute annual cash dividends yielding <strong>over 100% of your initial check per year</strong> by Year 4.
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Investor Lifestyle Perks */}
-              <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white space-y-4">
-                <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
-                  <Gift className="w-4 h-4 text-amber-400" />
+              <div className="p-6 sm:p-8 rounded-3xl bg-slate-950 text-white space-y-5 shadow-sm">
+                <div className="flex items-center gap-2 text-amber-400 font-bold text-sm sm:text-base">
+                  <Gift className="w-5 h-5 text-amber-400" />
                   <span>Immediate Lifestyle Return (Investor Club Privileges)</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-300">
-                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700 space-y-1">
-                    <div className="font-bold text-white text-sm">Lifetime Sovereign Tier</div>
-                    <p>Full annual membership ($1,799/yr) waived permanently for you and your spouse.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-slate-300">
+                  <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5">
+                    <div className="font-bold text-white text-base">Lifetime Sovereign Tier</div>
+                    <p className="leading-relaxed">Full annual VIP membership ($1,799/yr) permanently waived for you and your family.</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700 space-y-1">
-                    <div className="font-bold text-white text-sm">Personal VIP Desk</div>
-                    <p>Direct WhatsApp access to Founder Pål Juritzen for custom hotel procurement & upgrades.</p>
+                  <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5">
+                    <div className="font-bold text-white text-base">Personal VIP Concierge Desk</div>
+                    <p className="leading-relaxed">Direct WhatsApp access to Founder Pål Juritzen for custom hotel procurement and room upgrades.</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700 space-y-1">
-                    <div className="font-bold text-white text-sm">Annual Founder Retreat</div>
-                    <p>Exclusive invitation to our annual private investor briefing at a partnered 5-star property.</p>
+                  <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5">
+                    <div className="font-bold text-white text-base">Annual Private Briefing</div>
+                    <p className="leading-relaxed">Invitation to our annual private investor briefing at a premier partner hotel property.</p>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 3: TRUST & GOVERNANCE */}
+          {/* TAB 3: WHY YOU CAN TRUST US */}
           {activeTab === 'trust' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">The 5 Pillars of Investor Trust & Governance</h2>
-                <p className="text-xs text-slate-500 mt-1">
-                  Why you can invest with absolute confidence: zero balance sheet risk, founder frugality, and live production code.
+                <h2 className="text-2xl font-black text-slate-950">5 Practical Reasons to Trust Us With Your Capital</h2>
+                <p className="text-sm text-slate-600 mt-1">
+                  Why this is a disciplined, low-downside pre-seed investment: zero inventory risk, founder frugality, and live working technology.
                 </p>
               </div>
 
@@ -1099,67 +1101,67 @@ export default function StandaloneInvestorApp() {
                 {[
                   {
                     num: '1',
-                    title: 'Zero Perishable Inventory Liability (Zero Balance Sheet Risk)',
-                    desc: 'ATLAS is a pure technology and membership platform. We never buy room blocks in advance, we never lease private jets, and we never sign minimum guarantee commitments with hotels. If 0 rooms are booked tomorrow, our financial liability is exactly $0.00. Your investment capital is never burned on unsold hotel inventory.',
-                    badge: 'Zero Risk Architecture',
-                    color: 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                    title: 'Zero Hotel Room Liabilities (Zero Inventory Risk)',
+                    desc: 'ATLAS is a pure software and membership platform. We never buy hotel room blocks in advance, we never lease villas, and we never sign minimum stay quotas. If zero bookings occur tomorrow, our hotel cost is exactly $0.00. Your investment capital is never burned on vacant hotel rooms.',
+                    badge: 'Zero Inventory Risk',
+                    color: 'text-emerald-800 bg-emerald-50 border-emerald-300'
                   },
                   {
                     num: '2',
-                    title: 'Founder Frugality & Uncompromised Alignment',
-                    desc: 'Founder Pål Juritzen is dedicating 100% full-time commitment and taking a modest, strictly capped stipend of only $2,500/month for 10 months. There are zero inflated executive salaries, zero corporate luxury leases, and zero frivolous spending. The YC Post-Money SAFE gives investors seniority in liquidation ahead of common units.',
-                    badge: 'Fiduciary Alignment',
-                    color: 'text-blue-700 bg-blue-50 border-blue-200'
+                    title: 'Founder Frugality & Aligned Runway',
+                    desc: 'Founder Pål Juritzen is dedicated 100% full-time and takes a modest, strictly capped stipend of $2,500/month for 10 months. There are zero inflated executive salaries, zero company luxury leases, and zero wasteful burn. The YC Post-Money SAFE gives investors seniority in liquidation.',
+                    badge: 'Disciplined Capital',
+                    color: 'text-blue-800 bg-blue-50 border-blue-300'
                   },
                   {
                     num: '3',
-                    title: 'Live Operational Platform (Not Pitch Deck Vaporware)',
-                    desc: 'Unlike early-stage founders raising on conceptual wireframes or mockups, ATLAS is an operational, fully deployed digital platform. Secure member authentication, automated zero-markup hotel price discovery across global wholesale inventories, instant reservation processing, and automated rate-drop audit engines are already developed, tested, and running live today.',
-                    badge: 'De-risked Product',
-                    color: 'text-purple-700 bg-purple-50 border-purple-200'
+                    title: 'Live Working Software (Not Pitch Deck Mockups)',
+                    desc: 'Unlike founders raising on conceptual slide decks, ATLAS is already an operational, functioning digital platform. Real-time wholesale hotel search, automated reservation processing, member profiles, and price-drop rebooking algorithms are already developed, tested, and running live today.',
+                    badge: 'Product Already Built',
+                    color: 'text-purple-800 bg-purple-50 border-purple-300'
                   },
                   {
                     num: '4',
-                    title: 'Monthly Transparent KPI Reporting & Schedule K-1 Tax Packs',
-                    desc: 'Every participating investor receives a monthly dashboard on the 1st of every month detailing ARR, active member count, blended CAC, gross margin, cash burn, and remaining runway. Full annual Schedule K-1 tax packages are provided during the LLC phase, with optional Section 1202 QSBS tax-free capital gain treatment upon corporate conversion.',
-                    badge: 'Governance & Auditing',
-                    color: 'text-amber-800 bg-amber-50 border-amber-200'
+                    title: 'Clear Monthly KPI Reports',
+                    desc: 'Every participating investor receives an executive dashboard on the 1st of every month detailing paying member count, subscription ARR, customer acquisition cost, gross margins, monthly burn rate, and remaining cash runway.',
+                    badge: 'Monthly Transparency',
+                    color: 'text-amber-900 bg-amber-50 border-amber-300'
                   },
                   {
                     num: '5',
-                    title: 'Delaware / Wyoming Legal Entity & Regulatory Fortification',
-                    desc: 'Organized under Delaware and Wyoming Manager-Managed Limited Liability Company statutes. Fully compliant with SEC Rule 506(c) Regulation D, the federal E-SIGN Act (15 U.S.C. § 7001), California CST #2154890, Florida ST, and the EU Digital Markets Act / Norwegian Travel Guarantee Fund (RGF).',
-                    badge: 'Regulatory Compliance',
-                    color: 'text-slate-800 bg-slate-100 border-slate-200'
+                    title: 'Clean Corporate Structure & Investor Protections',
+                    desc: 'Formed as a Manager-Managed Limited Liability Company with standard, industry-standard YC Post-Money SAFE terms. Includes optional corporate conversion flexibility if venture funds require a Delaware C-Corp for institutional rounds.',
+                    badge: 'Clean Governance',
+                    color: 'text-slate-900 bg-slate-100 border-slate-300'
                   }
                 ].map((pillar) => (
-                  <div key={pillar.num} className="p-6 rounded-3xl border border-slate-200 bg-white shadow-2xs space-y-2.5">
+                  <div key={pillar.num} className="p-6 rounded-3xl border border-slate-200 bg-white shadow-xs space-y-2.5">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm shrink-0">
+                        <div className="w-9 h-9 rounded-xl bg-slate-950 text-white flex items-center justify-center font-black text-sm shrink-0">
                           {pillar.num}
                         </div>
-                        <h3 className="font-bold text-slate-900 text-sm sm:text-base">{pillar.title}</h3>
+                        <h3 className="font-bold text-slate-950 text-base">{pillar.title}</h3>
                       </div>
-                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-md border shrink-0 ${pillar.color}`}>
+                      <span className={`text-xs font-bold px-3 py-1 rounded-full border shrink-0 ${pillar.color}`}>
                         {pillar.badge}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed pl-11">{pillar.desc}</p>
+                    <p className="text-sm text-slate-700 leading-relaxed pl-12">{pillar.desc}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="p-6 rounded-3xl bg-amber-50/70 border border-amber-200 flex items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="font-bold text-amber-950 text-sm">Have Specific Diligence or Governance Questions?</div>
-                  <div className="text-xs text-amber-800">We offer direct 1-on-1 calls with founder Pål Juritzen and our legal counsel.</div>
+              <div className="p-6 rounded-3xl bg-amber-50/80 border border-amber-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="space-y-1 text-center sm:text-left">
+                  <div className="font-bold text-amber-950 text-base">Have Specific Questions for the Founder?</div>
+                  <div className="text-xs sm:text-sm text-amber-900">Book a direct 1-on-1 call with founder Pål Juritzen to review diligence, product, or roadmap.</div>
                 </div>
                 <a
-                  href="mailto:executive@atlastravelclub.com?subject=ATLAS%20Investor%20Governance%20Call"
-                  className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shrink-0 shadow-xs"
+                  href="mailto:executive@atlastravelclub.com?subject=ATLAS%20Investor%20Call"
+                  className="px-5 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold shrink-0 shadow-xs"
                 >
-                  Schedule Founder Diligence
+                  Schedule Founder Call
                 </a>
               </div>
             </div>
@@ -1169,31 +1171,31 @@ export default function StandaloneInvestorApp() {
           {activeTab === 'arbitrage' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">The Wholesale Savings Engine: 0% Markup Wholesale</h2>
-                <p className="text-xs text-slate-500 mt-1">
-                  Why hotels release wholesale inventory at 30%–50% discounts, and how common, everyday hotel stays save members hundreds of dollars per booking.
+                <h2 className="text-2xl font-black text-slate-950">The Savings Engine: 0% Markup Wholesale</h2>
+                <p className="text-sm text-slate-600 mt-1">
+                  Why hotels release wholesale inventory at 30%–50% discounts, and how common everyday hotel stays save members hundreds of dollars per booking.
                 </p>
               </div>
 
               {/* Real-World Travel Scenario Selector */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
                 <div>
-                  <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">Select Common Hotel Scenario:</div>
-                  <div className="text-[11px] text-slate-500">Everyday 4-star & upscale hotels ($240–$260/night) vs. public retail travel sites.</div>
+                  <div className="text-xs font-bold text-slate-950 uppercase tracking-wider">Select Common Travel Scenario:</div>
+                  <div className="text-xs text-slate-600 font-medium">Everyday 4-star &amp; upscale hotels ($240–$260/night) vs. public booking sites.</div>
                 </div>
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
                   {[
-                    { id: 'city', label: '🏙️ 4-Night City Break ($240/nt)' },
-                    { id: 'vacation', label: '🏖️ 7-Night Family Vacation ($260/nt)' },
+                    { id: 'city', label: '🏙️ 4-Night City Trip ($240/nt)' },
+                    { id: 'vacation', label: '🏖️ 7-Night Family Holiday ($260/nt)' },
                     { id: 'annual', label: '✈️ Annual 3-Trip Total ($1,235 Saved)' }
                   ].map((tab) => (
                     <button
                       key={tab.id}
                       onClick={() => setExampleTrip(tab.id as any)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
                         exampleTrip === tab.id 
-                          ? 'bg-slate-900 text-white shadow-xs' 
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                          ? 'bg-slate-950 text-white shadow-xs' 
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200'
                       }`}
                     >
                       {tab.label}
@@ -1203,66 +1205,66 @@ export default function StandaloneInvestorApp() {
               </div>
 
               {/* Visual Side-by-Side Savings Breakdown */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600 leading-relaxed">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-700 leading-relaxed">
                 {/* Public Channel */}
                 <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-4">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 font-bold text-[11px]">
-                    The Public Retail Booking Channel
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-900 font-bold text-xs">
+                    The Public Booking Sites
                   </div>
-                  <h3 className="font-black text-slate-900 text-base">Inflated Markups & Zero Cash Savings</h3>
-                  <div className="space-y-2.5">
+                  <h3 className="font-black text-slate-950 text-lg">Markups &amp; Zero Cash Back</h3>
+                  <div className="space-y-2.5 text-xs sm:text-sm text-slate-700">
                     <p>
-                      <strong>1. Built-in Retail Markups:</strong> Public online travel sites add massive 25% to 40% markups on top of hotel room rates to fund multi-billion-dollar Google search bidding wars.
+                      <strong>1. Retail Markups:</strong> Public booking sites add 25% to 40% on top of hotel room rates to pay for multi-billion-dollar search ad campaigns.
                     </p>
                     <p>
-                      <strong>2. The Perishable Inventory Trap:</strong> Hotels experience 30%+ average vacancy on any given night. Unsold rooms expire worthless at midnight, but hotels cannot discount publicly without debasing their published brand rack rates.
+                      <strong>2. Empty Hotel Rooms:</strong> Hotels average 30%+ vacancy on any given night. Unsold rooms expire worthless at midnight, but hotels cannot discount publicly on Google without debasing their brand.
                     </p>
                     <p>
-                      <strong>3. Zero Traveler Return:</strong> Travelers pay full retail prices on every single vacation, leaving hundreds of dollars on the table on every trip with zero loyalty return.
+                      <strong>3. Zero Traveler Return:</strong> Travelers pay full retail prices on every trip, leaving hundreds of dollars on the table with zero recurring savings.
                     </p>
                   </div>
-                  <div className="p-4 rounded-xl bg-white border border-slate-200 font-mono text-[11px] text-slate-700 space-y-1.5">
-                    <div className="text-[10px] uppercase font-bold text-slate-500">{activeScenario.title}</div>
-                    <div className="text-[10px] text-slate-400">{activeScenario.subtitle}</div>
+                  <div className="p-4 rounded-xl bg-white border border-slate-200 font-mono text-xs text-slate-800 space-y-2">
+                    <div className="text-xs uppercase font-bold text-slate-600">{activeScenario.title}</div>
+                    <div className="text-xs text-slate-500 font-sans">{activeScenario.subtitle}</div>
                     <div className="flex justify-between border-b border-slate-100 pt-1 pb-1">
                       <span>Public Retail Room Rate:</span>
                       <span className="font-bold">${activeScenario.publicNightly} / night</span>
                     </div>
                     <div className="flex justify-between border-b border-slate-100 pb-1">
-                      <span>Total Retail Booking ({activeScenario.nights} Nights):</span>
+                      <span>Total Retail Price ({activeScenario.nights} Nights):</span>
                       <span className="font-bold">${activeScenario.publicTotal.toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-100 pb-1 text-rose-600 font-semibold">
-                      <span>Retail Markup & Distribution Fees:</span>
-                      <span>+${activeScenario.otaMarkup} included</span>
+                    <div className="flex justify-between border-b border-slate-100 pb-1 text-rose-700 font-semibold">
+                      <span>Middleman Commission Included:</span>
+                      <span>+${activeScenario.otaMarkup}</span>
                     </div>
-                    <div className="flex justify-between pt-1 text-slate-900 font-black">
+                    <div className="flex justify-between pt-1 text-slate-950 font-black">
                       <span>Traveler Net Savings:</span>
-                      <span className="text-rose-600">$0.00 Saved</span>
+                      <span className="text-rose-700">$0.00 Saved</span>
                     </div>
                   </div>
                 </div>
 
                 {/* ATLAS Wholesale Engine */}
-                <div className="p-6 rounded-3xl bg-amber-50/50 border border-amber-200/80 space-y-4 text-amber-950">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px]">
-                    The ATLAS Wholesale Savings Engine
+                <div className="p-6 rounded-3xl bg-amber-50/70 border border-amber-300 space-y-4 text-amber-950">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-bold text-xs">
+                    The ATLAS Wholesale Model
                   </div>
-                  <h3 className="font-black text-amber-950 text-base">Direct 0% Markup Wholesale Pass-Through</h3>
-                  <div className="space-y-2.5">
+                  <h3 className="font-black text-slate-950 text-lg">Direct Wholesale With 0% Markup</h3>
+                  <div className="space-y-2.5 text-xs sm:text-sm text-slate-800">
                     <p>
-                      <strong>1. Raw B2B Liquidity:</strong> Hotels quietly release their surplus unbooked rooms into private B2B wholesale bedbanks at true net clearing rates—often 30% to 45% below public retail.
+                      <strong>1. Private B2B Rates:</strong> Hotels quietly release surplus unbooked rooms into private wholesale inventory networks at true net clearing rates—often 30% to 50% below public retail.
                     </p>
                     <p>
-                      <strong>2. 100% of Savings Passed Directly:</strong> ATLAS connects members directly to these institutional wholesale pools with <strong>0% retail markup</strong>. Every single dollar of wholesale discount stays in the member&apos;s pocket.
+                      <strong>2. 100% Passed to Members:</strong> ATLAS passes the entire wholesale rate directly to members at <strong>0% retail markup</strong>. Every dollar of wholesale discount stays with the member.
                     </p>
                     <p>
-                      <strong>3. Rapid Payback:</strong> In this common scenario, the member saves <strong>+${activeScenario.savings.toLocaleString()} in cash</strong>. {activeScenario.paybackNote}
+                      <strong>3. Fast Payback:</strong> On this stay, the member saves <strong>+${activeScenario.savings.toLocaleString()} in cash</strong>. {activeScenario.paybackNote}
                     </p>
                   </div>
-                  <div className="p-4 rounded-xl bg-white border border-amber-200 font-mono text-[11px] text-slate-900 space-y-1.5">
-                    <div className="text-[10px] uppercase font-bold text-amber-700">Same Stay via ATLAS Wholesale</div>
-                    <div className="text-[10px] text-slate-500">{activeScenario.subtitle}</div>
+                  <div className="p-4 rounded-xl bg-white border border-amber-300 font-mono text-xs text-slate-950 space-y-2">
+                    <div className="text-xs uppercase font-bold text-amber-800">Same Stay via ATLAS Wholesale</div>
+                    <div className="text-xs text-slate-500 font-sans">{activeScenario.subtitle}</div>
                     <div className="flex justify-between border-b border-slate-100 pt-1 pb-1">
                       <span>ATLAS Wholesale Net Rate:</span>
                       <span className="font-bold text-emerald-700">${activeScenario.wholesaleNightly} / night</span>
@@ -1276,10 +1278,10 @@ export default function StandaloneInvestorApp() {
                       <span>+${activeScenario.savings.toLocaleString()} Cash Back</span>
                     </div>
                     <div className="flex justify-between border-b border-slate-100 pb-1 text-slate-600">
-                      <span>ATLAS Annual Club Membership:</span>
+                      <span>Annual Membership Fee (Recouped):</span>
                       <span>-$799 / yr</span>
                     </div>
-                    <div className="flex justify-between pt-1 text-emerald-700 font-black text-xs">
+                    <div className="flex justify-between pt-1 text-emerald-700 font-black">
                       <span>Member ROI:</span>
                       <span>{activeScenario.paybackNote}</span>
                     </div>
@@ -1287,113 +1289,94 @@ export default function StandaloneInvestorApp() {
                 </div>
               </div>
 
-              {/* The Unstoppable Flywheel Callout */}
-              <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 text-white space-y-3">
-                <div className="font-bold text-amber-400 text-sm flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Why Common Pricing Drives Unstoppable Retention</span>
+              {/* The Flywheel Callout */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-slate-950 text-white space-y-3 shadow-sm">
+                <div className="font-bold text-amber-400 text-sm sm:text-base flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-amber-400" />
+                  <span>Why Common Everyday Trips Drive Unstoppable Retention</span>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  You don&apos;t need $1,000/night luxury suites to make the unit economics work. When a member saves <strong>$320 on a simple 4-day city break</strong> and <strong>$595 on their family summer holiday</strong>, they have pocketed over <strong>$1,200 in net annual cash savings</strong> on ordinary, common hotel stays. The $799 membership fee is easily recouped, churn drops to <strong>9%</strong> (91% annual retention), and word-of-mouth keeps blended customer acquisition costs at just <strong>$110</strong>. ATLAS captures high-margin recurring software ARR with zero inventory liabilities.
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  You don&apos;t need $1,000/night luxury suites to make the model work. When a member saves <strong>$320 on a 4-day city break</strong> and <strong>$595 on their family summer holiday</strong>, they have pocketed over <strong>$1,200 in net annual cash savings</strong> on ordinary, common hotel stays. The $799 membership fee is easily recouped, churn drops to <strong>9%</strong> (91% annual retention), and word-of-mouth keeps customer acquisition costs at just <strong>$110</strong>.
                 </p>
               </div>
 
-              {/* WHAT IS PRICE PARITY? THE LEGAL & ECONOMIC MOAT */}
-              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-500/30 bg-gradient-to-br from-amber-50/40 via-white to-slate-50 space-y-6 shadow-xs">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-200/60 pb-5">
-                  <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-[11px] uppercase tracking-wider">
-                      <Scale className="w-3.5 h-3.5 text-amber-700" />
-                      Antitrust &amp; Regulatory Moat
-                    </div>
-                    <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
-                      What is &ldquo;Price Parity&rdquo; &amp; Why Does It Protect Our Business Model?
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-1">
-                      The restrictive industry contracts that keep public hotel rates artificially high—and the statutory &ldquo;closed-loop&rdquo; safe harbor that allows ATLAS to legally deliver 30% to 50% wholesale discounts.
-                    </p>
+              {/* WHY PUBLIC BOOKING SITES CANNOT MATCH OUR RATES */}
+              <div className="p-6 sm:p-8 rounded-3xl border-2 border-amber-300 bg-linear-to-br from-amber-50/50 via-white to-slate-50 space-y-6 shadow-xs">
+                <div className="border-b border-amber-200 pb-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-950 font-bold text-xs uppercase tracking-wider mb-2">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+                    Market Dynamics &amp; Structural Moat
                   </div>
-                  <Link
-                    href="/legal/rate-parity-compliance"
-                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shrink-0 transition-all flex items-center gap-1.5 shadow-2xs"
-                  >
-                    <span>Read Full Legal Memo</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-amber-400" />
-                  </Link>
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-950">
+                    Why Public Booking Sites Cannot Match Our Rates
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
+                    Why hotels cannot offer discounts publicly on Google, and why public platforms cannot switch to our model without destroying their revenue.
+                  </p>
                 </div>
 
                 {/* 3-Column Breakdown */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-600 leading-relaxed">
-                  {/* Column 1: The Trap */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  {/* Column 1 */}
                   <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
-                    <div className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center text-rose-700 font-black text-sm">
+                    <div className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center text-rose-800 font-black text-sm">
                       1
                     </div>
-                    <div className="font-bold text-slate-900 text-sm">The Public &ldquo;Price Parity&rdquo; Trap</div>
+                    <div className="font-bold text-slate-950 text-base">The Public Pricing Trap</div>
                     <p>
-                      When a hotel lists on public platforms (Booking.com, Expedia), it is contractually forced to sign a <strong>Rate Parity Agreement</strong>. This clause strictly forbids the hotel from publicly advertising a lower room rate anywhere on the open web—even on the hotel&apos;s own homepage or on Google.
-                    </p>
-                    <p className="text-[11px] text-rose-700 font-semibold pt-1 border-t border-slate-100">
-                      If a hotel discounts publicly, OTAs penalize them by dropping their search ranking or removing them entirely.
+                      When a hotel lists on public travel platforms (like Booking.com or Expedia), their contract forbids them from advertising lower prices openly on Google or their own homepage. If they discount publicly, their search ranking is penalized.
                     </p>
                   </div>
 
-                  {/* Column 2: The Loophole */}
-                  <div className="p-5 rounded-2xl bg-white border border-amber-200/80 space-y-2.5 shadow-2xs">
-                    <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-800 font-black text-sm">
+                  {/* Column 2 */}
+                  <div className="p-5 rounded-2xl bg-white border border-amber-200 space-y-2.5 shadow-2xs">
+                    <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-950 font-black text-sm">
                       2
                     </div>
-                    <div className="font-bold text-slate-900 text-sm">The &ldquo;Closed-Loop&rdquo; Legal Safe Harbor</div>
+                    <div className="font-bold text-slate-950 text-base">Private Members-Only Exemption</div>
                     <p>
-                      Rate Parity clauses apply <strong>strictly to public, open-web search listings</strong>. They legally <strong>do not apply</strong> to private, password-gated membership clubs. Under the <strong>US Sherman Act (15 U.S.C. § 1)</strong>, the <strong>EU Digital Markets Act (Regulation 2022/1925)</strong>, and the <strong>French Loi Macron</strong>, hotels have the absolute legal right to quietly clear surplus rooms through authenticated buyer clubs.
-                    </p>
-                    <p className="text-[11px] text-emerald-700 font-semibold pt-1 border-t border-slate-100">
-                      Hotels eagerly supply ATLAS at true 30%–50% wholesale discounts because our rates are hidden behind a paid member login.
+                      Public restrictions apply only to open-web searches. Because ATLAS is a private, password-gated club, hotels can legally and quietly sell unsold rooms to our verified members at true wholesale prices without violating public advertising agreements.
                     </p>
                   </div>
 
-                  {/* Column 3: The Moat */}
+                  {/* Column 3 */}
                   <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 font-black text-sm">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-950 font-black text-sm">
                       3
                     </div>
-                    <div className="font-bold text-slate-900 text-sm">Why Public Giants Cannot Copy Us</div>
+                    <div className="font-bold text-slate-950 text-base">The Giants Cannot Copy Us</div>
                     <p>
-                      Booking.com and Expedia generate over $20B+ annually by extracting a <strong>20% to 30% commission</strong> on every transaction. They <em>cannot</em> switch to a 0% markup wholesale subscription model without cannibalizing their core business and breaching their own public hotel supplier contracts.
-                    </p>
-                    <p className="text-[11px] text-slate-800 font-semibold pt-1 border-t border-slate-100">
-                      This classic &ldquo;Innovator&apos;s Dilemma&rdquo; gives ATLAS an unassailable structural moat that public retail platforms cannot touch.
+                      Public platforms make over $20B annually from 20% to 30% commissions per booking. They cannot switch to a zero-markup wholesale subscription model without wiping out their core profits. This creates a durable competitive moat for ATLAS.
                     </p>
                   </div>
                 </div>
 
                 {/* Direct Visual Contrast Comparison Box */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 text-white space-y-3">
-                  <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                    <Scale className="w-4 h-4 text-amber-400" />
-                    <span>Public Retail Web vs. ATLAS Closed-Loop Safe Harbor</span>
+                <div className="p-5 rounded-2xl bg-slate-950 text-white space-y-3 shadow-sm">
+                  <div className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                    <span>Public Retail Web vs. ATLAS Private Members Club</span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                    <div className="p-3.5 rounded-xl bg-slate-800/90 border border-rose-500/30 space-y-1.5">
-                      <div className="font-bold text-rose-400 flex items-center gap-1.5">
-                        <X className="w-4 h-4" /> Public OTAs (Booking.com, Expedia, Google)
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
+                    <div className="p-4 rounded-xl bg-slate-900 border border-rose-500/40 space-y-2">
+                      <div className="font-bold text-rose-400 flex items-center gap-1.5 text-sm">
+                        <X className="w-4 h-4" /> Public Booking Sites (Booking.com, Expedia)
                       </div>
-                      <div className="text-slate-300 text-[11px] space-y-1">
-                        <div>• Bound by public Rate Parity contracts</div>
+                      <div className="text-slate-300 text-xs space-y-1.5">
                         <div>• Forced 20% to 35% commission markup added to room rate</div>
-                        <div>• Billions spent bidding on Google Search keywords ($7B+/yr)</div>
-                        <div>• Traveler pays full retail price with $0 recurring savings</div>
+                        <div>• Billions spent bidding on Google search keywords</div>
+                        <div>• Traveler pays full retail price on every trip</div>
+                        <div>• Zero recurring loyalty savings</div>
                       </div>
                     </div>
-                    <div className="p-3.5 rounded-xl bg-slate-800/90 border border-emerald-500/30 space-y-1.5">
-                      <div className="font-bold text-emerald-400 flex items-center gap-1.5">
-                        <Check className="w-4 h-4" /> ATLAS Private Members&apos; Club
+                    <div className="p-4 rounded-xl bg-slate-900 border border-emerald-500/40 space-y-2">
+                      <div className="font-bold text-emerald-400 flex items-center gap-1.5 text-sm">
+                        <Check className="w-4 h-4" /> ATLAS Private Members Club
                       </div>
-                      <div className="text-slate-300 text-[11px] space-y-1">
-                        <div>• 100% legally exempt from Rate Parity (Closed-Loop Safe Harbor)</div>
+                      <div className="text-slate-300 text-xs space-y-1.5">
                         <div>• 0% retail markup: raw wholesale net rate passed to member</div>
-                        <div>• Password-gated behind paid membership verification</div>
-                        <div>• Member saves $300–$600+ per stay, paying $0 middleman toll</div>
+                        <div>• Protected behind private member login</div>
+                        <div>• Member saves $300–$600+ on every stay</div>
+                        <div>• High recurring software margin (96%) with zero inventory risk</div>
                       </div>
                     </div>
                   </div>
@@ -1406,48 +1389,48 @@ export default function StandaloneInvestorApp() {
           {activeTab === 'economics' && (
             <div className="space-y-8 animate-fadeIn">
               <div>
-                <h2 className="text-2xl font-black text-slate-900">Predictable Recurring Unit Economics & 5-Year Pro-Forma</h2>
-                <p className="text-xs text-slate-500 mt-1">High-margin software subscriptions coupled with secondary FinTech payment interchange yield.</p>
+                <h2 className="text-2xl font-black text-slate-900">Predictable Recurring Unit Economics & 5-Year Financial Model</h2>
+                <p className="text-sm text-slate-600 mt-1">High-margin software subscriptions paired with automated payment interchange yield.</p>
               </div>
 
               {/* 4 Revenue Engines */}
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase">1. Subscription ARR</div>
-                  <div className="text-2xl font-black text-slate-900">$684 / yr</div>
-                  <div className="text-[11px] text-emerald-700 font-semibold">96% Software Gross Margin</div>
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 shadow-2xs">
+                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Subscription ARR</div>
+                  <div className="text-3xl font-black text-slate-900">$684 / yr</div>
+                  <div className="text-xs text-emerald-800 font-bold">96% Software Gross Margin*</div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase">2. Card Interchange</div>
-                  <div className="text-2xl font-black text-slate-900">$342 / yr</div>
-                  <div className="text-[11px] text-slate-600 font-semibold">1.85% on $18.5k card spend</div>
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 shadow-2xs">
+                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">2. Card Interchange</div>
+                  <div className="text-3xl font-black text-slate-900">$342 / yr</div>
+                  <div className="text-xs text-slate-700 font-semibold">1.85% on $18.5k card spend</div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase">3. Price-Drop Arbitrage</div>
-                  <div className="text-2xl font-black text-slate-900">30% Fee</div>
-                  <div className="text-[11px] text-slate-600 font-semibold">Share of auto-rebooked savings</div>
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 shadow-2xs">
+                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">3. Price-Drop Arbitrage</div>
+                  <div className="text-3xl font-black text-slate-900">30% Fee</div>
+                  <div className="text-xs text-slate-700 font-semibold">Share of auto-rebooked savings</div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase">4. Customer Payback</div>
-                  <div className="text-2xl font-black text-emerald-700">Day 1</div>
-                  <div className="text-[11px] text-emerald-700 font-semibold">$110 CAC • 38.4x LTV:CAC</div>
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5 shadow-2xs">
+                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">4. Customer Payback</div>
+                  <div className="text-3xl font-black text-emerald-700">Day 1</div>
+                  <div className="text-xs text-emerald-800 font-bold">$110 CAC • 38.4x LTV:CAC</div>
                 </div>
               </div>
 
               {/* 5-Year Pro-Forma Summary Table */}
               <div className="border border-slate-200 rounded-3xl overflow-hidden bg-white shadow-2xs">
                 <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-                  <h3 className="font-bold text-slate-900 text-sm">5-Year Financial & Member Scale Model</h3>
-                  <span className="text-[11px] text-slate-500 font-medium">USD in Millions except ARPU</span>
+                  <h3 className="font-bold text-slate-900 text-base">5-Year Financial & Member Scale Model</h3>
+                  <span className="text-xs text-slate-600 font-semibold">USD in Millions except ARPU</span>
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse">
+                  <table className="w-full text-left text-sm border-collapse">
                     <thead>
-                      <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 font-bold">
+                      <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider">
                         <th className="p-3.5 pl-6">Metric</th>
                         <th className="p-3.5">Year 1</th>
                         <th className="p-3.5">Year 2</th>
@@ -1456,57 +1439,62 @@ export default function StandaloneInvestorApp() {
                         <th className="p-3.5 pr-6">Year 5</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
+                    <tbody className="divide-y divide-slate-100 text-slate-800 font-medium">
                       <tr>
-                        <td className="p-3.5 pl-6 font-semibold text-slate-900">Active Paying Members</td>
+                        <td className="p-3.5 pl-6 font-bold text-slate-900">Active Paying Members</td>
                         <td className="p-3.5 font-mono">1,004</td>
                         <td className="p-3.5 font-mono">4,850</td>
                         <td className="p-3.5 font-mono">22,000</td>
                         <td className="p-3.5 font-mono">65,000</td>
-                        <td className="p-3.5 pr-6 font-mono font-bold text-slate-900">140,000</td>
+                        <td className="p-3.5 pr-6 font-mono font-bold text-slate-950">140,000</td>
                       </tr>
                       <tr>
-                        <td className="p-3.5 pl-6 font-semibold text-slate-900">Subscription ARR ($)</td>
+                        <td className="p-3.5 pl-6 font-bold text-slate-900">Subscription ARR ($)</td>
                         <td className="p-3.5 font-mono">$687k</td>
                         <td className="p-3.5 font-mono">$3.32M</td>
                         <td className="p-3.5 font-mono">$15.05M</td>
                         <td className="p-3.5 font-mono">$44.46M</td>
-                        <td className="p-3.5 pr-6 font-mono font-bold text-slate-900">$95.76M</td>
+                        <td className="p-3.5 pr-6 font-mono font-bold text-slate-950">$95.76M</td>
                       </tr>
                       <tr>
-                        <td className="p-3.5 pl-6 font-semibold text-slate-900">Payment Interchange Yield ($)</td>
+                        <td className="p-3.5 pl-6 font-bold text-slate-900">Payment Interchange Yield ($)</td>
                         <td className="p-3.5 font-mono">$343k</td>
                         <td className="p-3.5 font-mono">$1.66M</td>
                         <td className="p-3.5 font-mono">$7.53M</td>
                         <td className="p-3.5 font-mono">$22.24M</td>
-                        <td className="p-3.5 pr-6 font-mono font-bold text-slate-900">$47.91M</td>
+                        <td className="p-3.5 pr-6 font-mono font-bold text-slate-950">$47.91M</td>
                       </tr>
-                      <tr className="bg-amber-50/40 font-bold text-amber-950">
+                      <tr className="bg-amber-50/70 font-bold text-amber-950">
                         <td className="p-3.5 pl-6">Total Net Revenue ($)</td>
                         <td className="p-3.5 font-mono">$1.03M</td>
                         <td className="p-3.5 font-mono">$4.98M</td>
                         <td className="p-3.5 font-mono">$22.58M</td>
                         <td className="p-3.5 font-mono">$66.70M</td>
-                        <td className="p-3.5 pr-6 font-mono text-base">$143.67M</td>
+                        <td className="p-3.5 pr-6 font-mono text-base font-black">$143.67M</td>
                       </tr>
                       <tr>
-                        <td className="p-3.5 pl-6">Gross Margin (%)</td>
+                        <td className="p-3.5 pl-6 font-bold text-slate-900">Gross Margin (%)</td>
                         <td className="p-3.5 font-mono">92.4%</td>
                         <td className="p-3.5 font-mono">94.8%</td>
                         <td className="p-3.5 font-mono">96.2%</td>
                         <td className="p-3.5 font-mono">96.8%</td>
-                        <td className="p-3.5 pr-6 font-mono font-bold">97.1%</td>
+                        <td className="p-3.5 pr-6 font-mono font-bold text-slate-950">97.1%</td>
                       </tr>
-                      <tr className="bg-emerald-50/40 font-bold text-emerald-900">
+                      <tr className="bg-emerald-50/70 font-bold text-emerald-950">
                         <td className="p-3.5 pl-6">EBITDA ($)</td>
                         <td className="p-3.5 font-mono">$0.28M</td>
                         <td className="p-3.5 font-mono">$2.41M</td>
                         <td className="p-3.5 font-mono">$13.13M</td>
                         <td className="p-3.5 font-mono">$44.80M</td>
-                        <td className="p-3.5 pr-6 font-mono text-base text-emerald-700">$102.40M</td>
+                        <td className="p-3.5 pr-6 font-mono text-base font-black text-emerald-800">$102.40M</td>
                       </tr>
                     </tbody>
                   </table>
+                </div>
+
+                <div className="p-4 bg-slate-50 border-t border-slate-200 text-xs text-slate-600 space-y-1.5 leading-relaxed">
+                  <p><strong>* Blended Subscription ARPU Note:</strong> $684 represents the net blended average between Regular ($799/yr) and VIP ($1,799/yr) tiers, factoring in initial charter pricing and multi-year renewals.</p>
+                  <p><strong>Day-1 Payback Advantage:</strong> Subscriptions are collected upfront annually, creating negative working capital and zero bad-debt risk.</p>
                 </div>
               </div>
             </div>
@@ -1517,35 +1505,35 @@ export default function StandaloneInvestorApp() {
             <div className="space-y-8 animate-fadeIn">
               <div>
                 <h2 className="text-2xl font-black text-slate-900">Strict Capital Allocation: The $75,000 Runway Plan</h2>
-                <p className="text-xs text-slate-500 mt-1">10-Month Lean Runway to achieve 1,000 members and $1.03M ARR milestone.</p>
+                <p className="text-sm text-slate-600 mt-1">A disciplined 10-month runway to reach 1,000 paying members and $1.03M annual recurring revenue.</p>
               </div>
 
               {/* Budget Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-3 shadow-2xs">
-                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">1. Founder Execution Stipend</div>
+                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Founder Execution Stipend</div>
                   <div className="text-3xl font-black text-slate-900">$25,000</div>
-                  <div className="text-xs text-slate-500 font-semibold">33.3% of total raise</div>
-                  <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                    $2,500/month for 10 months for Founder Pål Juritzen. Frugal, transparent living stipend allowing 100% full-time commitment without corporate distraction.
+                  <div className="text-xs text-slate-600 font-bold">33.3% of total raise</div>
+                  <p className="text-sm text-slate-700 leading-relaxed pt-2 border-t border-slate-100">
+                    $2,500/month for 10 months for Founder Pål Juritzen. A modest, transparent living stipend allowing 100% full-time commitment without corporate distraction.
                   </p>
                 </div>
 
                 <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-3 shadow-2xs">
-                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">2. Dev Contractor Sprints</div>
+                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">2. Dev Contractor Sprints</div>
                   <div className="text-3xl font-black text-slate-900">$18,000</div>
-                  <div className="text-xs text-slate-500 font-semibold">24.0% of total raise</div>
-                  <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                    Contract platform engineering sprints for synchronous wholesale supplier reconciliation, card payment processing, and automated reservation management engines.
+                  <div className="text-xs text-slate-600 font-bold">24.0% of total raise</div>
+                  <p className="text-sm text-slate-700 leading-relaxed pt-2 border-t border-slate-100">
+                    Targeted contract engineering sprints for supplier synchronization, automated payment processing, and flight/hotel reservation management.
                   </p>
                 </div>
 
                 <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-3 shadow-2xs">
-                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">3. Member Acquisition & Ops</div>
+                  <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">3. Member Acquisition & Ops</div>
                   <div className="text-3xl font-black text-slate-900">$32,000</div>
-                  <div className="text-xs text-slate-500 font-semibold">42.7% of total raise</div>
-                  <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                    High-converting direct executive outreach ($15k), high-availability cloud hosting & data security ($5k), corporate legal compliance & travel regulatory filings ($6k), and working capital reserve ($6k).
+                  <div className="text-xs text-slate-600 font-bold">42.7% of total raise</div>
+                  <p className="text-sm text-slate-700 leading-relaxed pt-2 border-t border-slate-100">
+                    Direct executive outreach ($15k), cloud infrastructure & security ($5k), legal compliance & travel regulatory filings ($6k), and a $6k cash reserve.
                   </p>
                 </div>
               </div>
@@ -1555,24 +1543,24 @@ export default function StandaloneInvestorApp() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                   <div>
                     <h3 className="text-lg font-black text-slate-900">Commercial Rollout Timescale &amp; Milestones</h3>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-sm text-slate-600 mt-0.5">
                       How the $75,000 SAFE proceeds systematically unlock each milestone from current pilot testing to cash-flow breakeven.
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-xs">
+                    <span className="px-3 py-1.5 rounded-full bg-amber-100 text-amber-900 font-bold text-xs">
                       Current: Month 4
                     </span>
-                    <span className="px-3 py-1 rounded-full bg-slate-900 text-white font-bold text-xs">
+                    <span className="px-3 py-1.5 rounded-full bg-slate-900 text-white font-bold text-xs">
                       Runway: 10 Months
                     </span>
                   </div>
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse">
+                  <table className="w-full text-left text-sm border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] bg-slate-50/80">
+                      <tr className="border-b border-slate-200 text-slate-700 font-bold uppercase text-xs tracking-wider bg-slate-100/80">
                         <th className="p-3.5 pl-4">Phase</th>
                         <th className="p-3.5">Timescale</th>
                         <th className="p-3.5">Status</th>
@@ -1580,53 +1568,53 @@ export default function StandaloneInvestorApp() {
                         <th className="p-3.5 pr-4">Target Deliverables &amp; Milestones</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
-                      <tr className="bg-slate-50/40">
+                    <tbody className="divide-y divide-slate-100 text-slate-800">
+                      <tr className="bg-slate-50/50">
                         <td className="p-3.5 pl-4 font-bold text-slate-900">Phase 1: Foundation</td>
-                        <td className="p-3.5 font-mono text-slate-600">Months 1–3</td>
+                        <td className="p-3.5 font-mono text-slate-700">Months 1–3</td>
                         <td className="p-3.5">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold text-[10px]">
-                            <CheckCircle2 className="w-3 h-3" /> Completed
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 font-bold text-xs">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> Completed
                           </span>
                         </td>
-                        <td className="p-3.5">Wholesale Supplier Rails &amp; Entity Setup</td>
-                        <td className="p-3.5 pr-4 text-slate-600">650k+ hotel wholesale catalog integrated, 0% markup pricing engine verified, LLC formed.</td>
+                        <td className="p-3.5 font-semibold text-slate-900">Wholesale Supplier Rails &amp; Entity Setup</td>
+                        <td className="p-3.5 pr-4 text-slate-700">650k+ hotel wholesale catalog integrated, 0% markup pricing engine verified, LLC formed.</td>
                       </tr>
-                      <tr className="bg-amber-50/50 border-y-2 border-amber-500/40">
+                      <tr className="bg-amber-50/60 border-y-2 border-amber-500/40">
                         <td className="p-3.5 pl-4 font-black text-amber-950 flex items-center gap-2">
                           <span>Phase 2: Platform Maturation</span>
-                          <span className="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-black uppercase">You Are Here</span>
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 text-xs font-black uppercase">Current</span>
                         </td>
-                        <td className="p-3.5 font-mono font-bold text-amber-900">Month 4 (Present)</td>
+                        <td className="p-3.5 font-mono font-bold text-amber-950">Month 4 (Present)</td>
                         <td className="p-3.5">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 font-bold text-[10px]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping" /> Active
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-200 text-amber-950 font-bold text-xs">
+                            <span className="w-2 h-2 rounded-full bg-amber-600 animate-ping" /> Active
                           </span>
                         </td>
-                        <td className="p-3.5 font-semibold text-amber-950">Closed Pilot Testing &amp; SAFE Round</td>
-                        <td className="p-3.5 pr-4 text-amber-950">Interactive booking flow finalized, rate audits completed (30%–50% savings confirmed), $75k SAFE closing.</td>
+                        <td className="p-3.5 font-bold text-amber-950">Closed Pilot Testing &amp; SAFE Round</td>
+                        <td className="p-3.5 pr-4 text-amber-950 font-medium">Interactive booking flow finalized, rate audits completed (30%–50% savings confirmed), $75k SAFE closing.</td>
                       </tr>
                       <tr>
                         <td className="p-3.5 pl-4 font-bold text-slate-900">Phase 3: Controlled Beta</td>
-                        <td className="p-3.5 font-mono text-slate-600">Months 5–6</td>
+                        <td className="p-3.5 font-mono text-slate-700">Months 5–6</td>
                         <td className="p-3.5">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-800 font-bold text-[10px]">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-100 text-blue-900 font-bold text-xs">
                             Upcoming
                           </span>
                         </td>
-                        <td className="p-3.5">First 100 Founding Members &amp; Concierge</td>
-                        <td className="p-3.5 pr-4 text-slate-600">Private invite onboarding, live bookings fulfilled, concierge check-in desk, referral program launch.</td>
+                        <td className="p-3.5 font-semibold text-slate-900">First 100 Founding Members &amp; Concierge</td>
+                        <td className="p-3.5 pr-4 text-slate-700">Private invite onboarding, live bookings fulfilled, concierge check-in desk, referral program launch.</td>
                       </tr>
                       <tr>
                         <td className="p-3.5 pl-4 font-bold text-slate-900">Phase 4: Commercial Scale</td>
-                        <td className="p-3.5 font-mono text-slate-600">Months 7–12</td>
+                        <td className="p-3.5 font-mono text-slate-700">Months 7–12</td>
                         <td className="p-3.5">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 font-bold text-[10px]">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-purple-100 text-purple-900 font-bold text-xs">
                             Expansion
                           </span>
                         </td>
-                        <td className="p-3.5">1,000 Paying Members &amp; $1.03M ARR</td>
-                        <td className="p-3.5 pr-4 text-slate-600">Broad executive rollout, corporate partnerships, operational breakeven, Series Seed preparation ($15M–$20M).</td>
+                        <td className="p-3.5 font-semibold text-slate-900">1,000 Paying Members &amp; $1.03M ARR</td>
+                        <td className="p-3.5 pr-4 text-slate-700">Broad executive rollout, corporate partnerships, operational breakeven, Series Seed preparation ($15M–$20M).</td>
                       </tr>
                     </tbody>
                   </table>
@@ -1644,8 +1632,8 @@ export default function StandaloneInvestorApp() {
                   <span>Institutional Due Diligence Library</span>
                 </div>
                 <h2 className="text-3xl font-black text-slate-900">Access All Project Documents</h2>
-                <p className="text-sm text-slate-600 mt-1 max-w-2xl">
-                  Download official offering prospectuses, 10-slide PowerPoint presentation deck (.pptx), YC SAFE investment agreements, unit economic models, and statutory legal safe-harbor filings.
+                <p className="text-sm text-slate-700 mt-1 max-w-2xl">
+                  Download official offering prospectuses, 10-slide PowerPoint presentation deck (.pptx), YC SAFE investment agreements, unit economic models, and statutory safe-harbor filings.
                 </p>
               </div>
 
@@ -1657,11 +1645,11 @@ export default function StandaloneInvestorApp() {
                       <Lock className="w-6 h-6" />
                     </div>
                     <div>
-                      <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold uppercase tracking-wider mb-1">
+                      <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider mb-1">
                         <span>Secure Verification Gate</span>
                       </div>
                       <h3 className="text-xl font-black text-slate-900">Verify Email to Access All Project Documents</h3>
-                      <p className="text-xs text-slate-600">Enter your email address below to receive an access code and unlock all 6 project documents.</p>
+                      <p className="text-sm text-slate-700">Enter your email address below to receive an access code and unlock all 6 project documents.</p>
                     </div>
                   </div>
 
@@ -1679,12 +1667,12 @@ export default function StandaloneInvestorApp() {
                               placeholder="investor@familyoffice.com"
                               className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white shadow-2xs"
                             />
-                            <div className="mt-2 flex items-center gap-2 text-[11px] text-slate-500">
+                            <div className="mt-2 flex items-center gap-2 text-xs text-slate-600 font-medium">
                               <span>Quick presets:</span>
                               <button
                                 type="button"
                                 onClick={() => setEmail('paljuritzen@gmail.com')}
-                                className="text-amber-700 hover:underline font-bold"
+                                className="text-amber-800 hover:underline font-bold"
                               >
                                 paljuritzen@gmail.com
                               </button>
@@ -1692,7 +1680,7 @@ export default function StandaloneInvestorApp() {
                               <button
                                 type="button"
                                 onClick={() => setEmail('executive@atlastravelclub.com')}
-                                className="text-amber-700 hover:underline font-bold"
+                                className="text-amber-800 hover:underline font-bold"
                               >
                                 executive@atlastravelclub.com
                               </button>
@@ -1723,18 +1711,18 @@ export default function StandaloneInvestorApp() {
                                 <ShieldCheck className="w-4 h-4 text-amber-700" />
                                 Security Verification Code Dispatched
                               </span>
-                              <span className="text-[10px] bg-amber-200/80 text-amber-950 px-2 py-0.5 rounded font-mono font-bold">
+                              <span className="text-xs bg-amber-200 text-amber-950 px-2.5 py-0.5 rounded font-mono font-bold">
                                 Valid for 15 min
                               </span>
                             </div>
-                            <p className="text-xs text-slate-700">
+                            <p className="text-sm text-slate-700">
                               A one-time 6-digit access code has been generated for <strong>{email}</strong>:
                             </p>
                             <div className="p-3.5 rounded-xl bg-white border border-amber-200 text-center shadow-2xs">
                               <div className="text-3xl font-mono font-black tracking-widest text-slate-950 select-all">
                                 {expectedCode || '888999'}
                               </div>
-                              <p className="text-[10px] text-slate-500 mt-1">
+                              <p className="text-xs text-slate-600 mt-1">
                                 Type these 6 digits into the field below to verify ownership and unlock access
                               </p>
                             </div>
@@ -1742,7 +1730,7 @@ export default function StandaloneInvestorApp() {
 
                           <div>
                             <label className="block text-xs font-bold text-slate-700 mb-1">
-                              Enter 6-Digit Code for <span className="text-amber-700 font-bold">{email}</span>:
+                              Enter 6-Digit Code for <span className="text-amber-800 font-bold">{email}</span>:
                             </label>
                             <input
                               type="text"
@@ -1788,13 +1776,13 @@ export default function StandaloneInvestorApp() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-medium flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-medium flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                         <span>Email successfully verified ({email}). Final Step: Sign the mutual confidentiality agreement.</span>
                       </div>
                       <button
                         onClick={() => setShowNdaModal(true)}
-                        className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-md cursor-pointer flex items-center gap-2"
+                        className="px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs transition-all shadow-md cursor-pointer flex items-center gap-2"
                       >
                         <FileCheck className="w-4 h-4" />
                         <span>Sign Digital NDA &amp; Access Documents Now</span>
@@ -1810,14 +1798,14 @@ export default function StandaloneInvestorApp() {
                       <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
-                      <div className="font-black text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                      <div className="font-black text-slate-900 text-base flex items-center gap-2">
                         <span>Access Granted: All 6 Project Documents Unlocked</span>
-                        <span className="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-bold">Authorized</span>
+                        <span className="text-xs bg-emerald-200 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold">Authorized</span>
                       </div>
-                      <div className="text-xs text-emerald-900 font-medium mt-0.5">
+                      <div className="text-xs text-emerald-950 font-medium mt-0.5">
                         Verified for {signedData.fullName} {signedData.firmName ? `(${signedData.firmName})` : ''} • {signedData.email}
                       </div>
-                      <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                      <div className="text-xs text-slate-600 font-mono mt-0.5">
                         Security Hash: {signedData.signatureHash.slice(0, 22)}... • Recorded {signedData.signedAt.slice(0, 10)}
                       </div>
                     </div>
@@ -1845,30 +1833,30 @@ export default function StandaloneInvestorApp() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {documents.map((doc) => (
                   <div key={doc.id} className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-4 flex flex-col justify-between hover:border-amber-400/60 transition-all">
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/60">
+                        <span className="text-xs uppercase font-bold text-amber-900 bg-amber-100/80 px-2.5 py-1 rounded-full border border-amber-300/60">
                           {doc.category}
                         </span>
                         {signedData ? (
-                          <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
-                            <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="text-xs text-emerald-700 font-bold flex items-center gap-1">
+                            <CheckCircle className="w-4 h-4 text-emerald-600" />
                             <span>Authorized</span>
                           </span>
                         ) : (
-                          <span className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-amber-600" />
+                          <span className="text-xs text-amber-900 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
+                            <Lock className="w-3.5 h-3.5 text-amber-600" />
                             <span>Verification Required</span>
                           </span>
                         )}
                       </div>
 
-                      <h3 className="font-bold text-slate-900 text-base">{doc.title}</h3>
-                      <p className="text-xs text-slate-600 leading-relaxed">{doc.desc}</p>
+                      <h3 className="font-bold text-slate-900 text-lg">{doc.title}</h3>
+                      <p className="text-sm text-slate-700 leading-relaxed">{doc.desc}</p>
 
                       <div className="pt-2 border-t border-slate-100 space-y-1.5">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Key Provisions:</div>
-                        <ul className="text-[11px] text-slate-600 space-y-1">
+                        <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">Key Provisions:</div>
+                        <ul className="text-xs text-slate-800 space-y-1">
                           {doc.highlights.map((h, i) => (
                             <li key={i} className="flex items-start gap-1.5">
                               <span className="text-amber-600 font-bold">•</span>
@@ -1882,9 +1870,9 @@ export default function StandaloneInvestorApp() {
                     <div className="pt-4 border-t border-slate-100 flex items-center gap-2">
                       <button
                         onClick={() => setActiveDocPreview(doc)}
-                        className="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-850 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <Eye className="w-3.5 h-3.5 text-slate-500" />
+                        <Eye className="w-4 h-4 text-slate-600" />
                         <span>Interactive Preview</span>
                       </button>
 
@@ -1894,10 +1882,10 @@ export default function StandaloneInvestorApp() {
                             <a
                               href="/docs/investors/ATLAS_Investor_Pitch_Deck.pptx"
                               download
-                              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs"
+                              className="px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs"
                               title="Download PowerPoint Presentation (.pptx)"
                             >
-                              <Download className="w-3.5 h-3.5 text-slate-950" />
+                              <Download className="w-4 h-4 text-slate-950" />
                               <span>PPTX</span>
                             </a>
                           )}
@@ -1906,9 +1894,9 @@ export default function StandaloneInvestorApp() {
                             download
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs"
+                            className="px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs"
                           >
-                            <Download className="w-3.5 h-3.5 text-amber-400" />
+                            <Download className="w-4 h-4 text-amber-400" />
                             <span>PDF</span>
                           </a>
                         </div>
@@ -1921,10 +1909,10 @@ export default function StandaloneInvestorApp() {
                                 if (el) el.scrollIntoView({ behavior: 'smooth' });
                                 if (isEmailVerified) setShowNdaModal(true);
                               }}
-                              className="px-3 py-2 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer hover:bg-amber-100"
+                              className="px-3 py-2.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer hover:bg-amber-100"
                               title="Verify email to unlock PPTX"
                             >
-                              <Lock className="w-3.5 h-3.5 text-amber-600" />
+                              <Lock className="w-4 h-4 text-amber-700" />
                               <span>PPTX</span>
                             </button>
                           )}
@@ -1934,10 +1922,10 @@ export default function StandaloneInvestorApp() {
                               if (el) el.scrollIntoView({ behavior: 'smooth' });
                               if (isEmailVerified) setShowNdaModal(true);
                             }}
-                            className="px-3 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all border border-slate-200"
+                            className="px-3 py-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all border border-slate-200"
                             title="Verify email to unlock PDF"
                           >
-                            <Lock className="w-3.5 h-3.5 text-slate-500" />
+                            <Lock className="w-4 h-4 text-slate-600" />
                             <span>PDF (Locked)</span>
                           </button>
                         </div>
@@ -1954,7 +1942,7 @@ export default function StandaloneInvestorApp() {
             <div className="space-y-8 animate-fadeIn">
               <div>
                 <h2 className="text-2xl font-black text-slate-900">Realistic M&A Valuation Milestones & Exit Horizons</h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-sm text-slate-600 mt-1">
                   How active subscriber scale drives predictable enterprise valuation at standard 5x–7x ARR multiples, delivering concrete cash returns to early SAFE investors.
                 </p>
               </div>
@@ -1964,60 +1952,60 @@ export default function StandaloneInvestorApp() {
                 {/* Horizon 1 */}
                 <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-3 shadow-2xs flex flex-col justify-between">
                   <div className="space-y-2">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 font-bold text-[10px] uppercase">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-900 font-bold text-xs uppercase">
                       Horizon 1 (Month 18–24)
                     </div>
-                    <h3 className="font-black text-slate-900 text-base">Early Tuck-In Acquisition</h3>
-                    <div className="text-2xl font-black text-blue-700">$10M – $14M</div>
-                    <div className="text-[11px] font-semibold text-slate-500">Scale: 2,000 Members • $1.8M ARR (6x Multiple)</div>
-                    <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
-                      <strong>Likely Acquirers:</strong> Boutique travel clubs, luxury concierge groups (e.g. Ten Lifestyle Group, Inspirato, Voyage Privé) acquiring our 0% markup wholesale software rails.
+                    <h3 className="font-black text-slate-900 text-lg">Early Strategic Acquisition</h3>
+                    <div className="text-3xl font-black text-blue-700">$10M – $14M</div>
+                    <div className="text-xs font-bold text-slate-700">Scale: 2,000 Members • $1.8M ARR (6x Multiple)</div>
+                    <p className="text-sm text-slate-700 leading-relaxed pt-2 border-t border-slate-100">
+                      <strong>Likely Acquirers:</strong> Boutique travel clubs, luxury concierge groups (e.g. Ten Lifestyle Group, Inspirato, Voyage Privé) acquiring our 0% markup wholesale booking engine.
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 space-y-1">
-                    <div className="font-bold text-blue-700">Angel Cash Payout (5.7x – 8.0x):</div>
-                    <div>• On $5,000 Min Check: $29k – $40k</div>
-                    <div>• On $25,000 Check: $143k – $200k</div>
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-900 space-y-1">
+                    <div className="font-bold text-blue-800">Angel Cash Payout (5.7x – 8.0x):</div>
+                    <div>• On $5,000 Min Check: $29,000 – $40,000</div>
+                    <div>• On $25,000 Check: $143,000 – $200,000</div>
                   </div>
                 </div>
 
                 {/* Horizon 2 */}
-                <div className="p-6 rounded-3xl bg-white border-2 border-amber-500/40 space-y-3 shadow-2xs flex flex-col justify-between">
+                <div className="p-6 rounded-3xl bg-white border-2 border-amber-500/50 space-y-3 shadow-2xs flex flex-col justify-between">
                   <div className="space-y-2">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold text-[10px] uppercase">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-xs uppercase">
                       Horizon 2 (Year 3) • Recommended
                     </div>
-                    <h3 className="font-black text-slate-900 text-base">Mid-Market Strategic Buyout</h3>
-                    <div className="text-2xl font-black text-amber-600">$45M – $75M</div>
-                    <div className="text-[11px] font-semibold text-slate-500">Scale: 10,000 Members • $9.5M ARR (6x–7x Multiple)</div>
-                    <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
+                    <h3 className="font-black text-slate-900 text-lg">Mid-Market Strategic Buyout</h3>
+                    <div className="text-3xl font-black text-amber-600">$45M – $75M</div>
+                    <div className="text-xs font-bold text-slate-700">Scale: 10,000 Members • $9.5M ARR (6x–7x Multiple)</div>
+                    <p className="text-sm text-slate-700 leading-relaxed pt-2 border-t border-slate-100">
                       <strong>Likely Acquirers:</strong> European travel platforms, corporate travel management networks, or challenger banks seeking affluent, high-retention recurring subscribers.
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs font-mono text-slate-900 space-y-1">
-                    <div className="font-bold text-amber-700">Angel Cash Payout (25x – 43x):</div>
-                    <div>• On $5,000 Min Check: $129k – $214k</div>
-                    <div>• On $25,000 Check: $643k – $1.07M</div>
+                  <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-mono text-slate-900 space-y-1">
+                    <div className="font-bold text-amber-800">Angel Cash Payout (25x – 43x):</div>
+                    <div>• On $5,000 Min Check: $129,000 – $214,000</div>
+                    <div>• On $25,000 Check: $643,000 – $1,070,000</div>
                   </div>
                 </div>
 
                 {/* Horizon 3 */}
                 <div className="p-6 rounded-3xl bg-white border border-slate-200 space-y-3 shadow-2xs flex flex-col justify-between">
                   <div className="space-y-2">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-bold text-[10px] uppercase">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 font-bold text-xs uppercase">
                       Horizon 3 (Year 4–5) • Full Scale
                     </div>
-                    <h3 className="font-black text-slate-900 text-base">Major Strategic / PE Buyout</h3>
-                    <div className="text-2xl font-black text-emerald-700">$150M – $250M</div>
-                    <div className="text-[11px] font-semibold text-slate-500">Scale: 35,000+ Members • $35M+ ARR (8x–12x EBITDA)</div>
-                    <p className="text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
+                    <h3 className="font-black text-slate-900 text-lg">Major Strategic / PE Buyout</h3>
+                    <div className="text-3xl font-black text-emerald-700">$150M – $250M</div>
+                    <div className="text-xs font-bold text-slate-700">Scale: 35,000+ Members • $35M+ ARR (8x–12x EBITDA)</div>
+                    <p className="text-sm text-slate-700 leading-relaxed pt-2 border-t border-slate-100">
                       <strong>Likely Acquirers:</strong> Global travel conglomerates or private equity dividend recapitalizations acquiring high-EBITDA, negative working capital cash generators.
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-mono text-slate-900 space-y-1">
-                    <div className="font-bold text-emerald-700">Angel Cash Payout (85x – 142x):</div>
-                    <div>• On $5,000 Min Check: $429k – $714k</div>
-                    <div>• On $25,000 Check: $2.14M – $3.57M</div>
+                  <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-mono text-slate-900 space-y-1">
+                    <div className="font-bold text-emerald-800">Angel Cash Payout (85x – 142x):</div>
+                    <div>• On $5,000 Min Check: $429,000 – $714,000</div>
+                    <div>• On $25,000 Check: $2,140,000 – $3,570,000</div>
                   </div>
                 </div>
               </div>
@@ -2027,66 +2015,30 @@ export default function StandaloneInvestorApp() {
                 <div className="font-bold text-amber-400 text-xs uppercase tracking-wider">
                   The M&amp;A Multiple Reality: Why Buyers Pay 5x–7x ARR
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                   Unlike traditional low-margin retail travel agencies that sell for 1x–2x gross profit, ATLAS is a pure software and subscription club. Strategic acquirers value ATLAS like vertical SaaS: <strong>96% software gross margins</strong>, <strong>91% subscriber retention</strong>, and <strong>zero perishable inventory liabilities</strong>. Every member acquired is an annuity that generates high-margin subscription cash flow year after year.
                 </p>
               </div>
             </div>
           )}
 
-          {/* TAB 9: STATUTORY COMPLIANCE & LEGAL MEMOS */}
-          {activeTab === 'legal' && (
-            <div className="space-y-8 animate-fadeIn">
-              <div>
-                <h2 className="text-2xl font-black text-slate-900">Statutory Legal Framework & Jurisdiction Protections</h2>
-                <p className="text-xs text-slate-500 mt-1">Full compliance across US federal laws, EU Digital Markets Act, and Norwegian Travel Guarantee statutes.</p>
+          {/* PAGE BOTTOM DISCREET COMPLIANCE & LEGAL FOOTER */}
+          <footer className="mt-16 pt-8 pb-12 border-t border-slate-200 text-xs text-slate-600">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-medium">
+                <Link href="/terms" className="hover:text-slate-900 hover:underline">Terms of Service</Link>
+                <Link href="/privacy" className="hover:text-slate-900 hover:underline">Privacy Policy</Link>
+                <Link href="/legal" className="hover:text-slate-900 hover:underline">Legal Safe Harbor</Link>
+                <Link href="/legal/investor-disclosures" className="hover:text-slate-900 hover:underline">Investor Disclosures</Link>
+                <Link href="/legal/rate-parity-compliance" className="hover:text-slate-900 hover:underline">Rate Parity Compliance</Link>
+                <Link href="/legal/banking-disclosures" className="hover:text-slate-900 hover:underline">Banking &amp; Escrow</Link>
+                <Link href="/legal/seller-of-travel" className="hover:text-slate-900 hover:underline">Seller of Travel</Link>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[
-                  {
-                    title: 'Closed-Loop Safe Harbor Memorandum',
-                    reg: 'US Sherman Act § 1 & EU Regulation 2022/1925 (DMA)',
-                    desc: 'Formal legal brief confirming that password-gated, paid member syndicates fall squarely outside retail rate parity prohibitions.',
-                    href: '/legal/rate-parity-compliance'
-                  },
-                  {
-                    title: 'SEC Regulation D Rule 506(c) Compliance',
-                    reg: 'Securities Act of 1933 (15 U.S.C. § 77a et seq.)',
-                    desc: 'Private offering safe harbor memorandum for accredited angel investor verification and digital subscription mechanics.',
-                    href: '/legal/sec-compliance'
-                  },
-                  {
-                    title: 'Wholesale Bedbank & Merchant Master Terms',
-                    reg: 'IATA / Merchant Settlement Standards',
-                    desc: 'Independent contractor terms for wholesale bedbanks, airlines, CRS check-in parity, and force majeure.',
-                    href: '/legal/commercial-terms'
-                  },
-                  {
-                    title: 'Norwegian RGF & EU Package Travel Compliance',
-                    reg: 'Norwegian Travel Guarantee Act & EU Directive 2015/2302',
-                    desc: 'Escrow account protections, Reisegarantifondet (RGF) bonding requirements, and cross-border consumer safeguards.',
-                    href: '/legal/norwegian-rgf'
-                  }
-                ].map((memo, idx) => (
-                  <div key={idx} className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-3 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{memo.reg}</div>
-                      <h3 className="font-bold text-slate-900 text-base">{memo.title}</h3>
-                      <p className="text-xs text-slate-600 leading-relaxed">{memo.desc}</p>
-                    </div>
-                    <Link
-                      href={memo.href}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 transition-colors pt-3 border-t border-slate-100"
-                    >
-                      <span>Read Legal Opinion</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                ))}
+              <div className="text-slate-600 text-right">
+                © 2026 ATLAS Travel Club LLC. Confidential — For Accredited Investors Only.
               </div>
             </div>
-          )}
+          </footer>
 
         </div>
       </main>
@@ -2100,7 +2052,7 @@ export default function StandaloneInvestorApp() {
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-amber-600" />
-                <h3 className="font-bold text-slate-900 text-base">Digital Mutual Non-Disclosure Agreement</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Digital Mutual Non-Disclosure Agreement</h3>
               </div>
               <button
                 onClick={() => setShowNdaModal(false)}
@@ -2110,35 +2062,35 @@ export default function StandaloneInvestorApp() {
               </button>
             </div>
 
-            <div className="p-6 space-y-4 text-xs text-slate-600 max-h-[60vh] overflow-y-auto">
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 font-mono text-[11px] space-y-2 text-slate-700">
+            <div className="p-6 space-y-4 text-xs text-slate-700 max-h-[60vh] overflow-y-auto">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs space-y-2 text-slate-800">
                 <p><strong>PARTIES:</strong> ATLAS Travel Club LLC (&quot;Discloser&quot;) and the Recipient (&quot;Investor&quot;).</p>
                 <p><strong>PURPOSE:</strong> Evaluation of a potential angel investment in the $75,000 USD YC Post-Money SAFE.</p>
-                <p><strong>CONFIDENTIAL INFO:</strong> Includes pro-forma models, SAFE term sheets, supplier bedbank contracts, rate algorithms, and proprietary architecture.</p>
-                <p><strong>TERM & STANDARD:</strong> 24 months from signature date under Delaware law. Standard reasonable care.</p>
+                <p><strong>CONFIDENTIAL INFO:</strong> Includes pro-forma models, SAFE term sheets, supplier agreements, and proprietary booking technology.</p>
+                <p><strong>TERM & STANDARD:</strong> 24 months from signature date under Delaware law. Standard duty of reasonable care.</p>
               </div>
 
               <form onSubmit={handleSignNda} className="space-y-4 pt-2">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Full Legal Name *</label>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">Full Legal Name *</label>
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Jane Doe"
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Firm / Family Office (Optional)</label>
+                  <label className="block text-xs font-bold text-slate-800 mb-1">Firm / Family Office (Optional)</label>
                   <input
                     type="text"
                     value={firmName}
                     onChange={(e) => setFirmName(e.target.value)}
                     placeholder="Acme Capital / Family Office"
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white text-slate-900"
                   />
                 </div>
 
@@ -2151,8 +2103,8 @@ export default function StandaloneInvestorApp() {
                     onChange={(e) => setNdaAgreed(e.target.checked)}
                     className="mt-0.5 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
                   />
-                  <label htmlFor="nda-checkbox" className="text-[11px] text-slate-600 cursor-pointer">
-                    I agree to the terms of this Mutual NDA and certify that I am an accredited investor evaluating ATLAS for legitimate investment purposes under E-SIGN Act standards.
+                  <label htmlFor="nda-checkbox" className="text-xs text-slate-700 cursor-pointer leading-relaxed">
+                    I agree to the terms of this Mutual NDA and confirm that I am an accredited investor evaluating ATLAS for legitimate investment purposes.
                   </label>
                 </div>
 
@@ -2160,17 +2112,17 @@ export default function StandaloneInvestorApp() {
                   <button
                     type="button"
                     onClick={() => setShowNdaModal(false)}
-                    className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSigning || !ndaAgreed || !fullName}
-                    className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-2 disabled:opacity-50"
                   >
                     {isSigning ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />}
-                    <span>Sign Digitally & Unlock</span>
+                    <span>Sign Digitally &amp; Unlock</span>
                   </button>
                 </div>
               </form>
@@ -2186,11 +2138,11 @@ export default function StandaloneInvestorApp() {
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden animate-scaleIn flex flex-col max-h-[85vh]">
             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-              <div className="space-y-0.5">
-                <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/50">
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-amber-900 uppercase tracking-wider bg-amber-100/80 px-2.5 py-1 rounded-md border border-amber-300/50">
                   {activeDocPreview.category}
                 </span>
-                <h3 className="font-bold text-slate-900 text-base">{activeDocPreview.title}</h3>
+                <h3 className="font-bold text-slate-900 text-lg">{activeDocPreview.title}</h3>
               </div>
               <button
                 onClick={() => setActiveDocPreview(null)}
@@ -2200,30 +2152,30 @@ export default function StandaloneInvestorApp() {
               </button>
             </div>
 
-            <div className="p-6 space-y-5 overflow-y-auto flex-1 text-xs text-slate-600">
+            <div className="p-6 space-y-5 overflow-y-auto flex-1 text-sm text-slate-700">
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="font-bold text-slate-900 text-xs">Document Abstract & Executive Summary</div>
-                <p className="leading-relaxed">{activeDocPreview.desc}</p>
+                <div className="font-bold text-slate-900 text-xs uppercase tracking-wider">Document Summary</div>
+                <p className="leading-relaxed text-slate-800">{activeDocPreview.desc}</p>
               </div>
 
               <div className="space-y-2">
-                <div className="font-bold text-slate-900 text-xs uppercase tracking-wider text-slate-500">
-                  Core Structural Provisions & Deliverables:
+                <div className="font-bold text-slate-800 text-xs uppercase tracking-wider">
+                  Key Deliverables &amp; Highlights:
                 </div>
                 <div className="space-y-2">
                   {activeDocPreview.highlights.map((item: string, i: number) => (
                     <div key={i} className="p-3 rounded-xl bg-white border border-slate-200/80 flex items-start gap-2.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <span className="text-slate-700 leading-relaxed font-medium">{item}</span>
+                      <span className="text-slate-800 leading-relaxed font-medium">{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {!signedData && (
-                <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] flex items-center gap-2">
+                <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 text-xs font-medium flex items-center gap-2">
                   <Lock className="w-4 h-4 text-amber-700 shrink-0" />
-                  <span>Full PDF download and raw annexes require digitally verified NDA credentials.</span>
+                  <span>Full PDF download and underlying files require digitally verified NDA credentials.</span>
                 </div>
               )}
             </div>
@@ -2231,7 +2183,7 @@ export default function StandaloneInvestorApp() {
             <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
               <button
                 onClick={() => setActiveDocPreview(null)}
-                className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 cursor-pointer"
               >
                 Close Preview
               </button>
@@ -2242,9 +2194,9 @@ export default function StandaloneInvestorApp() {
                     <a
                       href="/docs/investors/ATLAS_Investor_Pitch_Deck.pptx"
                       download
-                      className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-xs"
+                      className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-xs"
                     >
-                      <Download className="w-3.5 h-3.5 text-slate-950" />
+                      <Download className="w-4 h-4 text-slate-950" />
                       <span>Download PPTX (PowerPoint)</span>
                     </a>
                   )}
@@ -2253,9 +2205,9 @@ export default function StandaloneInvestorApp() {
                     download
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
+                    className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
                   >
-                    <Download className="w-3.5 h-3.5 text-amber-400" />
+                    <Download className="w-4 h-4 text-amber-400" />
                     <span>Download PDF</span>
                   </a>
                 </div>
@@ -2266,9 +2218,9 @@ export default function StandaloneInvestorApp() {
                     if (!isEmailVerified) alert('Please verify your email first.');
                     else setShowNdaModal(true);
                   }}
-                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer"
                 >
-                  <Lock className="w-3.5 h-3.5" />
+                  <Lock className="w-4 h-4" />
                   <span>Verify to Download</span>
                 </button>
               )}
