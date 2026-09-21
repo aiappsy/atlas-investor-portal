@@ -1,34 +1,12 @@
 {
   "test.angel@venturefund.com": {
     "code": "276690",
-    "expiresAt": 1789785128619,
+    "expiresAt": 2524608000000,
     "verified": true
   },
   "investor.test@venturefund.com": {
     "code": "144062",
-    "expiresAt": 1789787156265,
-    "verified": true
-  },
-  "paljuritzen@gmail.com": {
-    "code": "VERIFIED",
-    "expiresAt": 1792471251622,
-    "verified": true,
-    "createdAt": "2026-09-20T04:40:42.893Z"
-  },
-  "test@example.com": {
-    "code": "894708",
-    "expiresAt": 1789797943145,
-    "verified": true
-  },
-  "pal@juritzen.com": {
-    "code": "VERIFIED",
     "expiresAt": 2524608000000,
     "verified": true
-  },
-  "investor@example.com": {
-    "code": "VERIFIED",
-    "expiresAt": 1792470999014,
-    "verified": true,
-    "createdAt": "2026-09-20T04:36:08.389Z"
   }
 }
