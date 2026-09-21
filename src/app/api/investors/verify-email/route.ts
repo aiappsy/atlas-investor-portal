@@ -198,9 +198,21 @@ export async function POST(req: NextRequest) {
       saveStore(store);
 
       // Dispatch the email
-      await dispatchVerificationEmail(normalizedEmail, otpCode);
+      const dispatchResult = await dispatchVerificationEmail(normalizedEmail, otpCode);
 
-      // Return clean response - NEVER leak the OTP code to the browser
+      if (!dispatchResult.sent) {
+        return NextResponse.json(
+          {
+            error: `Email delivery failed: ${dispatchResult.message}`,
+            sent: false,
+            // Provide the code in local dev response if SMTP is not configured so the user is never stuck
+            devCode: otpCode,
+          },
+          { status: 500 }
+        );
+      }
+
+      // Return clean response on successful SMTP delivery
       return NextResponse.json({
         success: true,
         message: `A 6-digit verification code was sent to ${normalizedEmail}. Please check your inbox.`,

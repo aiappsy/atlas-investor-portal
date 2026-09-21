@@ -119,6 +119,13 @@ export default function StandaloneInvestorApp() {
       });
       const data = await res.json();
       if (!res.ok || data.error) {
+        if (data.devCode) {
+          // Dev/fallback mode when SMTP password is not yet set
+          setCodeSent(true);
+          setVerificationCode(data.devCode);
+          setVerifyError(`Note: Live email delivery requires SMTP_PASS in .env.local. For testing, your code is prefilled: ${data.devCode}`);
+          return;
+        }
         setVerifyError(data.error || 'Failed to dispatch verification code. Please check the email address.');
         return;
       }
